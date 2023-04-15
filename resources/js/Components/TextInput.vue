@@ -23,7 +23,7 @@ defineExpose({ focus: () => input.value.focus() });
 
 <template>
     <input
-        class="font-sans text-[14px] leading-[18px] mt-4 block w-full bg-[#FAFAFA] rounded-[3px] border-[#DBDBDB] py-[9px]"
+        class="mt-4 block w-full bg-[#FAFAFA] rounded-[3px] border-[#DBDBDB] py-[9px]"
         :value="modelValue"
         @input="$emit('update:modelValue', $event.target.value)"
         ref="input"

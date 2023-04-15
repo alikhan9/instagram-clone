@@ -36,7 +36,6 @@ const submit = () => {
         <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
             {{ status }}
         </div>
-        <h1 class="text-4xl text-center py-8">Instagram</h1>
         <form @submit.prevent="submit">
             <div>
                 <TextInput
@@ -62,28 +61,14 @@ const submit = () => {
 
             <InputError class="mt-2" :message="form.errors.password" />
             <PrimaryButton
-                :class="{ 'opacity-25': form.processing }"
+                :class="{
+                    'font-semibold': true,
+                    'opacity-25': form.processing,
+                }"
                 :disabled="form.processing"
             >
                 Se connecter
             </PrimaryButton>
-
-            <div class="block mt-4">
-                <label class="flex items-center">
-                    <Checkbox name="remember" v-model:checked="form.remember" />
-                    <span class="ml-2 text-sm text-gray-600">Remember me</span>
-                </label>
-            </div>
-
-            <div class="flex items-center justify-end mt-4">
-                <Link
-                    v-if="canResetPassword"
-                    :href="route('password.request')"
-                    class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                    Forgot your password?
-                </Link>
-            </div>
         </form>
     </GuestLayout>
 </template>
