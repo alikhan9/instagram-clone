@@ -20,7 +20,6 @@ const submit = () => {
 </script>
 
 <template>
-    <GuestLayout>
         <Head title="Register" />
         <form @submit.prevent="submit">
             <TextInput
@@ -71,5 +70,4 @@ const submit = () => {
                 Validez
             </PrimaryButton>
         </form>
-    </GuestLayout>
 </template>
