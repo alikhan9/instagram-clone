@@ -6,7 +6,10 @@ import { createInertiaApp } from '@inertiajs/vue3';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 import AuthenticatedLayout from './Layouts/AuthenticatedLayout.vue'
 import GuestLayout from './Layouts/GuestLayout.vue'
+import Unicon from 'vue-unicons'
+import { uniEllipsisH,uniHeart, uniComment, uniTelegramAlt, uniBookmark } from 'vue-unicons/dist/icons'
 
+Unicon.add([uniEllipsisH,uniHeart, uniComment, uniTelegramAlt, uniBookmark])
 
 const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
 
@@ -21,6 +24,7 @@ createInertiaApp({
     setup({ el, App, props, plugin }) {
         const app = createApp({ render: () => h(App, props) })
             .use(plugin)
+            .use(Unicon)
             .use(ZiggyVue, Ziggy)
             .mount(el);
 
