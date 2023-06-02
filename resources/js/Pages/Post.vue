@@ -30,8 +30,10 @@
                 334,877 J'aime
             </div>
             <div>
-                muftimenkofficial Morning Qur'aan Recitation
+                (lien vers profil)muftimenkofficial Morning Qur'aan Recitation
             </div>
+            <p>Affichier les x commentaires</p>
+            <p>2 commentaire afficher ici</p>
         </div>
     </div>
 </template>
