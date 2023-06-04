@@ -1,6 +1,6 @@
 <script setup>
 import SvgIcon from '@jamescoyle/vue-icon';
-import { mdiMultimedia } from '@mdi/js';
+import { mdiMultimedia, mdiArrowLeft } from '@mdi/js';
 import { ref } from "vue";
 
 const props = defineProps({
@@ -21,8 +21,11 @@ function onFileChange(e) {
             <div v-if="!url" class="border-b border-[hsl(0,0%,20%)] py-3 text-center text-lg font-semibold">
                 Créer une publication publication
             </div>
-            <div v-else class="border-b border-[hsl(0,0%,20%)] py-3 text-center text-lg font-semibold">
-                zd
+            <div v-else
+                class="border-b min-w-full flex justify-between border-[hsl(0,0%,20%)] py-3 text-center text-lg font-semibold px-5">
+                <svg-icon class="hover:cursor-pointer" type="mdi" size="26" :path="mdiArrowLeft" />
+                <p>Rogner</p>
+                <button class="text-[hsl(204,90%,49%)] text-base hover:text-white">Suivant</button>
             </div>
             <div class="flex flex-col gap-4 h-full items-center justify-center text-2xl " v-if="!url">
                 <svg-icon class="w-64" type="mdi" size="64" :path="mdiMultimedia"></svg-icon>
