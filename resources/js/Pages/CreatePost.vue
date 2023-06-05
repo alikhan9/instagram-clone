@@ -2,6 +2,8 @@
 import SvgIcon from '@jamescoyle/vue-icon';
 import { mdiMultimedia, mdiArrowLeft } from '@mdi/js';
 import { ref } from "vue";
+defineEmits(['turnOff'])
+
 
 const props = defineProps({
     "showCreatePost": Boolean
@@ -16,8 +18,11 @@ function onFileChange(e) {
 </script>
 
 <template>
-    <div class="text-white backdrop-brightness-[0.4] w-screen  h-screen z-10 flex justify-center items-center">
-        <div class="w-[815px] h-[815px] rounded-xl bg-[#262626]">
+    <div class="text-white backdrop-brightness-[0.4] w-screen absolute  h-screen z-10 flex justify-center items-center"
+        @click="$emit('turnOff')">
+    </div>
+    <div class="absolute z-10 flex w-screen h-screen justify-center items-center text-white">
+        <div class="w-[815px] h-[815px] rounded-xl bg-[#262626] ">
             <div v-if="!url" class="border-b border-[hsl(0,0%,20%)] py-3 text-center text-lg font-semibold">
                 Créer une publication publication
             </div>
