@@ -11,8 +11,7 @@ const showCreatePost = ref(false);
 </script>
 
 <template>
-    <create-post class="absolute" :showCreatePost="showCreatePost" @turnOff="() => showCreatePost = false"
-        v-if="showCreatePost"></create-post>
+    <create-post class="absolute" v-model:showCreatePost="showCreatePost" v-if="showCreatePost"></create-post>
     <div class="bg-black h-screen w-screen flex ">
         <div class="min-w-[335px] p-4 border-r border-[#262626] text-[#E0F1FF] flex flex-col gap-3">
             <h1 class="text-4xl p-6 mb-6">Instagram</h1>
