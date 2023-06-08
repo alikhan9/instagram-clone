@@ -1,9 +1,11 @@
 <script setup>
 import SvgIcon from '@jamescoyle/vue-icon';
-import { mdiMultimedia, mdiArrowLeft } from '@mdi/js';
+import { mdiMultimedia, mdiArrowLeft, mdiEmoticonHappyOutline } from '@mdi/js';
 import { ref } from "vue";
-const emit = defineEmits(['update:showCreatePost']);
+import 'vue3-emoji-picker/css'
+import EmojiPicker from 'vue3-emoji-picker'
 
+const emit = defineEmits(['update:showCreatePost']);
 
 const props = defineProps({
     "showCreatePost": Boolean
@@ -11,6 +13,9 @@ const props = defineProps({
 
 const url = ref();
 const step = ref(0);
+const input = ref('');
+const showEmojiPicker = ref(false);
+
 
 
 const onFileChange = (e) => {
@@ -30,6 +35,22 @@ const back = () => {
         step.value--;
 }
 
+
+function onSelectEmoji(emoji) {
+    console.log(emit.i + emit.r)
+    input.value += (emit.i + emit.r + emit.t);
+    /*
+      // result
+      { 
+          i: "😚", 
+          n: ["kissing face"], 
+          r: "1f61a", // with skin tone
+          t: "neutral", // skin tone
+          u: "1f61a" // without tone
+      }
+      */
+}
+
 </script>
 
 <template>
@@ -39,7 +60,7 @@ const back = () => {
         </div>
         <div :class="{
                 'w-[40vw] h-[85vh] z-20 rounded-xl bg-[#262626]': step == 0,
-                'w-[58vw] h-[85vh] z-20 rounded-xl bg-[#262626]': step == 1
+                'w-[58vw] h-[85vh] z-20 rounded-xl bg-[#262626] overflow-hidden': step == 1
             }">
             <div v-if="!url" class="border-b border-[hsl(0,0%,20%)] py-3 text-center text-lg font-semibold">
                 Créer une publication
@@ -77,54 +98,23 @@ const back = () => {
                 <img v-if="step == 0" :src="url" />
                 <div v-else class="grid grid-cols-3 ">
                     <img class="col-span-2" :src="url" />
-                    <div class="p-5">
+                    <div class="p-5 border-l-[1px] border-[hsl(0,0%,20%)] h-[81vh]">
                         <div class="flex gap-3 mb-3 items-center">
                             <img class="rounded-full" src="https://picsum.photos/seed/picsum/32/32" />
                             <p>Name</p>
                         </div>
                         <textarea name=""
                             class="bg-[#262626] w-full resize-none overflow-auto border-transparent focus:border-transparent focus:ring-0"
-                            placeholder="Ajouter une légende" id="" cols="30" rows="10"></textarea>
-                    </div>
-                    <div class="relative inline-block">
-                        <textarea class="px-2 py-4 rounded border outline-none focus:shadow-outline w-128 h-48"
+                            placeholder="Ajouter une légende" id="" cols="30" rows="10" maxlength="2200"
                             v-model="input"></textarea>
-
-                        <emoji-picker>
-                            <!-- <div class="absolute pin-t pin-r p-2 cursor-pointer emoji-invoker outline-none"
-                                slot="emoji-invoker" slot-scope="{ events: { click: clickEvent } }" @click="clickEvent">
-                                <button class="focus:outline-none h-6 w-6 focus:shadow-outline rounded-full">
-                                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
-                                        class="h-6 w-6 fill-current text-grey">
-                                        <path d="M0 0h24v24H0z" fill="none" />
-                                        <path
-                                            d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z" />
-                                    </svg>
-                                </button>
-                            </div>
-                            <div slot="emoji-picker" slot-scope="{ emojis }">
-                                <div
-                                    class="absolute z-10 border w-64 h-96 overflow-scroll p-4 rounded bg-white shadow t-4 -r-64">
-                                    <div class="flex">
-                                        <input
-                                            class="rounded-full border py-2 px-4 outline-none focus:shadow-outline w-full"
-                                            type="text" v-model="search" v-focus>
-                                    </div>
-                                    <div>
-                                        <div v-for="(emojiGroup, category) in emojis" :key="category">
-                                            <h5 class="text-grey-darker uppercase text-sm cursor-default mb-2 mt-4">{{
-                                                category }}</h5>
-                                            <div class="flex flex-wrap justify-between emojis">
-                                                <button
-                                                    class="p-1 cursor-pointer rounded hover:bg-grey-light focus:outline-none focus:shadow-outline flex items-center justify-center h-6 w-6"
-                                                    v-for="(emoji, emojiName) in emojiGroup" :key="emojiName"
-                                                    @click="append(emoji)" :title="emojiName">{{ emoji }}</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> -->
-                        </emoji-picker>
+                        <div class="flex justify-between relative">
+                            <svg-icon class="hover:cursor-pointer" type="mdi" size="24"
+                                @click="showEmojiPicker = !showEmojiPicker" :path="mdiEmoticonHappyOutline" />
+                            <EmojiPicker class="absolute top-10 z-10" v-show="showEmojiPicker" :native="true"
+                                @select="onSelectEmoji" />
+                            <p class="text-gray-500">{{ input.length }}/2200</p>
+                            {{ input.i }}
+                        </div>
                     </div>
                 </div>
             </div>

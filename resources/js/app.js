@@ -7,7 +7,6 @@ import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 import AuthenticatedLayout from './Layouts/AuthenticatedLayout.vue'
 import GuestLayout from './Layouts/GuestLayout.vue'
 import Unicon from 'vue-unicons'
-import { EmojiPickerPlugin } from 'vue-emoji-picker'
 import { uniEllipsisH,uniHeart, uniComment, uniTelegramAlt, uniBookmark } from 'vue-unicons/dist/icons'
 
 Unicon.add([uniEllipsisH,uniHeart, uniComment, uniTelegramAlt, uniBookmark])
@@ -26,7 +25,6 @@ createInertiaApp({
         const app = createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(Unicon)
-            .use(EmojiPickerPlugin)
             .use(ZiggyVue, Ziggy)
             .mount(el);
 
