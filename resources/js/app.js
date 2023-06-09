@@ -1,5 +1,6 @@
 import './bootstrap';
 import '../css/app.css';
+import 'vue3-emoji-picker/css'
 
 import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
