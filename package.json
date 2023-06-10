@@ -16,8 +16,10 @@
         "vue": "^3.2.41"
     },
     "dependencies": {
+        "@formkit/auto-animate": "^1.0.0-beta.6",
         "@jamescoyle/vue-icon": "^0.1.2",
         "@mdi/js": "^7.2.96",
+        "@vueuse/motion": "^2.0.0",
         "autoprefixer": "^10.4.14",
         "vue-unicons": "^3.3.1",
         "vue3-emoji-picker": "^1.1.7"

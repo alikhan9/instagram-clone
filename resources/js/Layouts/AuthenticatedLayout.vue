@@ -2,28 +2,56 @@
 import MenuComponent from '@/Components/MenuComponent.vue';
 import { ref } from "vue"
 import CreatePost from '@/Pages/CreatePost.vue';
+import SvgIcon from '@jamescoyle/vue-icon';
 import {
-    mdiHome, mdiMagnify, mdiCompassOutline, mdiYoutube, mdiNearMe, mdiHeartOutline, mdiPlusBoxOutline, mdiAccount
+    mdiHome, mdiMagnify, mdiCompassOutline, mdiYoutube, mdiNearMe, mdiHeartOutline, mdiPlusBoxOutline, mdiAccount, mdiInstagram
 } from '@mdi/js';
+import Search from '@/Pages/Search.vue';
 
 const showCreatePost = ref(false);
+const showSearch = ref(false);
 
 </script>
 
 <template>
-    <create-post class="absolute" v-model:showCreatePost="showCreatePost" v-if="showCreatePost"></create-post>
-    <div class="bg-black h-screen w-screen flex ">
-        <div class="min-w-[335px] p-4 border-r border-[#262626] text-[#E0F1FF] flex flex-col gap-3">
-            <h1 class="text-4xl p-6 mb-6">Instagram</h1>
-            <MenuComponent :path="mdiHome">Accueil</MenuComponent>
-            <MenuComponent :path="mdiMagnify">Recherche</MenuComponent>
-            <MenuComponent :path="mdiCompassOutline">Découvrir</MenuComponent>
-            <MenuComponent :path="mdiYoutube">Reels</MenuComponent>
-            <MenuComponent :path="mdiNearMe">Messages</MenuComponent>
-            <MenuComponent :path="mdiHeartOutline">Notifications</MenuComponent>
-            <MenuComponent @click="showCreatePost = !showCreatePost" :path="mdiPlusBoxOutline">Créer</MenuComponent>
-            <MenuComponent :path="mdiAccount">Profil</MenuComponent>
+    <div>
+        <create-post class="absolute" v-model:showCreatePost="showCreatePost" v-if="showCreatePost"></create-post>
+        <Search v-motion-slide-left v-if="showSearch" />
+        <div class="bg-black h-screen w-screen flex ">
+            <div class="min-w-[335px] p-4 border-r border-[#262626] text-[#E0F1FF] flex flex-col gap-3">
+                <div class="mb-6">
+                    <h1 v-if="!showSearch" class="text-4xl p-6 ">Instagram</h1>
+                    <div v-else>
+                        <MenuComponent v-motion-pop :mini="showSearch" :path="mdiInstagram"></MenuComponent>
+                        <div class="p-5"></div>
+                    </div>
+                </div>
+                <MenuComponent :path="mdiHome" :mini="showSearch">
+                    <span v-if="!showSearch">Accueil</span>
+                </MenuComponent>
+                <MenuComponent :path="mdiMagnify" @click="showSearch = !showSearch" :mini="showSearch">
+                    <span v-if="!showSearch">Recherche</span>
+                </MenuComponent>
+                <MenuComponent :path="mdiCompassOutline" :mini="showSearch">
+                    <span v-if="!showSearch">Découvrir</span>
+                </MenuComponent>
+                <MenuComponent :path="mdiYoutube" :mini="showSearch">
+                    <span v-if="!showSearch">Reels</span>
+                </MenuComponent>
+                <MenuComponent :path="mdiNearMe" :mini="showSearch">
+                    <span v-if="!showSearch">Messages</span>
+                </MenuComponent>
+                <MenuComponent :path="mdiHeartOutline" :mini="showSearch">
+                    <span v-if="!showSearch">Notifications</span>
+                </MenuComponent>
+                <MenuComponent @click="showCreatePost = !showCreatePost" :path="mdiPlusBoxOutline" :mini="showSearch">
+                    <span v-if="!showSearch">Créer </span>
+                </MenuComponent>
+                <MenuComponent :path="mdiAccount" :mini="showSearch">
+                    <span v-if="!showSearch">Profil</span>
+                </MenuComponent>
+            </div>
+            <slot></slot>
         </div>
-        <slot></slot>
     </div>
 </template>

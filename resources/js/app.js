@@ -8,6 +8,8 @@ import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 import AuthenticatedLayout from './Layouts/AuthenticatedLayout.vue'
 import GuestLayout from './Layouts/GuestLayout.vue'
 import Unicon from 'vue-unicons'
+import { MotionPlugin } from '@vueuse/motion'
+import { autoAnimatePlugin } from '@formkit/auto-animate/vue'
 import { uniEllipsisH,uniHeart, uniComment, uniTelegramAlt, uniBookmark } from 'vue-unicons/dist/icons'
 
 Unicon.add([uniEllipsisH,uniHeart, uniComment, uniTelegramAlt, uniBookmark])
@@ -26,6 +28,8 @@ createInertiaApp({
         const app = createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(Unicon)
+            .use(autoAnimatePlugin)
+            .use(MotionPlugin)
             .use(ZiggyVue, Ziggy)
             .mount(el);
 
