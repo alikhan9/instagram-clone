@@ -2,6 +2,7 @@
 import MenuComponent from '@/Components/MenuComponent.vue';
 import { ref } from "vue"
 import CreatePost from '@/Pages/CreatePost.vue';
+import { vOnClickOutside } from '@vueuse/components'
 import SvgIcon from '@jamescoyle/vue-icon';
 import {
     mdiHome, mdiMagnify, mdiCompassOutline, mdiYoutube, mdiNearMe, mdiHeartOutline, mdiPlusBoxOutline, mdiAccount, mdiInstagram
@@ -11,12 +12,16 @@ import Search from '@/Pages/Search.vue';
 const showCreatePost = ref(false);
 const showSearch = ref(false);
 
+const closeSearch = () => {
+    showSearch.value = false;
+}
+
 </script>
 
 <template>
     <div>
         <create-post class="absolute" v-model:showCreatePost="showCreatePost" v-if="showCreatePost"></create-post>
-        <Search v-motion-slide-left v-if="showSearch" />
+        <Search v-motion-slide-left v-if="showSearch" v-on-click-outside="closeSearch" />
         <div class="bg-black h-screen w-screen flex ">
             <div class="min-w-[335px] p-4 border-r border-[#262626] text-[#E0F1FF] flex flex-col gap-3">
                 <div class="mb-6">
