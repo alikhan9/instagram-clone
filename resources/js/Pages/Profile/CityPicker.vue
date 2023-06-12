@@ -2,6 +2,7 @@
 import { ref, watch } from "vue"
 import { mdiMapMarkerOutline, mdiClose } from '@mdi/js';
 import SvgIcon from '@jamescoyle/vue-icon';
+import { vOnClickOutside } from '@vueuse/components'
 
 const cities = [
     "Tokyo", "Delhi", "Shanghai", "São Paulo",
@@ -161,12 +162,22 @@ const cities = [
     "Bogotá"
 ]
 
+const emit = defineEmits(['update:city'])
+defineProps({
+    city: String
+});
+
+
 const currentCity = ref('');
 const selected = ref(false);
 const showCities = ref(false);
 const filteredCities = ref(cities);
 
 
+watch(selected, (newValue, oldValue) => {
+    if (newValue)
+        emit("update:city", currentCity.value);
+})
 
 watch(currentCity, (newCity, oldCity) => {
     if (selected.value)
@@ -199,7 +210,7 @@ const reset = () => {
 </script>
 
 <template>
-    <div class="flex justify-between mt-4 relative items-center" @blur="checkCity">
+    <div class="flex justify-between mt-4 relative items-center" v-on-click-outside="checkCity">
         <div class="w-[85%]">
             <input type="text" :class="{
                     'bg-transparent w-full border-none focus:border-transparent p-0 text-xl focus:ring-0': true,

@@ -60,3 +60,10 @@ const closeSearch = () => {
         </div>
     </div>
 </template>
+
+<style>
+.close {
+    transform: translateX(-100%);
+    transition: all 150ms ease-in 0s;
+}
+</style>

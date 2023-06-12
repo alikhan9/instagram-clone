@@ -18,6 +18,7 @@ return new class () extends Migration {
             $table->string('image');
             $table->boolean('enable_comments');
             $table->boolean('enable_likes');
+            $table->string('image_description');
             $table->timestamps();
         });
     }

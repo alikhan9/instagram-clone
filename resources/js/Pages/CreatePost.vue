@@ -6,6 +6,7 @@ import CityPicker from './Profile/CityPicker.vue';
 import SvgIcon from '@jamescoyle/vue-icon';
 import ExpendableMenu from './ExpendableMenu.vue';
 import InerMenuCheckbox from './InerMenuCheckbox.vue';
+import { router } from '@inertiajs/vue3';
 
 const emit = defineEmits(['update:showCreatePost']);
 
@@ -13,11 +14,14 @@ const props = defineProps({
     "showCreatePost": Boolean
 })
 
-const url = ref();
 const step = ref(0);
-const input = ref('');
+const url = ref();
 const showEmojiPicker = ref(false);
-
+const city = ref('');
+const description = ref('');
+const imageDescription = ref('');
+const showLikes = ref(false);
+const showComments = ref(false);
 
 
 const onFileChange = (e) => {
@@ -39,18 +43,25 @@ const back = () => {
 
 
 function onSelectEmoji(emoji) {
-    input.value += emoji.i;
+    description.value += emoji.i;
     showEmojiPicker.value = false;
-    /*
-      // result
-      { 
-          i: "😚", 
-          n: ["kissing face"], 
-          r: "1f61a", // with skin tone
-          t: "neutral", // skin tone
-          u: "1f61a" // without tone
-      }
-      */
+}
+
+const updateShowLikes = value => {
+    showLikes.value = value;
+}
+const updateShowComments = value => {
+    showComments.value = value;
+}
+
+const validatePost = () => {
+    router.post("/post", {
+        description: description.value,
+        location: city.value,
+        image: url.value,
+        enable_comments: showComments.value,
+        enable_likes: showLikes.value
+    })
 }
 
 </script>
@@ -109,17 +120,17 @@ function onSelectEmoji(emoji) {
                             <textarea
                                 class="bg-[#262626] w-full resize-none overflow-auto border-transparent focus:border-transparent focus:ring-0"
                                 placeholder="Ajouter une légende" id="" cols="30" rows="8" maxlength="2200"
-                                v-model="input" />
+                                v-model="description" />
                         </div>
                         <div class="flex justify-between relative">
                             <svg-icon class="hover:cursor-pointer" type="mdi" size="24"
                                 @click="showEmojiPicker = !showEmojiPicker" :path="mdiEmoticonHappyOutline" />
                             <EmojiPicker class="absolute top-10 z-10" v-if="showEmojiPicker" :native="true"
                                 @select="onSelectEmoji" />
-                            <p class="text-gray-500">{{ input?.length }}/2200</p>
+                            <p class="text-gray-500">{{ description?.length }}/2200</p>
                         </div>
-                        <div class="flex flex-col gap-8">
-                            <CityPicker class="min-w-[85%]" />
+                        <div class="flex flex-col gap-6">
+                            <CityPicker :city="city" class="min-w-[85%] z-20" />
                             <ExpendableMenu title="Accessibilité">
                                 <p class="text-gray-400 text-sm">
                                     Le texte alternatif décrit vos photos pour les personnes malvoyantes.
@@ -130,11 +141,12 @@ function onSelectEmoji(emoji) {
                                     <img class="w-14 h-14" :src="url" />
                                     <input type="text"
                                         class="bg-transparent border-none rounded-sm focus:outline w-full focus:outline-[hsl(0,0%,23%)] focus:border-2 focus:ring-0"
-                                        placeholder="Ecrivez un texte alternatif...">
+                                        placeholder="Ecrivez un texte alternatif..." v-model="imageDescription">
                                 </div>
                             </ExpendableMenu>
                             <ExpendableMenu title="Paramètre avancés">
-                                <InerMenuCheckbox title="Masquer le nombre de J'aime et de vues sur cette publication">
+                                <InerMenuCheckbox @updateValue="updateShowLikes"
+                                    title="Masquer le nombre de J'aime et de vues sur cette publication">
                                     <p class="text-sm text-gray-400 mb-5">
                                         Vous êtes la seule personne à pouvoir voir le nombre total de J'aime et de vues sur
                                         cette publication.
@@ -142,13 +154,14 @@ function onSelectEmoji(emoji) {
                                         publication.
                                         Pour masquer le nombre de J'aime sur les publications d'autres personnes, accédez
                                         aux
-                                        paramètres de votre compte. <span
-                                            class="text-white hover:cursor-pointer hover:underline">En savoir
-                                            plus</span>
+                                        paramètres de votre compte.
+                                        <span class="text-white hover:cursor-pointer hover:underline">
+                                            En savoir plus
+                                        </span>
                                     </p>
                                 </InerMenuCheckbox>
 
-                                <InerMenuCheckbox title="Désactivez les commentaires">
+                                <InerMenuCheckbox @updateValue="updateShowComments" title="Désactivez les commentaires">
                                     <p class="text-sm text-gray-400">
                                         Vous pourrez modifier ce paramètre plus tard dans le menu ··· en haut de votre
                                         publication.

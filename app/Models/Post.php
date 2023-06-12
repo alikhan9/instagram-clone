@@ -11,5 +11,5 @@ class Post extends Model
 
     protected $fillable = ['user_id',
     'description','location',
-    'image','enable_comments','enable_likes'];
+    'image','enable_comments','enable_likes','image_description'];
 }

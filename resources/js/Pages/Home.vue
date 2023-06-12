@@ -13,7 +13,6 @@ defineProps({
     <div class="text-white flex w-full ml-52 justify-evenly">
         <div class="w-[630px] px-4 flex justify-center mt-24">
             <Post />
-
         </div>
         <div class="w-[319px]">
         </div>

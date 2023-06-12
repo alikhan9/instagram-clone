@@ -17,7 +17,8 @@ class PostController extends Controller
             'location' => 'required',
             'image' => 'required',
             'enable_comments' => 'required',
-            'enable_linkes' => 'required'
+            'enable_likes' => 'required',
+            'image_description' => 'nullable'
         ]);
 
         $path = $request->file('image')->store('public/images');
