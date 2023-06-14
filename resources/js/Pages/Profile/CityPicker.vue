@@ -162,7 +162,7 @@ const cities = [
     "Bogotá"
 ]
 
-const emit = defineEmits(['update:city'])
+const emit = defineEmits(['updateCity'])
 defineProps({
     city: String
 });
@@ -176,7 +176,7 @@ const filteredCities = ref(cities);
 
 watch(selected, (newValue, oldValue) => {
     if (newValue)
-        emit("update:city", currentCity.value);
+        emit("updateCity", currentCity.value);
 })
 
 watch(currentCity, (newCity, oldCity) => {

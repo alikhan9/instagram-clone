@@ -21,9 +21,12 @@ const closeSearch = () => {
 <template>
     <div>
         <create-post class="absolute" v-model:showCreatePost="showCreatePost" v-if="showCreatePost"></create-post>
-        <Search v-motion-slide-left v-if="showSearch" v-on-click-outside="closeSearch" />
-        <div class="bg-black h-screen w-screen flex ">
-            <div class="min-w-[335px] p-4 border-r border-[#262626] text-[#E0F1FF] flex flex-col gap-3">
+        <Search class="z-50" v-motion-slide-left v-if="showSearch" v-on-click-outside="closeSearch" />
+        <div class="bg-black min-h-screen w-screen flex ">
+            <div :class="{
+                    'min-w-[335px] fixed p-4 z-30 h-screen border-[#262626] text-[#E0F1FF] flex flex-col gap-3': true,
+                    'border-r': !showSearch
+                }">
                 <div class="mb-6">
                     <h1 v-if="!showSearch" class="text-4xl p-6 ">Instagram</h1>
                     <div v-else>
@@ -56,14 +59,9 @@ const closeSearch = () => {
                     <span v-if="!showSearch">Profil</span>
                 </MenuComponent>
             </div>
-            <slot></slot>
+            <div class="">
+                <slot></slot>
+            </div>
         </div>
     </div>
 </template>
-
-<style>
-.close {
-    transform: translateX(-100%);
-    transition: all 150ms ease-in 0s;
-}
-</style>

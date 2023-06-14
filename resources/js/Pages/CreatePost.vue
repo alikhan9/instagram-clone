@@ -16,6 +16,7 @@ const props = defineProps({
 
 const step = ref(0);
 const url = ref();
+const file = ref();
 const showEmojiPicker = ref(false);
 const city = ref('');
 const description = ref('');
@@ -25,8 +26,8 @@ const showComments = ref(false);
 
 
 const onFileChange = (e) => {
-    const file = e.target.files[0];
-    url.value = URL.createObjectURL(file);
+    file.value = e.target.files[0];
+    url.value = URL.createObjectURL(file.value);
 }
 
 const leave = () => {
@@ -54,14 +55,20 @@ const updateShowComments = value => {
     showComments.value = value;
 }
 
+const updateCity = value => {
+    city.value = value;
+}
+
 const validatePost = () => {
     router.post("/post", {
         description: description.value,
         location: city.value,
-        image: url.value,
-        enable_comments: showComments.value,
-        enable_likes: showLikes.value
-    })
+        image: file.value,
+        enable_comments: !showComments.value,
+        enable_likes: !showLikes.value,
+        image_description: imageDescription.value
+    });
+    leave();
 }
 
 </script>
@@ -89,7 +96,8 @@ const validatePost = () => {
                     class="border-b min-w-full flex justify-between border-[hsl(0,0%,20%)] py-3 text-center text-lg font-semibold px-5">
                     <svg-icon class="hover:cursor-pointer" type="mdi" size="26" @click="back" :path="mdiArrowLeft" />
                     <p>Créer une publication</p>
-                    <button class="text-[hsl(204,90%,49%)] text-base hover:text-white">Partager</button>
+                    <button class="text-[hsl(204,90%,49%)] text-base hover:text-white"
+                        @click="validatePost">Partager</button>
                 </div>
 
             </div>
@@ -130,7 +138,7 @@ const validatePost = () => {
                             <p class="text-gray-500">{{ description?.length }}/2200</p>
                         </div>
                         <div class="flex flex-col gap-6">
-                            <CityPicker :city="city" class="min-w-[85%] z-20" />
+                            <CityPicker @updateCity="updateCity" class="min-w-[85%] z-20" />
                             <ExpendableMenu title="Accessibilité">
                                 <p class="text-gray-400 text-sm">
                                     Le texte alternatif décrit vos photos pour les personnes malvoyantes.

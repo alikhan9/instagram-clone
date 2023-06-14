@@ -12,4 +12,10 @@ class Post extends Model
     protected $fillable = ['user_id',
     'description','location',
     'image','enable_comments','enable_likes','image_description'];
+
+    protected $with = ['user'];
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id')->select('id', 'name', 'email');
+    }
 }

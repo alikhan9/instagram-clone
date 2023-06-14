@@ -13,12 +13,12 @@ return new class () extends Migration {
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->string(column: 'location');
             $table->string('image');
             $table->boolean('enable_comments');
             $table->boolean('enable_likes');
-            $table->string('image_description');
+            $table->string('image_description')->nullable();
             $table->timestamps();
         });
     }
