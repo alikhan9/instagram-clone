@@ -3,7 +3,6 @@ import MenuComponent from '@/Components/MenuComponent.vue';
 import { ref } from "vue"
 import CreatePost from '@/Pages/CreatePost.vue';
 import { vOnClickOutside } from '@vueuse/components'
-import SvgIcon from '@jamescoyle/vue-icon';
 import {
     mdiHome, mdiMagnify, mdiCompassOutline, mdiYoutube, mdiNearMe, mdiHeartOutline, mdiPlusBoxOutline, mdiAccount, mdiInstagram
 } from '@mdi/js';
@@ -34,7 +33,7 @@ const closeSearch = () => {
                         <div class="p-5"></div>
                     </div>
                 </div>
-                <MenuComponent :path="mdiHome" :mini="showSearch">
+                <MenuComponent :path="mdiHome" url="/" :mini="showSearch">
                     <span v-if="!showSearch">Accueil</span>
                 </MenuComponent>
                 <MenuComponent :path="mdiMagnify" @click="showSearch = !showSearch" :mini="showSearch">

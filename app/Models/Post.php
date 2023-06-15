@@ -13,9 +13,14 @@ class Post extends Model
     'description','location',
     'image','enable_comments','enable_likes','image_description'];
 
-    protected $with = ['user'];
+    protected $with = ['user','likes'];
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id')->select('id', 'name', 'email');
+    }
+
+    public function likes()
+    {
+        return $this->hasMany(PostLikes::class)->select('user_id');
     }
 }

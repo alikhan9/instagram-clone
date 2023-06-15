@@ -10,11 +10,12 @@ return new class () extends Migration {
      */
     public function up(): void
     {
-        Schema::create('comments', function (Blueprint $table) {
+        Schema::create('post_likes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('post')->constrained();
-            $table->foreignId('author')->references('id')->on('users')->constrained();
-            $table->string('content');
+            $table->foreignId('post_id')->references('id')->on('posts')->constrained();
+            $table->foreignId('user_id')->references('id')->on('users')->constrained();
+            $table->boolean('active')->default(true);
+            $table->unique(['user_id','post_id']);
             $table->timestamps();
         });
     }
@@ -24,6 +25,6 @@ return new class () extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('comments');
+        Schema::dropIfExists('post_likes');
     }
 };

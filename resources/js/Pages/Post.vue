@@ -1,12 +1,32 @@
 <script setup>
-defineProps({
+import { router, usePage } from '@inertiajs/vue3';
+import SvgIcon from '@jamescoyle/vue-icon';
+import { mdiHeart, mdiBookmark } from '@mdi/js';
+import axios from 'axios';
+import { ref } from 'vue';
+
+const props = defineProps({
     post: Object
 })
+
+const like = ref(false);
+const bookmark = ref(false);
+
+const likeUnlikePost = id => {
+    axios.post('/likePost', { post_id: id }).then(response => {
+        console.log(response);
+    })
+    like.value = !like.value;
+}
+const bookmarkPost = () => {
+    bookmark.value = !bookmark.value;
+}
+
 </script>
 
 <template>
     <div class="min-w-[468px]">
-        <div class="flex justify-between w-[468px] items-center gap-3 mb-3">
+        <div class="flex justify-between items-center gap-3 mb-3">
             <div class="flex gap-3 mb-3">
                 <div>
                     <img class="rounded-full" src="https://picsum.photos/seed/picsum/32/32" />
@@ -17,17 +37,25 @@ defineProps({
                     <p>{{ post.description }}</p>
                 </div>
             </div>
-            <unicon name="ellipsis-h" fill="white"></unicon>
+            <unicon class="hover:cursor-pointer" name="ellipsis-h" fill="white"></unicon>
         </div>
         <img class="max-w-[468px] max-h-[650px]" :src="'http://127.0.0.1:8000' + post.image" />
         <div class="mt-3 mb-3 flex flex-row justify-between">
             <div class="flex gap-3">
-                <unicon class="w-7 h-7" name="heart" fill="white"></unicon>
+                <svg-icon v-if="like" class="w-7 h-7 hover:cursor-pointer animate-heart " type="mdi" color="red"
+                    @click="likeUnlikePost(post.id)" :path="mdiHeart" />
+                <div v-else class="h-7" @click="likeUnlikePost">
+                    <unicon class="w-7 h-7 hover:cursor-pointer" name="heart" fill="white" />
+                </div>
                 <unicon class="w-7 h-7" name="comment" fill="white"></unicon>
                 <unicon class="w-7 h-7" name="telegram-alt" fill="white"></unicon>
             </div>
             <div>
-                <unicon class="w-7 h-7" name="bookmark" fill="white"></unicon>
+                <div class="h-7" v-if="!bookmark" @click="bookmarkPost">
+                    <unicon class="w-7 h-7 hover:cursor-pointer" name="bookmark" fill="white"></unicon>
+                </div>
+                <svg-icon v-else="like" class="w-7 h-7 hover:cursor-pointer" type="mdi" color="white" @click="bookmarkPost"
+                    :path="mdiBookmark" />
             </div>
         </div>
         <div class="leading-8">
@@ -44,3 +72,23 @@ defineProps({
         </div>
     </div>
 </template>
+
+<style>
+.animate-heart {
+    animation: growAndShrink 0.3s;
+}
+
+@keyframes growAndShrink {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+</style>
