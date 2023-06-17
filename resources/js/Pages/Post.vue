@@ -3,19 +3,49 @@ import { router, usePage } from '@inertiajs/vue3';
 import SvgIcon from '@jamescoyle/vue-icon';
 import { mdiHeart, mdiBookmark } from '@mdi/js';
 import axios from 'axios';
-import { ref } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 
 const props = defineProps({
-    post: Object
+    post: Object,
+
 })
 
 const like = ref(false);
 const bookmark = ref(false);
+const initialUrl = usePage().url;
+
+
+onMounted(() => {
+    if (props.post.likes.filter(l => l.active && l.user_id == usePage().props.auth.user.id).length > 0)
+        like.value = true;
+});
+
+watch(() => props.post, newValue => {
+    console.log('nani');
+    if (newValue.likes.filter(l => l.user_id == usePage().props.auth.user.id).length > 0)
+        like.value = true;
+    window.history.replaceState({}, '', initialUrl);
+
+})
 
 const likeUnlikePost = id => {
-    axios.post('/likePost', { post_id: id }).then(response => {
-        console.log(response);
-    })
+    router.post('/likePost', { post_id: id }, {
+        preserveScroll: true,
+        preserveState: true,
+        onSuccess: () => {
+            window.history.replaceState({}, '', initialUrl);
+        }
+    });
+    // .then(response => {
+    //     console.log(usePage());
+    //     if (response.data.active)
+    //         props.post.likes.push(response.data);
+    //     else
+    //         props.post.likes.filter(l => l.id !== response.data.id);
+    // })
+    // .catch(error => {
+    //     console.log(error);
+    // });
     like.value = !like.value;
 }
 const bookmarkPost = () => {
@@ -44,7 +74,7 @@ const bookmarkPost = () => {
             <div class="flex gap-3">
                 <svg-icon v-if="like" class="w-7 h-7 hover:cursor-pointer animate-heart " type="mdi" color="red"
                     @click="likeUnlikePost(post.id)" :path="mdiHeart" />
-                <div v-else class="h-7" @click="likeUnlikePost">
+                <div v-else class="h-7" @click="likeUnlikePost(post.id)">
                     <unicon class="w-7 h-7 hover:cursor-pointer" name="heart" fill="white" />
                 </div>
                 <unicon class="w-7 h-7" name="comment" fill="white"></unicon>
@@ -60,7 +90,7 @@ const bookmarkPost = () => {
         </div>
         <div class="leading-8">
             <div v-if="post.enable_likes">
-                334,877 J'aime
+                {{ post.likes.length }} J'aime
             </div>
             <div>
                 (lien vers profil)muftimenkofficial Morning Qur'aan Recitation

@@ -5,7 +5,7 @@ import { useVirtualList } from '@vueuse/core'
 import { Head } from "@inertiajs/vue3";
 import useInfiniteScroll from './Composables/useInfiniteScroll';
 const props = defineProps({
-    posts: Object
+    posts: Object,
 });
 
 const landmark = ref(null);
@@ -18,8 +18,7 @@ const { containerProps, wrapperProps } = useVirtualList(data, { itemHeight: 650 
 
 <template>
     <Head title="Welcome" />
-    {{ data }}
-    <div class="" v-bind="containerProps">
+    <div class="overflow-x-hidden" v-bind="containerProps">
         <div class="text-white grid grid-cols-9 mt-24" v-bind="wrapperProps">
             <div class="col-start-4 col-span-4">
                 <div v-for="(post, index) in data" :key="index" class="w-[630px] px-4 flex flex-col justify-center mt-6">

@@ -21,6 +21,7 @@ class Post extends Model
 
     public function likes()
     {
-        return $this->hasMany(PostLikes::class)->select('user_id');
+        return $this->hasMany(PostLikes::class)->where('active', '=', true);
     }
+
 }

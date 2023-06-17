@@ -10,17 +10,37 @@ import Search from '@/Pages/Search.vue';
 
 const showCreatePost = ref(false);
 const showSearch = ref(false);
+const timerToCloseSearch = ref();
 
 const closeSearch = () => {
+    if (timerToCloseSearch.value)
+        clearTimeout(timerToCloseSearch.value);
     showSearch.value = false;
 }
 
-</script>
+const changeSearchState = () => {
+    timerToCloseSearch.value = setTimeout(() => {
+        showSearch.value = !showSearch.value;
+        timerToCloseSearch.value = null;
+    })
+}
 
+</script>
+<!-- v-motion-slide-left -->
 <template>
     <div>
-        <create-post class="absolute" v-model:showCreatePost="showCreatePost" v-if="showCreatePost"></create-post>
-        <Search class="z-50" v-motion-slide-left v-if="showSearch" v-on-click-outside="closeSearch" />
+        <div class="absolute bg-opacity-40 z-50">
+            <Transition enter-from-class="opacity-0" enter-leave-class="opacity-100"
+                enter-active-class="transition-opacity ease-in duration-400" leave-to-class="opacity-0"
+                leave-active-class="transition duration-200 ease-in">
+                <create-post class="absolute" v-model:showCreatePost="showCreatePost" v-if="showCreatePost"></create-post>
+            </Transition>
+        </div>
+        <Transition enter-from-class="scale-x-0" enter-leave-class="scale-x-100 "
+            enter-active-class="transition ease-out duration-300 origin-left" leave-from-class="translate-x-[-20px]"
+            leave-to-class="translate-x-[-130%]" leave-active-class="transition duration-200 ease-in">
+            <Search class="z-50" v-if="showSearch" v-on-click-outside="closeSearch" />
+        </Transition>
         <div class="bg-black min-h-screen w-screen flex ">
             <div :class="{
                     'min-w-[335px] fixed p-4 z-30 h-screen border-[#262626] text-[#E0F1FF] flex flex-col gap-3': true,
@@ -36,7 +56,7 @@ const closeSearch = () => {
                 <MenuComponent :path="mdiHome" url="/" :mini="showSearch">
                     <span v-if="!showSearch">Accueil</span>
                 </MenuComponent>
-                <MenuComponent :path="mdiMagnify" @click="showSearch = !showSearch" :mini="showSearch">
+                <MenuComponent :path="mdiMagnify" @click="changeSearchState" :mini="showSearch">
                     <span v-if="!showSearch">Recherche</span>
                 </MenuComponent>
                 <MenuComponent :path="mdiCompassOutline" :mini="showSearch">
