@@ -3,7 +3,7 @@ import { router, usePage } from '@inertiajs/vue3';
 import SvgIcon from '@jamescoyle/vue-icon';
 import { mdiHeart, mdiBookmark } from '@mdi/js';
 import axios from 'axios';
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch, onMounted, watchEffect } from 'vue';
 
 const props = defineProps({
     post: Object,
@@ -12,41 +12,34 @@ const props = defineProps({
 
 const like = ref(false);
 const bookmark = ref(false);
-const initialUrl = usePage().url;
+const initialUrl = usePage().path;
 
+watchEffect(() => {
+    window.history.replaceState({}, '', initialUrl);
+});
 
 onMounted(() => {
-    if (props.post.likes.filter(l => l.active && l.user_id == usePage().props.auth.user.id).length > 0)
+    if (props.post.likes.filter(l => l.id == usePage().props.auth.user_id).length > 0)
         like.value = true;
 });
 
 watch(() => props.post, newValue => {
-    console.log('nani');
-    if (newValue.likes.filter(l => l.user_id == usePage().props.auth.user.id).length > 0)
+    if (newValue.likes.filter(l => l.user_id == usePage().props.auth.user_id).length > 0)
         like.value = true;
-    window.history.replaceState({}, '', initialUrl);
-
 })
 
+
 const likeUnlikePost = id => {
-    router.post('/likePost', { post_id: id }, {
+    router.post(`/post/${id}/like`, {}, {
         preserveScroll: true,
         preserveState: true,
         onSuccess: () => {
-            window.history.replaceState({}, '', initialUrl);
+            setTimeout(() => {
+                window.history.replaceState({}, '', '/');
+            }, 10);
+            like.value = !like.value;
         }
     });
-    // .then(response => {
-    //     console.log(usePage());
-    //     if (response.data.active)
-    //         props.post.likes.push(response.data);
-    //     else
-    //         props.post.likes.filter(l => l.id !== response.data.id);
-    // })
-    // .catch(error => {
-    //     console.log(error);
-    // });
-    like.value = !like.value;
 }
 const bookmarkPost = () => {
     bookmark.value = !bookmark.value;

@@ -9,5 +9,5 @@ class PostLikes extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id','post_id','active'];
+    protected $fillable = ['user_id','post_id'];
 }

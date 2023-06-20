@@ -21,7 +21,7 @@ class Post extends Model
 
     public function likes()
     {
-        return $this->hasMany(PostLikes::class)->where('active', '=', true);
+        return $this->belongsToMany(User::class, 'post_likes')->select('user_id')->withTimestamps();
     }
 
 }

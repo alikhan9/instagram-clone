@@ -13,11 +13,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/', function () {
         return Inertia::render('Home', [
-            'posts' => Post::orderByDesc('created_at')->paginate(2),
+            'posts' => Post::orderByDesc('created_at')->paginate(1),
         ]);
     });
 
-    Route::post('/likePost', [LikeController::class, 'store']);
+    Route::post('/post/{post}/like', [LikeController::class, 'store']);
     Route::post('/post', [PostController::class, 'store']);
 });
 

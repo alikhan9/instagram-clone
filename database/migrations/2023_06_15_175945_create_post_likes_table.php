@@ -14,7 +14,6 @@ return new class () extends Migration {
             $table->id();
             $table->foreignId('post_id')->references('id')->on('posts')->constrained();
             $table->foreignId('user_id')->references('id')->on('users')->constrained();
-            $table->boolean('active')->default(true);
             $table->unique(['user_id','post_id']);
             $table->timestamps();
         });
