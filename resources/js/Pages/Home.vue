@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import Post from './Post.vue'
 import { useVirtualList } from '@vueuse/core'
 import { Head } from "@inertiajs/vue3";
@@ -11,8 +11,12 @@ const props = defineProps({
 const landmark = ref(null);
 
 const { data } = useInfiniteScroll('posts', landmark, '0px 0px 150px 0px');
-const { list, containerProps, wrapperProps } = useVirtualList(data, { itemHeight: 700 })
+const { list, containerProps, wrapperProps } = useVirtualList(data, { itemHeight: 830 })
 
+watch(() => props.posts, val => {
+    console.log(val);
+    console.log(data.value);
+})
 
 </script>
 
@@ -21,8 +25,7 @@ const { list, containerProps, wrapperProps } = useVirtualList(data, { itemHeight
     <div class="overflow-x-hidden" v-bind="containerProps">
         <div class="text-white grid grid-cols-9 mt-24" v-bind="wrapperProps">
             <div class="col-start-4 col-span-4">
-                <div v-for="(post, index) in data" :key="index"
-                    class="w-[630px] h-[700px] px-4 flex flex-col justify-center mt-6">
+                <div v-for="(post, index) in data" :key="index" class="px-4 flex flex-col justify-center mt-6">
                     <Post class="pb-6 border-b border-[#262626]" :post="post" />
                 </div>
             </div>

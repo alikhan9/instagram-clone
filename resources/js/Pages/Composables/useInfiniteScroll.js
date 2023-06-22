@@ -20,9 +20,7 @@ export default function infiniteScroll(propName, landmark = null, margin = '0px 
             preserveScroll: true,
             preserveState: true,
             onSuccess: () => {
-                setTimeout(() => {
-                    window.history.replaceState({}, '', initialUrl);
-                }, 10);
+                window.history.replaceState({}, '', initialUrl);
                 data.value.push(...value.data);
             }
         });

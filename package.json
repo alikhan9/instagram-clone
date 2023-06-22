@@ -23,6 +23,7 @@
         "@vueuse/core": "^10.1.2",
         "@vueuse/motion": "^2.0.0",
         "autoprefixer": "^10.4.14",
+        "vue-lazyload": "^3.0.0",
         "vue-unicons": "^3.3.1",
         "vue3-emoji-picker": "^1.1.7"
     }

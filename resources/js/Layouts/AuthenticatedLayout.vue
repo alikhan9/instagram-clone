@@ -28,7 +28,7 @@ const changeSearchState = () => {
 </script>
 <!-- v-motion-slide-left -->
 <template>
-    <div>
+    <div class="bg-black">
         <div class="absolute bg-opacity-40 z-50">
             <Transition enter-from-class="opacity-0" enter-leave-class="opacity-100"
                 enter-active-class="transition-opacity ease-in duration-400" leave-to-class="opacity-0"
@@ -41,11 +41,11 @@ const changeSearchState = () => {
             leave-to-class="translate-x-[-130%]" leave-active-class="transition duration-200 ease-in">
             <Search class="z-50" v-if="showSearch" v-on-click-outside="closeSearch" />
         </Transition>
-        <div class="bg-black min-h-screen w-screen flex ">
+        <div class="min-h-screen w-screen flex ">
             <div :class="{
-                    'min-w-[335px] fixed p-4 z-30 h-screen border-[#262626] text-[#E0F1FF] flex flex-col gap-3': true,
-                    'border-r': !showSearch
-                }">
+                'min-w-[335px] fixed p-4 z-30 h-screen border-[#262626] text-[#E0F1FF] flex flex-col gap-3': true,
+                'border-r': !showSearch
+            }">
                 <div class="mb-6">
                     <h1 v-if="!showSearch" class="text-4xl p-6 ">Instagram</h1>
                     <div v-else>

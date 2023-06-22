@@ -11,6 +11,7 @@ import Unicon from 'vue-unicons'
 import { MotionPlugin } from '@vueuse/motion'
 import { autoAnimatePlugin } from '@formkit/auto-animate/vue'
 import { uniEllipsisH, uniHeart, uniComment, uniTelegramAlt, uniBookmark } from 'vue-unicons/dist/icons'
+import VueLazyload from 'vue-lazyload'
 
 Unicon.add([uniEllipsisH, uniHeart, uniComment, uniTelegramAlt, uniBookmark])
 
@@ -28,6 +29,12 @@ createInertiaApp({
         const app = createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(Unicon)
+            .use(VueLazyload, {
+                preLoad: 1.3,
+                // error: errorimage,
+                // loading: loadimage,
+                attempt: 1
+            })
             .use(autoAnimatePlugin)
             .use(MotionPlugin)
             .use(ZiggyVue, Ziggy)

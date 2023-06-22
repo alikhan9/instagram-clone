@@ -2,17 +2,22 @@
 import { router, usePage } from '@inertiajs/vue3';
 import SvgIcon from '@jamescoyle/vue-icon';
 import { mdiHeart, mdiBookmark } from '@mdi/js';
-import axios from 'axios';
+import { useImage, useFullscreen } from '@vueuse/core';
 import { ref, watch, onMounted, watchEffect } from 'vue';
 
 const props = defineProps({
     post: Object,
-
 })
+
+
 
 const like = ref(false);
 const bookmark = ref(false);
 const initialUrl = usePage().path;
+const { isLoading } = useImage({ src: 'http://127.0.0.1:8000' + props.post.image })
+const imgRef = ref(null);
+
+const { isFullscreen, enter, exit, toggle } = useFullscreen(imgRef)
 
 watchEffect(() => {
     window.history.replaceState({}, '', initialUrl);
@@ -34,9 +39,7 @@ const likeUnlikePost = id => {
         preserveScroll: true,
         preserveState: true,
         onSuccess: () => {
-            setTimeout(() => {
-                window.history.replaceState({}, '', '/');
-            }, 10);
+            window.history.replaceState({}, '', '/');
             like.value = !like.value;
         }
     });
@@ -45,10 +48,11 @@ const bookmarkPost = () => {
     bookmark.value = !bookmark.value;
 }
 
+
 </script>
 
 <template>
-    <div class="min-w-[468px]">
+    <div class="w-[468px] h-[800px]">
         <div class="flex justify-between items-center gap-3 mb-3">
             <div class="flex gap-3 mb-3">
                 <div>
@@ -62,7 +66,13 @@ const bookmarkPost = () => {
             </div>
             <unicon class="hover:cursor-pointer" name="ellipsis-h" fill="white"></unicon>
         </div>
-        <img class="max-w-[468px] max-h-[650px]" :src="'http://127.0.0.1:8000' + post.image" />
+        <div @click="toggle" v-auto-animate ref="imgRef"
+            class="h-[550px] hover:cursor-pointer flex items-center justify-center backdrop-blur-lg">
+            <span v-if="isLoading">Chargement...</span>
+            <img v-else
+                :class="{ 'max-h-[550px]': !isFullscreen, 'absolute max-w-screen max-h-screen bg-black': isFullscreen }"
+                v-lazy="'http://127.0.0.1:8000' + post.image" />
+        </div>
         <div class="mt-3 mb-3 flex flex-row justify-between">
             <div class="flex gap-3">
                 <svg-icon v-if="like" class="w-7 h-7 hover:cursor-pointer animate-heart " type="mdi" color="red"
