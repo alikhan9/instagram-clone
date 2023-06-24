@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PostComments;
+use App\Events\PostCommentSent;
+use App\Models\PostComment;
 use Illuminate\Http\Request;
 
 class PostCommentsController extends Controller
@@ -13,13 +14,14 @@ class PostCommentsController extends Controller
             'content' => 'required'
         ]);
 
-        PostComments::create([
+        $comment = PostComment::create([
             'post_id' => $request->post_id,
             'user_id' => auth()->id(),
             'content' => $request->content
         ]);
 
-            return redirect()->back();
+        event(new PostCommentSent($comment));
+        return redirect()->back();
     }
 
 }

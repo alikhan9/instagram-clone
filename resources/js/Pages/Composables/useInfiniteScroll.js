@@ -11,7 +11,6 @@ export default function infiniteScroll(propName, landmark = null, margin = '0px 
 
     watch(() => usePage().props[propName], newValue => {
         value = newValue;
-        console.log(newValue);
     })
 
     const loadMoreData = () => {

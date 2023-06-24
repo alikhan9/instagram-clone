@@ -13,8 +13,6 @@ const landmark = ref(null);
 const { data } = useInfiniteScroll('posts', landmark, '0px 0px 150px 0px');
 const { list, containerProps, wrapperProps } = useVirtualList(data, { itemHeight: 830 })
 
-
-
 </script>
 
 <template>

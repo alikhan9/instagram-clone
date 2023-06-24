@@ -1,5 +1,5 @@
 <script setup>
-import { mdiMultimedia, mdiArrowLeft, mdiEmoticonHappyOutline, mdiChevronDown, mdiChevronUp } from '@mdi/js';
+import { mdiMultimedia, mdiArrowLeft, mdiEmoticonHappyOutline } from '@mdi/js';
 import { ref } from "vue";
 import EmojiPicker from 'vue3-emoji-picker'
 import CityPicker from './Profile/CityPicker.vue';
@@ -79,9 +79,9 @@ const validatePost = () => {
             @click="leave">
         </div>
         <div :class="{
-                'w-[40vw] h-[85vh] z-20 rounded-xl bg-[#262626]': step == 0,
-                'w-[58vw] h-[85vh] z-20 rounded-xl bg-[#262626] overflow-hidden': step == 1
-            }">
+            'w-[40vw] h-[85vh] z-20 rounded-xl bg-[#262626]': step == 0,
+            'w-[58vw] h-[85vh] z-20 rounded-xl bg-[#262626] overflow-hidden': step == 1
+        }">
             <div v-if="!url" class="border-b border-[hsl(0,0%,20%)] py-3 text-center text-lg font-semibold">
                 Créer une publication
             </div>

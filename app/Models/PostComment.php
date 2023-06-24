@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PostComments extends Model
+class PostComment extends Model
 {
     use HasFactory;
 
@@ -14,7 +14,7 @@ class PostComments extends Model
     protected $with = ['user'];
 
     public function user() {
-        return $this->belongsTo(User::class)->select('name');
+        return $this->belongsTo(User::class,'user_id')->select('id','name');
     } 
 
 }
