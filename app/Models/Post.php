@@ -13,7 +13,7 @@ class Post extends Model
     'description','location',
     'image','enable_comments','enable_likes','image_description'];
 
-    protected $with = ['user','likes','comments'];
+    protected $with = ['user','likes','comments','userLiked'];
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id')->select('id', 'name', 'email');
@@ -22,6 +22,10 @@ class Post extends Model
     public function likes()
     {
         return $this->belongsToMany(User::class, 'post_likes')->select('user_id')->withTimestamps();
+    }
+
+    public function userLiked() {
+        return $this->belongsToMany(User::class, 'post_likes')->where('user_id',auth()->id());
     }
 
     public function comments() {

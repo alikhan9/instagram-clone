@@ -4,17 +4,18 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class () extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        Schema::create('comments', function (Blueprint $table) {
+        Schema::create('comment_likes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('post')->constrained();
-            $table->foreignId('author')->references('id')->on('users')->constrained();
-            $table->string('content');
+            $table->foreignId('post_comment_id')->on('post_comments')->constrained();
+            $table->foreignId('user_id')->on('users')->constrained();
+            $table->foreignId('comment_like_id')->nullable()->constrained();
             $table->timestamps();
         });
     }
@@ -24,6 +25,6 @@ return new class () extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('comments');
+        Schema::dropIfExists('comment_likes');
     }
 };

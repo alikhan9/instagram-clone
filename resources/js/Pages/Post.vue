@@ -12,7 +12,7 @@ const props = defineProps({
 
 
 
-const like = ref(false);
+const like = ref();
 const bookmark = ref(false);
 const initialUrl = usePage().path;
 const { isLoading } = useImage({ src: 'http://127.0.0.1:8000' + props.post.image })
@@ -26,13 +26,11 @@ watchEffect(() => {
 });
 
 onMounted(() => {
-    if (props.post.likes.filter(l => l.id == usePage().props.auth.user_id).length > 0)
-        like.value = true;
+    like.value = props.post.user_liked.length !== 0;
 });
 
 watch(() => props.post, newValue => {
-    if (newValue.likes.filter(l => l.user_id == usePage().props.auth.user_id).length > 0)
-        like.value = true;
+    like.value = newValue.user_liked.length !== 0;
 })
 
 

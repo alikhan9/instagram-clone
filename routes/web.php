@@ -11,9 +11,10 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/', [PostController::class, 'index']);
-    Route::post('/post/{post}/like', [LikeController::class, 'store']);
+    Route::post('/post/comment/{comment}/like', [LikeController::class, 'likeComment']);
+    Route::post('/post/{post}/like', [LikeController::class, 'likePost']);
     Route::post('/post', [PostController::class, 'store']);
-    Route::post('/post/comment',[PostCommentsController::class, 'store']);
+    Route::post('/post/comment', [PostCommentsController::class, 'store']);
 });
-
+Broadcast::routes(['middleware' => ['auth:sanctum']]);
 require __DIR__.'/auth.php';

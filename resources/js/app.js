@@ -12,7 +12,9 @@ import { MotionPlugin } from '@vueuse/motion'
 import { autoAnimatePlugin } from '@formkit/auto-animate/vue'
 import { uniEllipsisH, uniHeart, uniComment, uniTelegramAlt, uniBookmark } from 'vue-unicons/dist/icons'
 import VueLazyload from 'vue-lazyload'
+import { createPinia } from 'pinia';
 
+const pinia = createPinia()
 Unicon.add([uniEllipsisH, uniHeart, uniComment, uniTelegramAlt, uniBookmark])
 
 const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
@@ -29,6 +31,7 @@ createInertiaApp({
         const app = createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(Unicon)
+            .use(pinia)
             .use(VueLazyload, {
                 preLoad: 1.3,
                 // error: errorimage,

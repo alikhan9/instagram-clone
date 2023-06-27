@@ -8,7 +8,8 @@ use Illuminate\Http\Request;
 
 class PostCommentsController extends Controller
 {
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $request->validate([
             'post_id' => 'required',
             'content' => 'required'
@@ -19,6 +20,7 @@ class PostCommentsController extends Controller
             'user_id' => auth()->id(),
             'content' => $request->content
         ]);
+
 
         event(new PostCommentSent($comment));
         return redirect()->back();

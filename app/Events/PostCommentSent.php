@@ -2,26 +2,37 @@
 
 namespace App\Events;
 
-use App\Models\PostComment;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
 class PostCommentSent implements ShouldBroadcast
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable;
+    use InteractsWithSockets;
+    use SerializesModels;
 
     public $comment;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(PostComment $postComment)
+    public function __construct($postComment)
     {
         $this->comment = $postComment;
+    }
+
+    /**
+ * Get the data to broadcast.
+ *
+ * @return array<string, mixed>
+ */
+    public function broadcastWith(): array
+    {
+        $this->comment->updated_created_at =  $this->comment->created_at->diffForHumans();
+        return [$this->comment];
     }
 
     /**
@@ -29,13 +40,13 @@ class PostCommentSent implements ShouldBroadcast
      *
      * @return array<int, \Illuminate\Broadcasting\Channel>
      */
-    public function broadcastOn() :array
+    public function broadcastOn(): array
     {
         return [new Channel('post-' . $this->comment->post_id)];
     }
-    
+
     public function broadcastAs()
-  {
-      return 'comments';
-  }
+    {
+        return 'comments';
+    }
 }

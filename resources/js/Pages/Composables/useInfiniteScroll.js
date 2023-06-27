@@ -1,12 +1,15 @@
 import { ref, watch } from "vue"
 import { router, usePage } from "@inertiajs/vue3";
 import useIntersect from './useIntersect';
+import { usePostStore } from '../useStore/usePostStore'
 
 
 export default function infiniteScroll(propName, landmark = null, margin = '0px 0px 50px 0px') {
 
+    const posts = usePostStore();
     var value = usePage().props[propName];
-    const data = ref(value.data);
+    // const data = ref(value.data);
+    posts.setPosts(value.data);
     const initialUrl = usePage().url;
 
     watch(() => usePage().props[propName], newValue => {
@@ -21,7 +24,8 @@ export default function infiniteScroll(propName, landmark = null, margin = '0px 
             preserveState: true,
             onSuccess: () => {
                 window.history.replaceState({}, '', initialUrl);
-                data.value.push(...value.data);
+                posts.addPost(...value.data);
+                // data.value.push(...value.data);
             }
         });
     }
@@ -29,5 +33,5 @@ export default function infiniteScroll(propName, landmark = null, margin = '0px 
     if (landmark)
         useIntersect(landmark, loadMoreData, margin);
 
-    return { data, loadMoreData };
+    return { loadMoreData };
 }

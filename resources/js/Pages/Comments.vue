@@ -6,6 +6,10 @@ import SvgIcon from '@jamescoyle/vue-icon';
 import { mdiHeart, mdiBookmark, mdiEmoticonHappyOutline } from '@mdi/js';
 import EmojiPicker from 'vue3-emoji-picker'
 import { onUnmounted, onMounted } from 'vue';
+import CommentContent from './CommentContent.vue';
+import { usePostStore } from './useStore/usePostStore';
+import axios from 'axios';
+
 const emit = defineEmits(['update:showComments']);
 const props = defineProps({
     post: Object,
@@ -15,26 +19,28 @@ const props = defineProps({
     bookmarkPost: Function
 });
 
+const posts = usePostStore();
+const showEmojiPicker = ref(false);
+const target = ref(null);
+const currentComment = ref('');
+onClickOutside(target, () => emit('update:showComments', false));
+
+
+
 onMounted(() => {
     window.Echo.channel('post-' + props.post.id).listen(
-        "comments",
-        (e) => {
-            console.log('nani');
+        ".comments",
+        e => {
             console.log(e);
+            posts.addCommentToPost(e[0])
         }
     );
 });
 
 onUnmounted(() => {
-    window.Echo.leaveChannel('post-' + props.post.id);
+    window.Echo.leave('post-' + props.post.id);
 })
 
-
-const showEmojiPicker = ref(false);
-const target = ref(null);
-const currentComment = ref('');
-const likeComment = ref(false);
-onClickOutside(target, () => emit('update:showComments', false));
 
 
 const onSelectEmoji = emoji => {
@@ -43,15 +49,10 @@ const onSelectEmoji = emoji => {
 }
 
 const publishComment = () => {
-    router.post('/post/comment', { post_id: props.post.id, content: currentComment.value },
-        {
-            preserveScroll: true,
-            preserveState: true,
-            onSuccess: () => {
-                window.history.replaceState({}, '', '/');
-                currentComment.value = '';
-            }
-        });
+    axios.post('/post/comment', { post_id: props.post.id, content: currentComment.value })
+        .then(() => {
+            currentComment.value = '';
+        })
 }
 
 const resize = e => {
@@ -59,14 +60,7 @@ const resize = e => {
     e.target.style.height = `${e.target.scrollHeight}px`;
 }
 
-const likeUnlikeComment = () => {
-    likeComment.value = !likeComment.value;
-}
 
-const formatDate = (dateString) => {
-    const options = { year: "numeric", month: "long", day: "numeric" }
-    return new Date(dateString).toLocaleDateString(undefined, options)
-}
 
 </script>
 
@@ -86,27 +80,10 @@ const formatDate = (dateString) => {
                         </div>
                     </div>
                     <div class="border-b py-5 h-[73%] border-[#262626] overflow-auto no-scrollbar">
-                        <div class="mx-6 mb-8" v-for="(comment, index) in post.comments" :key="index">
-                            <div class="flex justify-between items-center">
-                                <div class="flex gap-3">
-                                    <img class="rounded-full w-8 h-8" src="https://picsum.photos/seed/picsum/32/32" />
-                                    <div class="font-bold h-10 ">{{ comment.user.name }}</div>
-                                    <div>{{ comment.content }}</div>
-                                </div>
-                                <svg-icon v-if="likeComment" class="w-4 h-4 hover:cursor-pointer animate-heart " type="mdi"
-                                    color="red" @click="likeUnlikeComment(comment.id)" :path="mdiHeart" />
-                                <div v-else class="h-4" @click="likeUnlikeComment(comment.id)">
-                                    <unicon class="w-4 h-4 hover:cursor-pointer" name="heart" fill="white" />
-                                </div>
-                            </div>
-                            <div class="flex gap-4 text-sm text-[hsl(0,0%,60%)]">
-                                <div>
-                                    {{ comment.updated_created_at }}
-                                </div>
-                                <div>
-                                    X J'aimes
-                                </div>
-                            </div>
+                        <div class="mx-6 mb-8"
+                            v-for="(comment, index) in post.comments.sort((a, b) => a.created_at - b.created_at)"
+                            :key="index">
+                            <CommentContent :comment="comment" />
                         </div>
                     </div>
                     <div class="border-b border-[#262626] py-5">
