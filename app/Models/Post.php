@@ -24,11 +24,13 @@ class Post extends Model
         return $this->belongsToMany(User::class, 'post_likes')->select('user_id')->withTimestamps();
     }
 
-    public function userLiked() {
-        return $this->belongsToMany(User::class, 'post_likes')->where('user_id',auth()->id());
+    public function userLiked()
+    {
+        return $this->belongsToMany(User::class, 'post_likes')->where('user_id', auth()->id());
     }
 
-    public function comments() {
+    public function comments()
+    {
         return $this->hasMany(PostComment::class)
         ->orderByDesc('created_at');
     }

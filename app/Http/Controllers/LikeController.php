@@ -5,13 +5,18 @@ namespace App\Http\Controllers;
 use App\Models\CommentLike;
 use App\Models\Post;
 use App\Models\PostComment;
+use App\Notifications\PostLikeNotification;
 use Illuminate\Http\Request;
 
 class LikeController extends Controller
 {
     public function likePost(Post $post)
     {
-        $post->likes()->toggle(auth()->id());
+        $result = $post->likes()->toggle(auth()->id());
+        if(count($result['attached'])) {
+            $post->user()->get()->first()->notify(new PostLikeNotification($post));
+        }
+
         return redirect()->back();
     }
     public function likeComment(Request $request, PostComment $comment)

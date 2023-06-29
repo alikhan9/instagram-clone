@@ -8,13 +8,14 @@ use Illuminate\Notifications\Notification;
 class PostLikeNotification extends Notification
 {
     use Queueable;
+    private $post;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct()
+    public function __construct($post)
     {
-        //
+        $this->post = $post;
     }
 
     /**
@@ -24,7 +25,7 @@ class PostLikeNotification extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['braodcast'];
+        return ['database','broadcast'];
     }
 
 
@@ -36,7 +37,8 @@ class PostLikeNotification extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            //
+            'message' => auth()->user()->name . ' a aimé(e) votre publication',
+            'post_id' => $this->post->id
         ];
     }
 }

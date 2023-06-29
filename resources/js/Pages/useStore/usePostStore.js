@@ -4,7 +4,8 @@ export let usePostStore = defineStore('posts', {
     state() {
         return {
             value: [],
-            propName: ''
+            propName: '',
+            notifications: []
         }
     },
 
@@ -23,7 +24,20 @@ export let usePostStore = defineStore('posts', {
         },
         getValue() {
             return this.value;
+        },
+        setNotifications(notifications) {
+            this.notifications = notifications;
+        },
+        addNotification(notification) {
+            this.notifications.unshift(notification)
+        },
+        getNotifications() {
+            return this.notifications;
+        },
+        isNotificationEmpty() {
+            return this.notifications.length == 0;
         }
+
     }
 
 })

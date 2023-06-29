@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\PostComment;
+use App\Models\User;
 use Illuminate\Support\Facades\Broadcast;
 
 /*
@@ -15,5 +15,11 @@ use Illuminate\Support\Facades\Broadcast;
 */
 
 Broadcast::channel('post-{postId}', function ($user, $postId) {
+    return Auth::check();
+});
+
+
+Broadcast::channel('App.Models.User.{userId}', function (User $user, $userId) {
+    // Add your authorization logic here
     return Auth::check();
 });
