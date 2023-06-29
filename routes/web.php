@@ -4,6 +4,7 @@ use App\Http\Controllers\LikeController;
 use App\Http\Controllers\PostCommentsController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->group(function () {
@@ -15,6 +16,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/post/{post}/like', [LikeController::class, 'likePost']);
     Route::post('/post', [PostController::class, 'store']);
     Route::post('/post/comment', [PostCommentsController::class, 'store']);
+    Route::get('/profile/{name}', [UserController::class, 'get']);
 });
 Broadcast::routes(['middleware' => ['auth:sanctum']]);
 require __DIR__.'/auth.php';

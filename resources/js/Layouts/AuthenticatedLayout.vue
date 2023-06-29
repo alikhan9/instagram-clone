@@ -93,7 +93,8 @@ const changeNotificationsState = () => {
                     :mini="showSearch || showNotifications">
                     <span v-if="!showSearch && !showNotifications">Créer </span>
                 </MenuComponent>
-                <MenuComponent :path="mdiAccount" :mini="showSearch || showNotifications">
+                <MenuComponent :path="mdiAccount" :url="'/profile/' + usePage().props.auth.user.name"
+                    :mini="showSearch || showNotifications">
                     <span v-if="!showSearch && !showNotifications">Profil</span>
                 </MenuComponent>
             </div>

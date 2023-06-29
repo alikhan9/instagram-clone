@@ -8,7 +8,6 @@ export default function infiniteScroll(propName, landmark = null, margin = '0px 
 
     const posts = usePostStore();
     var value = usePage().props[propName];
-    // const data = ref(value.data);
     posts.setPosts(value.data);
     const initialUrl = usePage().url;
 
@@ -25,7 +24,6 @@ export default function infiniteScroll(propName, landmark = null, margin = '0px 
             onSuccess: () => {
                 window.history.replaceState({}, '', initialUrl);
                 posts.addPost(...value.data);
-                // data.value.push(...value.data);
             }
         });
     }

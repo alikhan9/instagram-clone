@@ -1,14 +1,11 @@
 <script setup>
-import { ref, watch, onBeforeMount } from 'vue';
+import { ref } from 'vue';
 import Post from './Post.vue'
 import { useVirtualList } from '@vueuse/core'
 import { Head } from "@inertiajs/vue3";
 import useInfiniteScroll from './Composables/useInfiniteScroll';
 import { usePostStore } from './useStore/usePostStore';
 
-const props = defineProps({
-    posts: Object,
-});
 
 const landmark = ref(null);
 const posts = usePostStore();
