@@ -31,7 +31,6 @@ onMounted(() => {
     window.Echo.channel('post-' + props.post.id).listen(
         ".comments",
         e => {
-            console.log(e);
             posts.addCommentToPost(e[0])
         }
     );
@@ -48,7 +47,13 @@ const onSelectEmoji = emoji => {
     showEmojiPicker.value = false;
 }
 
-const publishComment = () => {
+const close = () => {
+    emit('update:showComments', false);
+}
+
+const publishComment = event => {
+    if (event.shiftKey)
+        return;
     axios.post('/post/comment', { post_id: props.post.id, content: currentComment.value })
         .then(() => {
             currentComment.value = '';
@@ -57,7 +62,7 @@ const publishComment = () => {
 
 const resize = e => {
     e.target.style.height = 'auto';
-    e.target.style.height = `${e.target.scrollHeight}px`;
+    e.target.style.height = `${e.target.scrollHeight - 20}px`;
 }
 
 
@@ -68,7 +73,7 @@ const resize = e => {
     <div class="fixed  backdrop-brightness-[0.4] flex justify-center top-0 right-0 items-center  w-screen h-screen">
         <div ref="target">
             <div class="h-[90vh] min-w-[50vw] flex bg-black ">
-                <img class="max-w-[800px] ml-2" :src="usePage().props.ziggy.url + post.image">
+                <img class="ml-2" :src="usePage().props.ziggy.url + post.image.replace('medium', 'big')">
                 <div class="w-[500px] border-l border-[#262626] ">
                     <div class="flex justify-between border-b items-center py-5 border-[#262626]">
                         <div class="flex gap-3 px-6 items-center w-full ">
@@ -94,7 +99,9 @@ const resize = e => {
                                 <div v-else class="h-7" @click="likeUnlikePost(post.id)">
                                     <unicon class="w-7 h-7 hover:cursor-pointer" name="heart" fill="white" />
                                 </div>
-                                <unicon class="w-7 h-7" name="comment" fill="white"></unicon>
+                                <span @click="close">
+                                    <unicon class="w-7 h-7 hover:cursor-pointer" name="comment" fill="white"></unicon>
+                                </span>
                                 <unicon class="w-7 h-7" name="telegram-alt" fill="white"></unicon>
                             </div>
                             <div>
@@ -115,8 +122,8 @@ const resize = e => {
                             @click="showEmojiPicker = !showEmojiPicker" :path="mdiEmoticonHappyOutline" />
                         <EmojiPicker class="absolute bottom-[10%] z-10" v-if="showEmojiPicker" :native="true"
                             @select="onSelectEmoji" />
-                        <textarea @input="resize($event)"
-                            class="bg-transparent overflow-auto resize-none	 h-8 max-h-16 w-[90%] border-none focus:ring-0"
+                        <textarea @keydown.enter="publishComment" @input="resize($event)"
+                            class="bg-transparent overflow-auto float-left no-scrollbar resize-none h-8 max-h-16 w-[93%] border-none focus:ring-0"
                             placeholder="Ajouter un commentaire..." type="text" v-model="currentComment"></textarea>
                         <button :class="{
                             'text-[hsl(204,90%,49%)] text-xl hover:text-white': currentComment.length > 0,

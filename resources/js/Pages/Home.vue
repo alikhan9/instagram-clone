@@ -17,7 +17,7 @@ const { list, containerProps, wrapperProps } = useVirtualList(posts.getValue(), 
 </script>
 
 <template>
-    <Head title="Welcome" />
+    <Head title="Home" />
     <div class="overflow-x-hidden" v-bind="containerProps">
         <div class="text-white grid grid-cols-9 mt-24" v-bind="wrapperProps">
             <div class="col-start-4 col-span-4">

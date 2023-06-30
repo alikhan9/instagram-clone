@@ -21,9 +21,12 @@ class PostCommentsController extends Controller
             'content' => $request->content
         ]);
 
-
         event(new PostCommentSent($comment));
-        return redirect()->back();
+
+
+        $comment = PostComment::find($comment->id);
+        $comment->updated_created_at = $comment->created_at->diffForHumans();
+        return $comment;
     }
 
 }

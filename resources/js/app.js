@@ -17,10 +17,8 @@ import { createPinia } from 'pinia';
 const pinia = createPinia()
 Unicon.add([uniEllipsisH, uniHeart, uniComment, uniTelegramAlt, uniBookmark])
 
-const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
-
 createInertiaApp({
-    title: (title) => `${title} - ${appName}`,
+    title: (title) => `${title}`,
     resolve: (name) => {
         const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
         let page = pages[`./Pages/${name}.vue`]

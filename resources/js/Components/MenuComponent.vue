@@ -28,8 +28,8 @@ const stopAnimate = () => {
 </script>
 <template>
     <Link v-if="isLink" :href="url" @mouseover="startAnimate" @mouseleave="stopAnimate" :class="{
-        'flex  items-center gap-4 p-2 text-lg font-bold  transition ease-in rounded-lg duration-200 hover:cursor-pointer': true,
-        'hover:bg-[#262626]': !mini
+        'flex  items-center gap-4 p-2 text-lg font-bold  transition ease-in rounded-lg duration-300 hover:cursor-pointer': true,
+        'hover:bg-[hsl(0,0%,10%)]': !mini
     }">
     <div :class="{ 'scale-[1.05] transition duration-75': animateIcon }">
         <svg-icon size="30" type="mdi" :path="path" />

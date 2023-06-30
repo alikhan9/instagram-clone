@@ -79,7 +79,7 @@ const validatePost = () => {
             @click="leave">
         </div>
         <div :class="{
-            'w-[40vw] h-[85vh] z-20 rounded-xl bg-[#262626]': step == 0,
+            'w-[40vw] h-[85vh] z-20 rounded-xl bg-[#262626] overflow-hidden': step == 0,
             'w-[58vw] h-[85vh] z-20 rounded-xl bg-[#262626] overflow-hidden': step == 1
         }">
             <div v-if="!url" class="border-b border-[hsl(0,0%,20%)] py-3 text-center text-lg font-semibold">
@@ -116,7 +116,7 @@ const validatePost = () => {
                 </label>
             </div>
             <div v-else>
-                <img v-if="step == 0" :src="url" />
+                <img v-if="step == 0" class="max-h-[80.5vh]" :src="url" />
                 <div v-else class="grid grid-cols-3 ">
                     <img class="col-span-2" :src="url" />
                     <Transition enter-from-class="scale-x-0" enter-leave-class="scale-x-100"

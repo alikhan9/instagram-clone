@@ -10,14 +10,17 @@ use Illuminate\Http\Request;
 
 class LikeController extends Controller
 {
-    public function likePost(Post $post)
+    public function likePost(Post $post, Request $request)
     {
-        $result = $post->likes()->toggle(auth()->id());
+        $exists = $post->likes()->wherePivot('user_id', auth()->id())->exists();
+        if($exists == $request->value) {
+            return;
+        }
+
+        $result = $post->likes()->toggle(auth()->id(), );
         if(count($result['attached'])) {
             $post->user()->get()->first()->notify(new PostLikeNotification($post));
         }
-
-        return redirect()->back();
     }
     public function likeComment(Request $request, PostComment $comment)
     {
@@ -30,6 +33,7 @@ class LikeController extends Controller
             $like->delete();
             return;
         }
+
         CommentLike::create([
             'post_comment_id' => $comment->id,
             'user_id' => auth()->id(),

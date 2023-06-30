@@ -3,27 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
-use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Intervention\Image\Facades\Image;
+use Storage;
 
 class PostController extends Controller
 {
     public function index()
     {
-        $posts = Post::orderByDesc('created_at')
-    ->paginate(1);
-    Carbon::setLocale('fr');
+        $posts = Post::orderByDesc('created_at')->paginate(1);
 
-
-    foreach ($posts as $post) {
-        $post->updated_created_at = $post->created_at->diffForHumans();
-        foreach($post->comments as $comment){
-            $comment->updated_created_at = $comment->created_at->diffForHumans();
+        foreach ($posts as $post) {
+            $post->updated_created_at = $post->created_at->diffForHumans();
+            foreach($post->comments as $comment) {
+                $comment->updated_created_at = $comment->created_at->diffForHumans();
+            }
         }
-    }
 
         return Inertia::render('Home', [
             'posts' => $posts
@@ -42,11 +38,25 @@ class PostController extends Controller
             'image_description' => 'nullable'
         ]);
 
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
 
-        $path = $request->file('image')->store('public/images');
-        $imagePath = Storage::url($path);
+            // Generate a unique filename for the image
+            $filename = uniqid() . '.' . $image->getClientOriginalExtension();
 
-        $post['image'] = $imagePath;
+            // Resize and optimize the image
+            $optimizedImageBig = Image::make($image)->fit(836, 836)->encode();
+            $optimizedImageMedium = Image::make($image)->fit(550, 468)->encode();
+            $optimizedImageMini = Image::make($image)->fit(309, 309)->encode();
+
+            // Save the optimized image
+            Storage::disk('public')->put('images/big_' . $filename, $optimizedImageBig);
+            Storage::disk('public')->put('images/medium_' . $filename, $optimizedImageMedium);
+            Storage::disk('public')->put('images/small_' . $filename, $optimizedImageMini);
+
+            $post['image'] = '/storage/images/medium_' . $filename;
+        }
+
         $post['user_id'] = auth()->user()->id;
 
         Post::create($post);

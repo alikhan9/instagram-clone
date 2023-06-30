@@ -1,9 +1,10 @@
 <script setup>
-import { useVirtualList } from '@vueuse/core';
 import useInfiniteScroll from '../../Composables/useInfiniteScroll.js'
 import { usePostStore } from '../../useStore/usePostStore.js'
 import { ref } from 'vue'
 import Comments from '../../Comments.vue'
+import axios from 'axios';
+import { useDebounceFn } from '@vueuse/core'
 
 const landmark = ref(null);
 const posts = usePostStore();
@@ -12,19 +13,16 @@ const bookmark = ref(false);
 const like = ref(false);
 const post = ref(null);
 
+const sendLike = useDebounceFn((id, value) => {
+    axios.post(`/post/${id}/like`, { value })
+}, 500);
+
 useInfiniteScroll('posts', landmark, '0px 0px 150px 0px');
-// const { list, containerProps, wrapperProps } = useVirtualList(posts.getValue(), { itemHeight: 309, itemWidth: 927 })
 
 
 const likeUnlikePost = id => {
-    router.post(`/post/${id}/like`, {}, {
-        preserveScroll: true,
-        preserveState: true,
-        onSuccess: () => {
-            window.history.replaceState({}, '', '/');
-            like.value = !like.value;
-        }
-    });
+    like.value = !like.value;
+    sendLike(id, like.value);
 }
 const bookmarkPost = () => {
     bookmark.value = !bookmark.value;
@@ -50,8 +48,8 @@ const toggleComments = selected_post => {
         <div class="">
             <div class="post-grid">
                 <div v-for="(post, index) in posts.getValue()" :key="index">
-                    <img class="w-[309px] hover:cursor-pointer h-[309px]" @click="toggleComments(post)" :src="post.image"
-                        alt="">
+                    <img class="w-[309px] hover:cursor-pointer h-[309px]" @click="toggleComments(post)"
+                        :src="post.image.replace('medium', 'small')" alt="">
                 </div>
             </div>
             <div class="w-[319px]">
