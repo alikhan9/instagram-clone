@@ -10,6 +10,7 @@ import { Link } from '@inertiajs/vue3'
 import EmojiPicker from 'vue3-emoji-picker'
 import { onClickOutside } from '@vueuse/core'
 import { usePostStore } from './useStore/usePostStore';
+import { useDebounceFn } from '@vueuse/core'
 
 
 const props = defineProps({
@@ -25,6 +26,10 @@ const bookmark = ref(false);
 const { isLoading } = useImage({ src: 'http://127.0.0.1:8000' + props.post.image })
 const imgRef = ref(null);
 const showComments = ref(false);
+
+const sendLike = useDebounceFn((id, value) => {
+    axios.post(`/post/${id}/like`, { value })
+}, 500);
 
 const { isFullscreen, enter, exit, toggle } = useFullscreen(imgRef)
 
@@ -63,14 +68,8 @@ const publishComment = event => {
 }
 
 const likeUnlikePost = id => {
-    axios.post(`/post/${id}/like`, {}, {
-        preserveScroll: true,
-        preserveState: true,
-        onSuccess: () => {
-            window.history.replaceState({}, '', '/');
-            like.value = !like.value;
-        }
-    });
+    like.value = !like.value;
+    sendLike(id, like.value);
 }
 const bookmarkPost = () => {
     bookmark.value = !bookmark.value;
@@ -110,7 +109,7 @@ const toggleComments = () => {
                 <span v-if="isLoading">Chargement...</span>
                 <img v-else
                     :class="{ 'max-h-[550px]': !isFullscreen, 'absolute max-w-screen max-h-screen bg-black': isFullscreen }"
-                    v-lazy="usePage().props.ziggy.url + post.image.replace('medium', 'big')" />
+                    :src="isFullscreen ? usePage().props.ziggy.url + post.image.replace('medium', 'big') : usePage().props.ziggy.url + post.image" />
             </div>
             <div class="mt-3 mb-3 flex flex-row justify-between">
                 <div class="flex gap-3">

@@ -39,17 +39,17 @@ class PostController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
+
             $image = $request->file('image');
-
             // Generate a unique filename for the image
-            $filename = uniqid() . '.' . $image->getClientOriginalExtension();
+            $filename = uniqid() . '.webp';
 
-            // Resize and optimize the image
-            $optimizedImageBig = Image::make($image)->fit(836, 836)->encode();
-            $optimizedImageMedium = Image::make($image)->fit(550, 468)->encode();
-            $optimizedImageMini = Image::make($image)->fit(309, 309)->encode();
+            // Resize and optimize the images
+            $optimizedImageBig = Image::make($image)->fit(1400, 1080)->encode('webp', 60);
+            $optimizedImageMedium = Image::make($image)->fit(550, 468)->encode('webp', 80);
+            $optimizedImageMini = Image::make($image)->fit(309, 309)->encode('webp', 80);
 
-            // Save the optimized image
+            // Save the optimized images
             Storage::disk('public')->put('images/big_' . $filename, $optimizedImageBig);
             Storage::disk('public')->put('images/medium_' . $filename, $optimizedImageMedium);
             Storage::disk('public')->put('images/small_' . $filename, $optimizedImageMini);
