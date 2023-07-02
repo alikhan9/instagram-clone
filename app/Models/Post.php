@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Post extends Model
 {
@@ -31,8 +33,13 @@ class Post extends Model
 
     public function comments()
     {
-        return $this->hasMany(PostComment::class)
-        ->orderByDesc('created_at');
+        return $this->hasMany(PostComment::class)->latest();
+    }
+
+    public function getCreatedAtAttribute($value)
+    {
+        // Format to human readable
+        return Str::substr(Carbon::parse($value)->diffForHumans(), 7);
     }
 
 }

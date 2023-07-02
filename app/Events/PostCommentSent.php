@@ -33,7 +33,6 @@ class PostCommentSent implements ShouldBroadcast
  */
     public function broadcastWith(): array
     {
-        $this->comment->updated_created_at =  $this->comment->created_at->diffForHumans();
         return [$this->comment,$this->isResponse];
     }
 

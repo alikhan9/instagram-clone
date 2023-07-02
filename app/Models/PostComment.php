@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Str;
 
 class PostComment extends Model
 {
@@ -31,5 +33,11 @@ class PostComment extends Model
     public function responses()
     {
         return $this->hasMany(CommentResponse::class)->latest();
+    }
+
+    public function getCreatedAtAttribute($value)
+    {
+        // Format to human readable
+        return Str::substr(Carbon::parse($value)->diffForHumans(), 7);
     }
 }

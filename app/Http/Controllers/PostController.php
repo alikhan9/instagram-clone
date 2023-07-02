@@ -12,17 +12,8 @@ class PostController extends Controller
 {
     public function index()
     {
-        $posts = Post::orderByDesc('created_at')->paginate(1);
-
-        foreach ($posts as $post) {
-            $post->updated_created_at = $post->created_at->diffForHumans();
-            foreach($post->comments as $comment) {
-                $comment->updated_created_at = $comment->created_at->diffForHumans();
-            }
-        }
-
         return Inertia::render('Home', [
-            'posts' => $posts
+            'posts' => Post::orderByDesc('created_at')->paginate(1)
         ]);
     }
 
@@ -57,7 +48,7 @@ class PostController extends Controller
             $post['image'] = '/storage/images/medium_' . $filename;
         }
 
-        $post['user_id'] = auth()->user()->id;
+        $post['user_id'] = auth()->id();
 
         Post::create($post);
 

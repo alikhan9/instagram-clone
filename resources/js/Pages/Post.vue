@@ -34,7 +34,6 @@ const sendLike = useDebounceFn((id, value) => {
 const { isFullscreen, enter, exit, toggle } = useFullscreen(imgRef)
 
 onMounted(() => {
-    console.log(props.post);
     like.value = props.post.user_liked.length !== 0;
 });
 

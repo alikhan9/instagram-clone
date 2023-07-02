@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class CommentResponse extends Model
 {
@@ -11,7 +13,7 @@ class CommentResponse extends Model
 
     protected $fillable = ['user_id','post_comment_id','content'];
 
-    protected $with = ['user','updatedCreatedAt'];
+    protected $with = ['user'];
 
     public function user()
     {
@@ -23,10 +25,11 @@ class CommentResponse extends Model
         return $this->belongsTo(PostComment::class)->without('likes', 'user', 'responses', 'user_liked')->select('id', 'post_id');
     }
 
-    public function updatedCreatedAt()
+
+    public function getCreatedAtAttribute($value)
     {
-        // dd($this);
-        // return $this->getAttributes()->created_at->diffToHuman();
+        // Format to human readable
+        return Str::substr(Carbon::parse($value)->diffForHumans(), 7);
     }
 
 }
