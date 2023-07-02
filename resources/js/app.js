@@ -13,6 +13,7 @@ import { autoAnimatePlugin } from '@formkit/auto-animate/vue'
 import { uniEllipsisH, uniHeart, uniComment, uniTelegramAlt, uniBookmark } from 'vue-unicons/dist/icons'
 import VueLazyload from 'vue-lazyload'
 import { createPinia } from 'pinia';
+import VScrollLock from 'v-scroll-lock'
 
 const pinia = createPinia()
 Unicon.add([uniEllipsisH, uniHeart, uniComment, uniTelegramAlt, uniBookmark])
@@ -28,6 +29,7 @@ createInertiaApp({
     setup({ el, App, props, plugin }) {
         const app = createApp({ render: () => h(App, props) })
             .use(plugin)
+            .use(VScrollLock)
             .use(Unicon)
             .use(pinia)
             .use(VueLazyload, {

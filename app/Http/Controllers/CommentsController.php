@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Events\PostCommentSent;
+use App\Models\CommentResponse;
 use App\Models\PostComment;
 use Illuminate\Http\Request;
 
-class PostCommentsController extends Controller
+class CommentsController extends Controller
 {
-    public function store(Request $request)
+    public function storeComment(Request $request)
     {
         $request->validate([
             'post_id' => 'required',
@@ -27,6 +28,19 @@ class PostCommentsController extends Controller
         $comment = PostComment::find($comment->id);
         $comment->updated_created_at = $comment->created_at->diffForHumans();
         return $comment;
+    }
+    public function storeResponse(Request $request)
+    {
+        $response = $request->validate([
+            'post_comment_id' => 'required',
+            'content' => 'required',
+            'user_id' => 'required',
+        ]);
+
+        $result = CommentResponse::create($response);
+        $commentResponse = CommentResponse::with('postComment')->where('id', $result->id);
+
+        event(new PostCommentSent($commentResponse->get()->first(), true));
     }
 
 }

@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     /**
      * Run the migrations.
      */
@@ -15,7 +14,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('post_comment_id')->on('post_comments')->constrained();
             $table->foreignId('user_id')->on('users')->constrained();
-            $table->foreignId('comment_like_id')->nullable()->constrained();
             $table->timestamps();
         });
     }

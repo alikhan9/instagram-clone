@@ -34,6 +34,7 @@ const sendLike = useDebounceFn((id, value) => {
 const { isFullscreen, enter, exit, toggle } = useFullscreen(imgRef)
 
 onMounted(() => {
+    console.log(props.post);
     like.value = props.post.user_liked.length !== 0;
 });
 
@@ -82,16 +83,16 @@ const toggleComments = () => {
 </script>
 
 <template>
-    <div class="w-[468px] h-[800px]">
+    <div class="max-w-[470px]">
         <div v-if="showComments">
             <Transition enter-from-class="opacity-0" enter-leave-class="opacity-100"
                 enter-active-class="transition-opacity ease-in duration-100" leave-to-class="opacity-0"
                 leave-active-class="transition duration-200 ease-in">
-                <Comments class="z-[999]" v-model:showComments="showComments" v-model:bookmark="bookmark"
-                    v-model:like="like" :likeUnlikePost="likeUnlikePost" :bookmarkPost="bookmarkPost" :post="post" />
+                <Comments v-model:showComments="showComments" v-model:bookmark="bookmark" v-model:like="like"
+                    :likeUnlikePost="likeUnlikePost" :bookmarkPost="bookmarkPost" :post="post" />
             </Transition>
         </div>
-        <div v-show="!showComments">
+        <div v-show="!showComments" ref="postsRef">
             <div class="flex justify-between items-center gap-3 mb-3">
                 <div class="flex gap-3 mb-3">
                     <div>

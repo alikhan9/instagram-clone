@@ -13,6 +13,9 @@ export let usePostStore = defineStore('posts', {
         addCommentToPost(comment) {
             this.value.filter(p => p.id == comment.post_id)[0].comments.unshift(comment);
         },
+        addCommentResponse(comment) {
+            this.value.filter(p => p.id == comment.post_comment.post_id)[0].comments.filter(c => c.id == comment.post_comment_id)[0].responses.unshift(comment);
+        },
         setPosts(posts) {
             this.value = posts;
         },

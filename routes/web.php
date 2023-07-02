@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\LikeController;
-use App\Http\Controllers\PostCommentsController;
+use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
@@ -15,7 +15,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/post/comment/{comment}/like', [LikeController::class, 'likeComment']);
     Route::post('/post/{post}/like', [LikeController::class, 'likePost']);
     Route::post('/post', [PostController::class, 'store']);
-    Route::post('/post/comment', [PostCommentsController::class, 'store']);
+    Route::post('/post/comment/response', [CommentsController::class, 'storeResponse']);
+    Route::post('/post/comment', [CommentsController::class, 'storeComment']);
     Route::get('/profile/{name}', [UserController::class, 'get']);
 });
 Broadcast::routes(['middleware' => ['auth:sanctum']]);

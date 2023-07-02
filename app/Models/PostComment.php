@@ -11,7 +11,7 @@ class PostComment extends Model
 
     protected $fillable = ['post_id','user_id','content','updated_created_at'];
 
-    protected $with = ['user','likes','userLiked'];
+    protected $with = ['user','likes','userLiked','responses'];
 
     public function user()
     {
@@ -26,5 +26,10 @@ class PostComment extends Model
     public function userLiked()
     {
         return $this->hasMany(CommentLike::class, 'post_comment_id')->where('user_id', auth()->id());
+    }
+
+    public function responses()
+    {
+        return $this->hasMany(CommentResponse::class)->latest();
     }
 }

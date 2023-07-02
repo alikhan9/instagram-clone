@@ -15,13 +15,15 @@ class PostCommentSent implements ShouldBroadcast
     use SerializesModels;
 
     public $comment;
+    public $isResponse;
 
     /**
      * Create a new event instance.
      */
-    public function __construct($postComment)
+    public function __construct($postComment, $isResponse = false)
     {
         $this->comment = $postComment;
+        $this->isResponse = $isResponse;
     }
 
     /**
@@ -32,7 +34,7 @@ class PostCommentSent implements ShouldBroadcast
     public function broadcastWith(): array
     {
         $this->comment->updated_created_at =  $this->comment->created_at->diffForHumans();
-        return [$this->comment];
+        return [$this->comment,$this->isResponse];
     }
 
     /**
@@ -42,7 +44,7 @@ class PostCommentSent implements ShouldBroadcast
      */
     public function broadcastOn(): array
     {
-        return [new Channel('post-' . $this->comment->post_id)];
+        return [new Channel($this->isResponse ? 'post-' . $this->comment->postComment->post_id : 'post-' .  $this->comment->post_id)];
     }
 
     public function broadcastAs()
