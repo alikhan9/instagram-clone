@@ -32,7 +32,7 @@ class PostComment extends Model
 
     public function responses()
     {
-        return $this->hasMany(CommentResponse::class)->latest();
+        return $this->hasMany(CommentResponse::class);
     }
 
     public function getCreatedAtAttribute($value)

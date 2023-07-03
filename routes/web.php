@@ -13,6 +13,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/', [PostController::class, 'index']);
     Route::post('/post/comment/{comment}/like', [LikeController::class, 'likeComment']);
+Route::post('/post/comment/response/{response}/like', [LikeController::class, 'likeResponse']);
+
     Route::post('/post/{post}/like', [LikeController::class, 'likePost']);
     Route::post('/post', [PostController::class, 'store']);
     Route::post('/post/comment/response', [CommentsController::class, 'storeResponse']);

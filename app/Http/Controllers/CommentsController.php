@@ -24,10 +24,8 @@ class CommentsController extends Controller
 
         event(new PostCommentSent($comment));
 
-
-        $comment = PostComment::find($comment->id);
-        $comment->updated_created_at = $comment->created_at->diffForHumans();
-        return $comment;
+        return PostComment::find($comment->id);
+         
     }
     public function storeResponse(Request $request)
     {

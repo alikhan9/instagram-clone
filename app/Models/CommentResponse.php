@@ -13,7 +13,7 @@ class CommentResponse extends Model
 
     protected $fillable = ['user_id','post_comment_id','content'];
 
-    protected $with = ['user'];
+    protected $with = ['user','likes','userLiked'];
 
     public function user()
     {
@@ -25,6 +25,14 @@ class CommentResponse extends Model
         return $this->belongsTo(PostComment::class)->without('likes', 'user', 'responses', 'user_liked')->select('id', 'post_id');
     }
 
+    public function likes() {
+        return $this->hasMany(ResponseLike::class);
+    }
+
+    public function userLiked()
+    {
+        return $this->hasMany(ResponseLike::class)->where('user_id', auth()->id());
+    }
 
     public function getCreatedAtAttribute($value)
     {
