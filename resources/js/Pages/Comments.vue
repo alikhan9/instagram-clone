@@ -93,23 +93,24 @@ const addResponseComment = (data) => {
 </script>
 
 <template>
-                                                            <div class="fixed z-50 backdrop-brightness-[0.4] flex justify-center top-0 right-0 items-center w-screen h-screen">
-                                                                <div ref="target">
-                                                                    <div class="h-[90vh] min-w-[50vw] flex bg-black">
-                                                                        <img class="ml-2 max-w-[60%]" :src="usePage().props.ziggy.url + post.image.replace('medium', 'big')" />
-                                                                        <div class="w-[500px] border-l border-[#262626]">
-                                                                            <div class="flex justify-between border-b items-center py-5 border-[#262626]">
-                                                                                <div class="flex gap-3 px-6 items-center w-full">
-                                                                                    <img class="rounded-full" src="https://picsum.photos/seed/picsum/32/32" />
-                                                                                    <div>{{ post.user.name }}</div>
-                                                                                </div>
-                                                                                <div class="px-6">
-                                                                                    <unicon class="hover:cursor-pointer" name="ellipsis-h" fill="white"></unicon>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="border-b py-5 h-[73%] border-[#262626] overflow-auto no-scrollbar">
-                                                                                <div class="mx-6 mb-8" v-for="(comment, index) in post.comments" :key="index">
-                                                                                        <CommentContent @sendResponseComment="addResponseComment" :postId="post.id" :comment="comment" />
+    <div class="fixed z-50 backdrop-brightness-[0.4] flex justify-center top-0 right-0 items-center w-screen h-screen">
+        <div ref="target">
+            <div class="h-[90vh] min-w-[50vw] flex bg-black">
+                <img class="ml-2 max-w-[60%]" :src="usePage().props.ziggy.url + post.image.replace('medium', 'big')" />
+                <div class="w-[500px] border-l border-[#262626]">
+                    <div class="flex justify-between border-b items-center py-5 border-[#262626]">
+                        <div class="flex gap-3 px-6 items-center w-full">
+                            <img class="rounded-full" src="https://picsum.photos/seed/picsum/32/32" />
+                            <div>{{ post.user.name }}</div>
+                        </div>
+                        <div class="px-6">
+                            <unicon class="hover:cursor-pointer" name="ellipsis-h" fill="white"></unicon>
+                        </div>
+                    </div>
+                    <div class="border-b py-5 h-[73%] border-[#262626] overflow-auto no-scrollbar">
+                        <div class="mx-6 mb-8" v-for="(comment, index) in post.comments" :key="index">
+                            <CommentContent @sendResponseComment="addResponseComment" :postId="post.id"
+                                :comment="comment" />
                         </div>
                     </div>
                     <div class="border-b border-[#262626] py-5">
@@ -159,3 +160,4 @@ const addResponseComment = (data) => {
         </div>
     </div>
 </template>
+

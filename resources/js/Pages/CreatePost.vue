@@ -26,6 +26,7 @@ const showComments = ref(false);
 
 
 const onFileChange = (e) => {
+    console.log(e);
     file.value = e.target.files[0];
     url.value = URL.createObjectURL(file.value);
 }

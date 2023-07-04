@@ -84,12 +84,8 @@ const toggleComments = () => {
 <template>
     <div class="max-w-[470px]">
         <div v-if="showComments">
-            <Transition enter-from-class="opacity-0" enter-leave-class="opacity-100"
-                enter-active-class="transition-opacity ease-in duration-100" leave-to-class="opacity-0"
-                leave-active-class="transition duration-200 ease-in">
                 <Comments v-model:showComments="showComments" v-model:bookmark="bookmark" v-model:like="like"
                     :likeUnlikePost="likeUnlikePost" :bookmarkPost="bookmarkPost" :post="post" />
-            </Transition>
         </div>
         <div v-show="!showComments" ref="postsRef">
             <div class="flex justify-between items-center gap-3 mb-3">
