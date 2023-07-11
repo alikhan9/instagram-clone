@@ -1,11 +1,8 @@
 <script setup>
-import Checkbox from "@/Components/Checkbox.vue";
-import GuestLayout from "@/Layouts/GuestLayout.vue";
 import InputError from "@/Components/InputError.vue";
-import InputLabel from "@/Components/InputLabel.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import TextInput from "@/Components/TextInput.vue";
-import { Head, Link, useForm } from "@inertiajs/vue3";
+import { Head, useForm } from "@inertiajs/vue3";
 
 defineProps({
     canResetPassword: {
@@ -17,7 +14,7 @@ defineProps({
 });
 
 const form = useForm({
-    email: "",
+    login: "",
     password: "",
     remember: false,
 });
@@ -38,16 +35,16 @@ const submit = () => {
         <form @submit.prevent="submit">
             <div>
                 <TextInput
-                    id="email"
-                    type="email"
+                    id="login"
+                    type="text"
                     placeholder="Num. téléphone, nom d'utilisateur ou e-mail"
-                    v-model="form.email"
+                    v-model="form.login"
                     required
                     autofocus
                     autocomplete="username"
                 />
 
-                <InputError class="mt-2" :message="form.errors.email" />
+                <InputError class="mt-2" :message="form.errors.login" />
             </div>
             <TextInput
                 id="password"
