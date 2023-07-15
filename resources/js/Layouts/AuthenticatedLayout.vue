@@ -32,7 +32,6 @@ const closeSearchOrNotifications = () => {
 }
 
 const closePlusMenu = () => {
-    console.log(showPlusMenu.value);
     showPlusMenu.value= false;
 }
 
@@ -106,7 +105,7 @@ const changeNotificationsState = () => {
                         :mini="showSearch || showNotifications">
                         <span v-if="!showSearch && !showNotifications">Créer </span>
                     </MenuComponent>
-                    <MenuComponent :path="mdiAccount" :url="'/profile/' + usePage().props.auth.user.name"
+                    <MenuComponent :path="mdiAccount" :url="'/profile/' + usePage().props.auth.user.username"
                         :mini="showSearch || showNotifications">
                         <span v-if="!showSearch && !showNotifications">Profil</span>
                     </MenuComponent>

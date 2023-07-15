@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use DB;
 use Inertia\Inertia;
 
 class UserController extends Controller
 {
-    public function get($name)
+    public function get($username)
     {
-        $user = User::where('name', $name)->get()->first();
+        $user = User::where('username', $username)->first();
 
         if(!$user) {
             return back();
@@ -22,5 +23,11 @@ class UserController extends Controller
             'posts' => $posts,
             'total_posts' => $user->posts()->count()
         ]);
+    }
+
+    public function search($username)
+    {
+        return User::where(DB::raw('LOWER(username)'), 'like', '%' . strtolower($username) . '%')->get();
+
     }
 }

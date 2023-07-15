@@ -19,7 +19,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/post', [PostController::class, 'store']);
     Route::post('/post/comment/response', [CommentsController::class, 'storeResponse']);
     Route::post('/post/comment', [CommentsController::class, 'storeComment']);
-    Route::get('/profile/{name}', [UserController::class, 'get']);
+    Route::get('/profile/{username}', [UserController::class, 'get']);
+
+    Route::get('/search/{username}', [UserController::class, 'search']);
+
 });
 Broadcast::routes(['middleware' => ['auth:sanctum']]);
 require __DIR__.'/auth.php';
