@@ -53,7 +53,12 @@ class User extends Authenticatable
 
     public function bookmarks()
     {
-        return $this->hasMany(Bookmark::class);
+        return $this->posts()->whereIn('id', $this->bookmark());
+    }
+
+    public function bookmark()
+    {
+        return $this->hasMany(Bookmark::class)->select('post_id');
     }
 
 }

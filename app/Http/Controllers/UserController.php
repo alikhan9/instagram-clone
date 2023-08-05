@@ -18,19 +18,22 @@ class UserController extends Controller
         }
 
         $posts = null;
-
+        $active = null;
         if($request->value == 'posts' || !$request->value) {
             $posts = $user->posts()->orderByDesc('created_at')->paginate(9);
+            $active=0;
         }
 
         if($request->value == 'bookmarks') {
             $posts = $user->bookmarks()->orderByDesc('created_at')->paginate(9);
+            $active=2;
         }
 
         return Inertia::render('User', [
             'user' => $user,
             'posts' => $posts,
-            'total_posts' => $user->posts()->count()
+            'total_posts' => $user->posts()->count(),
+            'active' => $active
         ]);
     }
 

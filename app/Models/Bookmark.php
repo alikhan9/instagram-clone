@@ -11,8 +11,10 @@ class Bookmark extends Model
 
     protected $fillable = ['user_id','post_id'];
 
+    protected $with = ['posts'];
+
     public function posts()
     {
-        return $this->hasMany(Post::class);
+        return $this->hasMany(Post::class, 'id', 'post_id');
     }
 }
