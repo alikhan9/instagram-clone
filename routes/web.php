@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BookmarkController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\PostController;
@@ -23,6 +24,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/search/{username}', [UserController::class, 'search']);
 
+    Route::post('/bookmark', [BookmarkController::class, 'store']);
 });
 Broadcast::routes(['middleware' => ['auth:sanctum']]);
 require __DIR__.'/auth.php';

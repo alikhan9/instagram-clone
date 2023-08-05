@@ -25,7 +25,7 @@ const getUsers = useDebounceFn(value => {
                 class="w-full mt-10 mb-5 bg-[hsl(0,0%,15%)] rounded-md outline-none border-none py-3 px-4 focus:ring-0" />
         </div>
         <div class="overflow-auto h-[85vh]">
-            <Link :href="'/profile/' + user.username" class="flex items-center h-[60px] gap-4 p-4 hover:bg-[hsl(0,0%,15%)]" v-for="(user, index) in users" v-if="users" :key="index">
+            <Link :href="'/profile/' + user.username" class="flex items-center gap-4 px-4 py-4 hover:bg-[hsl(0,0%,15%)]" v-for="(user, index) in users" v-if="users" :key="index">
                 <img class="rounded-full" src="https://picsum.photos/seed/picsum/54/54" />
                 <div>
                     <div class="font-semibold">{{ user.username }}</div>

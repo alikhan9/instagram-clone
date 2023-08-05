@@ -31,6 +31,10 @@ const sendLike = useDebounceFn((id, value) => {
     axios.post(`/post/${id}/like`, { value })
 }, 500);
 
+const sendBookmark = useDebounceFn((id, value) => {
+    axios.post(`/bookmark`, { post_id: id, value })
+}, 500);
+
 const { isFullscreen, enter, exit, toggle } = useFullscreen(imgRef)
 
 onMounted(() => {
@@ -56,7 +60,6 @@ const resize = e => {
     e.target.style.height = `${e.target.scrollHeight - 20}px`;
 }
 
-
 const publishComment = event => {
     if (event.shiftKey)
         return;
@@ -73,6 +76,7 @@ const likeUnlikePost = id => {
 }
 const bookmarkPost = () => {
     bookmark.value = !bookmark.value;
+    sendBookmark(props.post.id,bookmark.value);
 }
 
 const toggleComments = () => {
@@ -84,8 +88,8 @@ const toggleComments = () => {
 <template>
     <div class="max-w-[470px]">
         <div v-if="showComments">
-                <Comments v-model:showComments="showComments" v-model:bookmark="bookmark" v-model:like="like"
-                    :likeUnlikePost="likeUnlikePost" :bookmarkPost="bookmarkPost" :post="post" />
+            <Comments v-model:showComments="showComments" v-model:bookmark="bookmark" v-model:like="like"
+                :likeUnlikePost="likeUnlikePost" :bookmarkPost="bookmarkPost" :post="post" />
         </div>
         <div v-show="!showComments" ref="postsRef">
             <div class="flex justify-between items-center gap-3 mb-3">

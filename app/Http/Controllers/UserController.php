@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use DB;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class UserController extends Controller
 {
-    public function get($username)
+    public function get(Request $request, $username)
     {
         $user = User::where('username', $username)->first();
 
@@ -16,7 +17,15 @@ class UserController extends Controller
             return back();
         }
 
-        $posts = $user->posts()->orderByDesc('created_at')->paginate(9);
+        $posts = null;
+
+        if($request->value == 'posts' || !$request->value) {
+            $posts = $user->posts()->orderByDesc('created_at')->paginate(9);
+        }
+
+        if($request->value == 'bookmarks') {
+            $posts = $user->bookmarks()->orderByDesc('created_at')->paginate(9);
+        }
 
         return Inertia::render('User', [
             'user' => $user,

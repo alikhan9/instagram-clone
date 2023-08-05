@@ -14,9 +14,6 @@ const props = defineProps({
     }
 });
 
-
-
-
 </script>
 
 <template>
@@ -25,7 +22,7 @@ const props = defineProps({
         <div class="text-white grid grid-cols-11 mt-10">
             <UserFollowersInfo :total_posts="total_posts" :user="user" />
             <Sections :active="active" />
-            <UserPosts :posts="posts" />
+            <UserPosts />
         </div>
     </div>
 </template>
