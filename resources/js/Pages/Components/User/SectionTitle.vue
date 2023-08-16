@@ -17,7 +17,7 @@ defineProps({
 </script>
 
 <template>
-    <Link :href="$page.props.ziggy.location" :data="{ value }" :only="['posts','active','total_posts']" :class="{
+    <Link :href="$page.props.ziggy.location" :data="{ value }" :only="['posts','active','total_posts ']" :class="{
         'py-5 flex items-center hover:cursor-pointer': true,
         'border-t': active == whenActive,
         'text-[#A8A8A8]': active != whenActive

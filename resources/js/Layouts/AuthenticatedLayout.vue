@@ -48,7 +48,7 @@ const changeNotificationsState = () => {
 
 </script>
 <template>
-    <div class="bg-black flex justify-between flex-col min-h-screen w-screen">
+    <div class="bg-black justify-between flex-col min-h-screen w-screen">
         <div>
             <div class="absolute bg-opacity-40 z-50">
                 <Transition enter-from-class="opacity-0" enter-leave-class="opacity-100"
@@ -115,7 +115,7 @@ const changeNotificationsState = () => {
                 </div>
             </div>
         </div>
-        <div class="text-white p-4 w-[335px] relative z-30 mb-5" v-on-click-outside="closePlusMenu">
+        <div class="text-white p-4 w-[335px] fixed bottom-2 z-30 mb-5" v-on-click-outside="closePlusMenu">
             <MenuComponent @click="togglePlusMenu" :path="mdiMenu" :is-link="false" :mini="showSearch || showNotifications">
                 <span v-if="!showSearch && !showNotifications">Plus</span>
             </MenuComponent>

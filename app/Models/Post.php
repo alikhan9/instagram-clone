@@ -31,6 +31,11 @@ class Post extends Model
         return $this->belongsToMany(User::class, 'post_likes')->where('user_id', auth()->id());
     }
 
+    // public function userBookmarked()
+    // {
+    //     return $this->hasMany(Bookmark::class, 'post_id', 'id')->where('user_id', auth()->id());
+    // }
+
     public function comments()
     {
         return $this->hasMany(PostComment::class)->latest();

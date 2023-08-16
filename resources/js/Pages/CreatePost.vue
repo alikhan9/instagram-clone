@@ -26,8 +26,8 @@ const showComments = ref(false);
 
 
 const onFileChange = (e) => {
-    console.log(e);
     file.value = e.target.files[0];
+    console.log(file.value.type);
     url.value = URL.createObjectURL(file.value);
 }
 
@@ -71,6 +71,20 @@ const validatePost = () => {
     });
     leave();
 }
+
+
+const videoPlayer = ref(null);
+const isPlaying = ref(false);
+
+const togglePlayPause = () => {
+    if (videoPlayer.value.paused) {
+        videoPlayer.value.play();
+        isPlaying.value = true;
+    } else {
+        videoPlayer.value.pause();
+        isPlaying.value = false;
+    }
+};
 
 </script>
 
@@ -117,9 +131,27 @@ const validatePost = () => {
                 </label>
             </div>
             <div v-else>
-                <img v-if="step == 0" class="max-h-[80.5vh]" :src="url" />
+                <div class="flex justify-center" v-if="step == 0">
+                    <img v-if="file.type.includes('image/')" class="max-h-[80.5vh]" :src="url" />
+                    <div v-else>
+                        <video ref="videoPlayer" @click="togglePlayPause">
+                            <source :src="url" type="video/mp4" />
+                            Your browser does not support the video tag.
+                        </video>
+                        <div class="play-button" v-if="!isPlaying" @click="togglePlayPause"></div>
+                    </div>
+                </div>
                 <div v-else class="grid grid-cols-3 ">
-                    <img class="col-span-2" :src="url" />
+                    <div class="col-span-2 flex justify-center">
+                        <img v-if="file.type.includes('image/')" :src="url" />
+                        <div class="relative" v-else>
+                            <video ref="videoPlayer" @click="togglePlayPause">
+                                <source :src="url" type="video/mp4" />
+                                Your browser does not support the video tag.
+                            </video>
+                            <div class="play-button" v-if="!isPlaying" @click="togglePlayPause"></div>
+                        </div>
+                    </div>
                     <Transition enter-from-class="scale-x-0" enter-leave-class="scale-x-100"
                         enter-active-class="transition duration-1000 origin-left">
                         <div v-if="step !== 0" class="p-5 border-l-[1px] border-[hsl(0,0%,20%)] flex flex-col h-[81vh]">
@@ -189,3 +221,44 @@ const validatePost = () => {
         </div>
     </div>
 </template>
+
+<style scoped>
+.video-container {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 56.25%;
+}
+
+.video-container video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    height: 80px;
+    background-color: rgba(0, 0, 0, .7);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+
+.play-button::before {
+    content: "";
+    position: absolute;
+    top: calc(50% - .5em);
+    left: calc(50% - .5em);
+    width: .5em;
+    height: .5em;
+    border-style: solid;
+    border-width: .5em .5em .5em 0;
+}
+</style>

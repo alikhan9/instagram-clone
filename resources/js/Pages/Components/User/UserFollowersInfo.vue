@@ -13,7 +13,7 @@ defineProps({
             <img class="rounded-full" src="https://picsum.photos/seed/picsum/150/150" />
             <div class="w-[70%] text-lg">
                 <div class="flex items-center gap-4">
-                    <div class="mr-10 text-xl font-semibold">{{ user.name }}</div>
+                    <div class="mr-10 text-xl font-semibold">{{ user.username }}</div>
                     <div class="px-6 py-1  bg-[#1877F2] rounded-lg">Suivre</div>
                     <div class="w-[93px] text-center text-black font-semibold py-1 bg-[#DBDBDB] rounded-lg">
                         Contacter
@@ -34,6 +34,7 @@ defineProps({
                         <span class="font-semibold">4</span> suivi(e)s
                     </div>
                 </div>
+                <div class="mt-10 text-base font-semibold">{{ user.name }}</div>
             </div>
         </div>
     </div>
