@@ -3,7 +3,7 @@ import SectionTitle from './SectionTitle.vue'
 import { mdiTableLarge, mdiBookmarkOutline, mdiCalendarAccountOutline,mdiYoutube  } from '@mdi/js';
 
 defineProps({
-    active: String
+    active: Number
 })
 </script>
 

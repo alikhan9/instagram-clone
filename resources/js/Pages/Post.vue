@@ -24,8 +24,20 @@ const showEmojiPicker = ref(false);
 const like = ref();
 const bookmark = ref(false);
 const { isLoading } = useImage({ src: 'http://127.0.0.1:8000' + props.post.image })
-const imgRef = ref(null);
 const showComments = ref(false);
+
+const videoPlayer = ref(null);
+const isPlaying = ref(false);
+
+const togglePlayPause = () => {
+    if (videoPlayer.value.paused) {
+        videoPlayer.value.play();
+        isPlaying.value = true;
+    } else {
+        videoPlayer.value.pause();
+        isPlaying.value = false;
+    }
+};
 
 const sendLike = useDebounceFn((id, value) => {
     axios.post(`/post/${id}/like`, { value })
@@ -34,8 +46,6 @@ const sendLike = useDebounceFn((id, value) => {
 const sendBookmark = useDebounceFn((id, value) => {
     axios.post(`/bookmark`, { post_id: id, value })
 }, 500);
-
-const { isFullscreen, enter, exit, toggle } = useFullscreen(imgRef)
 
 onMounted(() => {
     like.value = props.post.user_liked.length !== 0;
@@ -104,12 +114,19 @@ const toggleComments = () => {
                 </div>
                 <unicon class="hover:cursor-pointer" name="ellipsis-h" fill="white"></unicon>
             </div>
-            <div @click="toggle" ref="imgRef"
+            <div
                 class="h-[550px] hover:cursor-pointer flex items-center justify-center backdrop-blur-lg">
                 <span v-if="isLoading">Chargement...</span>
-                <img v-else
-                    :class="{ 'max-h-[550px]': !isFullscreen, 'absolute max-w-screen max-h-screen bg-black': isFullscreen }"
-                    :src="isFullscreen ? usePage().props.ziggy.url + post.image.replace('medium', 'big') : usePage().props.ziggy.url + post.image" />
+                <div v-else>
+                    <img v-if="post.image !== null" class="max-h-[550px]" :src="usePage().props.ziggy.url + post.image" />
+                    <div v-else>
+                        <video class="max-h-[550px]" ref="videoPlayer" @click="togglePlayPause">
+                            <source :src="post.video" />
+                            Your browser does not support the video tag.
+                        </video>
+                        <div class="play-button" v-if="!isPlaying" @click="togglePlayPause"></div>
+                    </div>
+                </div>    
             </div>
             <div class="mt-3 mb-3 flex flex-row justify-between">
                 <div class="flex gap-3">
@@ -180,4 +197,45 @@ const toggleComments = () => {
         transform: scale(1);
     }
 }
+
+.video-container {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 56.25%;
+}
+
+.video-container video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    height: 80px;
+    background-color: rgba(0, 0, 0, .7);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+
+.play-button::before {
+    content: "";
+    position: absolute;
+    top: calc(50% - .5em);
+    left: calc(50% - .5em);
+    width: .5em;
+    height: .5em;
+    border-style: solid;
+    border-width: .5em .5em .5em 0;
+}
+
 </style>
+

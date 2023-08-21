@@ -27,6 +27,20 @@ const inputRef = ref(null);
 const responseTo = ref(null);
 onClickOutside(target, () => emit("update:showComments", false));
 
+const videoPlayer = ref(null);
+const isPlaying = ref(false);
+
+const togglePlayPause = () => {
+    if (videoPlayer.value.paused) {
+        videoPlayer.value.play();
+        isPlaying.value = true;
+    } else {
+        videoPlayer.value.pause();
+        isPlaying.value = false;
+    }
+};
+
+
 onMounted(() => {
     window.Echo.channel("post-" + props.post.id).listen(".comments", (e) => {
         if (!e[1]) posts.addCommentToPost(e[0]);
@@ -96,7 +110,18 @@ const addResponseComment = (data) => {
     <div class="fixed z-50 backdrop-brightness-[0.4] flex justify-center top-0 right-0 items-center w-screen h-screen">
         <div ref="target">
             <div class="h-[90vh] min-w-[50vw] flex bg-black">
-                <img class="ml-2 max-w-[60%]" :src="usePage().props.ziggy.url + post.image.replace('medium', 'big')" />
+                <div>
+                    <img v-if="post.image !== null" class="ml-2 max-w-[60%]"
+                        :src="usePage().props.ziggy.url + post.image.replace('medium', 'big')" />
+                    <div class="max-w-[60%]" v-else>
+                        <video class="w-full h-full " ref="videoPlayer" @click="togglePlayPause">
+                            <source :src="post.video" />
+                            Your browser does not support the video tag.
+                        </video>
+                        <div class="play-button" v-if="!isPlaying" @click="togglePlayPause"></div>
+                    </div>
+                </div>
+
                 <div class="w-[500px] border-l border-[#262626]">
                     <div class="flex justify-between border-b items-center py-5 border-[#262626]">
                         <div class="flex gap-3 px-6 items-center w-full">

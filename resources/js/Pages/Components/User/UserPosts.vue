@@ -48,8 +48,12 @@ const toggleComments = selected_post => {
         <div class="">
             <div class="post-grid">
                 <div v-for="(post, index) in posts.getValue()" :key="index">
-                    <img class="w-[309px] hover:cursor-pointer h-[309px]" @click="toggleComments(post)"
-                        :src="post.image.replace('medium', 'small')" alt="">
+                    <img v-if="post.image !== null" class="w-[309px] hover:cursor-pointer h-[309px]"
+                        @click="toggleComments(post)" :src="post.image.replace('medium', 'small')" alt="">
+                    <video v-else class="w-[309px] hover:cursor-pointer h-[309px]" @click="toggleComments(post)">
+                        <source :src="post.video" />
+                        Your browser does not support the video tag.
+                    </video>
                 </div>
             </div>
             <div class="w-[319px]">

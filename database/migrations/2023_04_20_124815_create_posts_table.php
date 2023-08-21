@@ -14,8 +14,9 @@ return new class () extends Migration {
             $table->id();
             $table->foreignId('user_id')->constrained();
             $table->text('description')->nullable();
-            $table->string(column: 'location');
-            $table->string('image');
+            $table->string(column: 'location')->nullable();
+            $table->string('image')->nullable();
+            $table->string('video')->nullable();
             $table->boolean('enable_comments');
             $table->boolean('enable_likes');
             $table->string('image_description')->nullable();

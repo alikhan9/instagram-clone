@@ -61,14 +61,26 @@ const updateCity = value => {
 }
 
 const validatePost = () => {
-    router.post("/post", {
-        description: description.value,
-        location: city.value,
-        image: file.value,
-        enable_comments: !showComments.value,
-        enable_likes: !showLikes.value,
-        image_description: imageDescription.value
-    });
+    if (file.value.type.includes('image/'))
+        router.post("/post", {
+            description: description.value,
+            location: city.value,
+            image: file.value,
+            video: null,
+            enable_comments: !showComments.value,
+            enable_likes: !showLikes.value,
+            image_description: imageDescription.value
+        });
+    else
+        router.post("/post", {
+            description: description.value,
+            location: city.value,
+            image: null,
+            video: file.value,
+            enable_comments: !showComments.value,
+            enable_likes: !showLikes.value,
+            image_description: imageDescription.value
+        });
     leave();
 }
 

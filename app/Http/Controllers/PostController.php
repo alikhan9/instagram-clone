@@ -19,23 +19,28 @@ class PostController extends Controller
 
     public function store(Request $request)
     {
-
         $post = $request->validate([
-            'description' => 'nullable',
-            'location' => 'required',
-            'image' => 'required',
-            'enable_comments' => 'required',
-            'enable_likes' => 'required',
-            'image_description' => 'nullable'
+            'description' => 'nullable|string|max:255',
+            'location' => 'nullable|string|max:100',
+            'image' => 'nullable|image|mimes:jpeg,png|max:2048',
+            'video' => 'nullable|file|mimes:mp4,mov,avi',
+            'enable_comments' => 'required|boolean',
+            'enable_likes' => 'required|boolean',
+            'image_description' => 'nullable|string|max:255'
         ]);
 
-        if ($request->hasFile('image')) {
+        if ($request->hasFile('video')) {
+            $video = $request->file('video');
+            $videoName = uniqid('video_') . '.' . $video->getClientOriginalExtension();
+            $path = Storage::disk('public')->put('videos/' . $videoName, $video);
+            $post['video'] = '/storage/' . $path;
+            $post['image'] = null;
+        }
 
+        if ($request->hasFile('image')) {
             $image = $request->file('image');
-            // Generate a unique filename for the image
             $filename = uniqid() . '.webp';
 
-            // Resize and optimize the images
             $optimizedImageBig = Image::make($image)->fit(1400, 1080)->encode('webp', 60);
             $optimizedImageMedium = Image::make($image)->fit(550, 468)->encode('webp', 80);
             $optimizedImageMini = Image::make($image)->fit(309, 309)->encode('webp', 80);
@@ -49,9 +54,7 @@ class PostController extends Controller
         }
 
         $post['user_id'] = auth()->id();
-
         Post::create($post);
-
         return redirect('/');
     }
 }

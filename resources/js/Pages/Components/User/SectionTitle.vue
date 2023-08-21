@@ -5,7 +5,7 @@ import { Link } from '@inertiajs/vue3';
 defineProps({
     path: String,
     title: String,
-    active: String,
+    active: Number,
     whenActive: String,
     value: {
         type: String,

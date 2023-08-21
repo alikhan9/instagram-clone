@@ -9,7 +9,7 @@ const props = defineProps({
     total_posts: Number,
     posts: Object,
     active: {
-        type: String,
+        type: Number,
         default: '0'
     }
 });

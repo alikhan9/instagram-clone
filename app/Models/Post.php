@@ -12,7 +12,7 @@ class Post extends Model
     use HasFactory;
 
     protected $fillable = ['user_id',
-    'description','location',
+    'description','location','video',
     'image','enable_comments','enable_likes','image_description'];
 
     protected $with = ['user','likes','comments','userLiked'];
