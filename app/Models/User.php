@@ -61,4 +61,9 @@ class User extends Authenticatable
         return $this->hasMany(Bookmark::class)->select('post_id');
     }
 
+    public function mentions()
+    {
+        return $this->hasMany(UserMention::class)->select('post_id')->where('user_id', auth()->id());
+    }
+
 }

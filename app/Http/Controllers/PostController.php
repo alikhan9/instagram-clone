@@ -22,7 +22,7 @@ class PostController extends Controller
         $post = $request->validate([
             'description' => 'nullable|string|max:255',
             'location' => 'nullable|string|max:100',
-            'image' => 'nullable|image|mimes:jpeg,png|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png',
             'video' => 'nullable|file|mimes:mp4,mov,avi',
             'enable_comments' => 'required|boolean',
             'enable_likes' => 'required|boolean',

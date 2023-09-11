@@ -110,11 +110,11 @@ const addResponseComment = (data) => {
     <div class="fixed z-50 backdrop-brightness-[0.4] flex justify-center top-0 right-0 items-center w-screen h-screen">
         <div ref="target">
             <div class="h-[90vh] min-w-[50vw] flex bg-black">
-                <div>
-                    <img v-if="post.image !== null" class="ml-2 max-w-[60%]"
+                <div class="max-w-[60%] flex items-center relative">
+                    <img v-if="post.image !== null" class="ml-2 w-full max-w-[99.4%]"
                         :src="usePage().props.ziggy.url + post.image.replace('medium', 'big')" />
-                    <div class="max-w-[60%]" v-else>
-                        <video class="w-full h-full " ref="videoPlayer" @click="togglePlayPause">
+                    <div v-else>
+                        <video class="w-full mx-auto object-fill h-full" width="100%" ref="videoPlayer" @click="togglePlayPause">
                             <source :src="post.video" />
                             Your browser does not support the video tag.
                         </video>

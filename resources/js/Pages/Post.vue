@@ -73,11 +73,11 @@ const resize = e => {
 const publishComment = event => {
     if (event.shiftKey)
         return;
-    axios.post('/post/comment', { post_id: props.post.id, content: currentComment.value })
-        .then(response => {
-            posts.addCommentToPost(response.data);
-            currentComment.value = '';
-        })
+    router.post('/post/comment', { post_id: props.post.id, content: currentComment.value })
+        // .then(response => {
+        //     posts.addCommentToPost(response.data);
+        //     currentComment.value = '';
+        // })
 }
 
 const likeUnlikePost = id => {
