@@ -8,7 +8,7 @@ defineProps({
 </script>
 
 <template>
-    <div class="col-start-5 w-[935px] pl-16">
+    <div class="col-start-3 w-[935px] pl-16">
         <div class="flex justify-center text-sm gap-16 tracking-widest mr-[100px]">
             <SectionTitle title="PUBLICATIONS" :path="mdiTableLarge" :active="active" whenActive="0" />
             <SectionTitle title="REELS" value="reels" :path="mdiYoutube" :active="active" whenActive="1" />

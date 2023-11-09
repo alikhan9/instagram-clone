@@ -5,7 +5,7 @@ import { ref, onMounted } from "vue"
 import CreatePost from '@/Pages/CreatePost.vue';
 import { vOnClickOutside } from '@vueuse/components'
 import {
-    mdiHome, mdiMagnify, mdiCog, mdiMenu, mdiAvTimer, mdiCompassOutline, mdiYoutube, mdiNearMe, mdiHeartOutline, mdiPlusBoxOutline, mdiAccount, mdiInstagram, mdiBookmarkOutline , mdiWeatherNight,mdiCommentAlertOutline  
+    mdiHome, mdiMagnify, mdiCog, mdiMenu, mdiAvTimer, mdiCompassOutline, mdiYoutube, mdiNearMe, mdiHeartOutline, mdiPlusBoxOutline, mdiAccount, mdiInstagram, mdiBookmarkOutline, mdiWeatherNight, mdiCommentAlertOutline
 } from '@mdi/js';
 import Search from '@/Pages/Search.vue';
 import { usePage } from '@inertiajs/vue3';
@@ -32,7 +32,7 @@ const closeSearchOrNotifications = () => {
 }
 
 const closePlusMenu = () => {
-    showPlusMenu.value= false;
+    showPlusMenu.value = false;
 }
 
 const togglePlusMenu = () => {
@@ -68,54 +68,57 @@ const changeNotificationsState = () => {
                 leave-to-class="translate-x-[-130%]" leave-active-class="transition duration-200 ease-in">
                 <Notifications class="z-50" v-if="showNotifications" v-on-click-outside="closeSearchOrNotifications" />
             </Transition>
-            <div class="flex ">
-                <div :class="{
-                    'min-w-[335px] fixed p-4 z-30 h-screen border-[#262626] text-[#E0F1FF] flex flex-col gap-3': true,
-                    'border-r': !showSearch && !showNotifications
-                }">
-                    <div class="mb-6">
-                        <h1 v-if="!showSearch && !showNotifications" class="text-4xl p-6 ">Instagram</h1>
-                        <div v-else>
-                            <MenuComponent v-motion-pop :mini="showSearch || showNotifications" :path="mdiInstagram">
-                            </MenuComponent>
-                            <div class="p-5"></div>
+            <div class="flex">
+                <div class="min-w-[335px]">
+                    <div :class="{
+                        'p-4 z-30 h-screen min-w-[335px] fixed border-[#262626] text-[#E0F1FF] flex flex-col gap-3': true,
+                        'border-r': !showSearch && !showNotifications
+                    }">
+
+                        <div class="mb-6">
+                            <h1 v-if="!showSearch && !showNotifications" class="text-4xl p-6 ">Instagram</h1>
+                            <div v-else>
+                                <MenuComponent v-motion-pop :mini="showSearch || showNotifications" :path="mdiInstagram">
+                                </MenuComponent>
+                                <div class="p-5"></div>
+                            </div>
                         </div>
+                        <MenuComponent :path="mdiHome" url="/" :mini="showSearch || showNotifications">
+                            <span v-if="!showSearch && !showNotifications">Accueil</span>
+                        </MenuComponent>
+                        <MenuComponent :path="mdiMagnify" @click="changeSearchState" :mini="showSearch || showNotifications"
+                            :isLink="false">
+                            <span v-if="!showSearch && !showNotifications">Recherche</span>
+                        </MenuComponent>
+                        <MenuComponent :path="mdiCompassOutline" :mini="showSearch || showNotifications">
+                            <span v-if="!showSearch && !showNotifications">Découvrir</span>
+                        </MenuComponent>
+                        <MenuComponent :path="mdiYoutube" url="/reels" :mini="showSearch || showNotifications">
+                            <span v-if="!showSearch && !showNotifications">Reels</span>
+                        </MenuComponent>
+                        <MenuComponent :path="mdiNearMe" :mini="showSearch || showNotifications">
+                            <span v-if="!showSearch && !showNotifications">Messages</span>
+                        </MenuComponent>
+                        <MenuComponent :path="mdiHeartOutline" :mini="showSearch || showNotifications"
+                            @click="changeNotificationsState" :isLink="false">
+                            <span v-if="!showSearch && !showNotifications">Notifications</span>
+                        </MenuComponent>
+                        <MenuComponent @click="showCreatePost = !showCreatePost" :path="mdiPlusBoxOutline" :isLink="false"
+                            :mini="showSearch || showNotifications">
+                            <span v-if="!showSearch && !showNotifications">Créer </span>
+                        </MenuComponent>
+                        <MenuComponent :path="mdiAccount" :url="'/profile/' + usePage().props.auth.user.username"
+                            :mini="showSearch || showNotifications">
+                            <span v-if="!showSearch && !showNotifications">Profil</span>
+                        </MenuComponent>
                     </div>
-                    <MenuComponent :path="mdiHome" url="/" :mini="showSearch || showNotifications">
-                        <span v-if="!showSearch && !showNotifications">Accueil</span>
-                    </MenuComponent>
-                    <MenuComponent :path="mdiMagnify" @click="changeSearchState" :mini="showSearch || showNotifications"
-                        :isLink="false">
-                        <span v-if="!showSearch && !showNotifications">Recherche</span>
-                    </MenuComponent>
-                    <MenuComponent :path="mdiCompassOutline" :mini="showSearch || showNotifications">
-                        <span v-if="!showSearch && !showNotifications">Découvrir</span>
-                    </MenuComponent>
-                    <MenuComponent :path="mdiYoutube" :mini="showSearch || showNotifications">
-                        <span v-if="!showSearch && !showNotifications">Reels</span>
-                    </MenuComponent>
-                    <MenuComponent :path="mdiNearMe" :mini="showSearch || showNotifications">
-                        <span v-if="!showSearch && !showNotifications">Messages</span>
-                    </MenuComponent>
-                    <MenuComponent :path="mdiHeartOutline" :mini="showSearch || showNotifications"
-                        @click="changeNotificationsState" :isLink="false">
-                        <span v-if="!showSearch && !showNotifications">Notifications</span>
-                    </MenuComponent>
-                    <MenuComponent @click="showCreatePost = !showCreatePost" :path="mdiPlusBoxOutline" :isLink="false"
-                        :mini="showSearch || showNotifications">
-                        <span v-if="!showSearch && !showNotifications">Créer </span>
-                    </MenuComponent>
-                    <MenuComponent :path="mdiAccount" :url="'/profile/' + usePage().props.auth.user.username"
-                        :mini="showSearch || showNotifications">
-                        <span v-if="!showSearch && !showNotifications">Profil</span>
-                    </MenuComponent>
                 </div>
-                <div class="">
+                <div class="min-w-full">
                     <slot></slot>
                 </div>
             </div>
         </div>
-        <div class="text-white p-4 w-[335px] fixed bottom-2 z-30 mb-5" v-on-click-outside="closePlusMenu">
+        <div class="text-white p-4 w-[335px] fixed -bottom-2 z-30 mb-5" v-on-click-outside="closePlusMenu">
             <MenuComponent @click="togglePlusMenu" :path="mdiMenu" :is-link="false" :mini="showSearch || showNotifications">
                 <span v-if="!showSearch && !showNotifications">Plus</span>
             </MenuComponent>
@@ -133,7 +136,8 @@ const changeNotificationsState = () => {
                     <PlusMenuComponent :path="mdiWeatherNight" :is-link="true" :mini="showSearch || showNotifications">
                         <span v-if="!showSearch && !showNotifications">Changer l'apparence</span>
                     </PlusMenuComponent>
-                    <PlusMenuComponent :path="mdiCommentAlertOutline" :is-link="true" :mini="showSearch || showNotifications">
+                    <PlusMenuComponent :path="mdiCommentAlertOutline" :is-link="true"
+                        :mini="showSearch || showNotifications">
                         <span v-if="!showSearch && !showNotifications">Signaler un problème</span>
                     </PlusMenuComponent>
                 </div>
@@ -143,7 +147,8 @@ const changeNotificationsState = () => {
                     </PlusMenuComponent>
                 </div>
                 <div class="p-2">
-                    <PlusMenuComponent :allow-icon="false" url="/logout" as="button" method="post" :is-link="true" :mini="showSearch || showNotifications">
+                    <PlusMenuComponent :allow-icon="false" url="/logout" as="button" method="post" :is-link="true"
+                        :mini="showSearch || showNotifications">
                         <span v-if="!showSearch && !showNotifications">Déconnexion</span>
                     </PlusMenuComponent>
                 </div>

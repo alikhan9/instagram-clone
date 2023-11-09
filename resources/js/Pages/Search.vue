@@ -10,7 +10,6 @@ const users = ref(null);
 const getUsers = useDebounceFn(value => {
     axios.get('/search/' + value)
         .then(response => {
-            console.log(response);
             users.value = response.data;
         })
 }, 1000)

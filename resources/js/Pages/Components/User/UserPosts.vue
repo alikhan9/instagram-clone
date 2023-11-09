@@ -36,7 +36,7 @@ const toggleComments = selected_post => {
 </script>
 
 <template>
-    <div class="col-start-5 overflow-x-hidden w-[935px]">
+    <div class="col-start-3 overflow-x-hidden w-[935px]">
         <div v-if="showComments">
             <Transition enter-from-class="opacity-0" enter-leave-class="opacity-100"
                 enter-active-class="transition-opacity ease-in duration-100" leave-to-class="opacity-0"

@@ -2,7 +2,6 @@
 import { router, usePage } from '@inertiajs/vue3';
 import SvgIcon from '@jamescoyle/vue-icon';
 import { mdiHeart, mdiBookmark, mdiEmoticonHappyOutline } from '@mdi/js';
-import { useImage, useFullscreen } from '@vueuse/core';
 import { ref, watch, onMounted, watchEffect } from 'vue';
 import Comments from './Comments.vue';
 import axios from 'axios';
@@ -15,6 +14,7 @@ import { useDebounceFn } from '@vueuse/core'
 
 const props = defineProps({
     post: Object,
+    followed: Boolean
 })
 
 const posts = usePostStore();
@@ -23,11 +23,12 @@ const currentComment = ref('');
 const showEmojiPicker = ref(false);
 const like = ref();
 const bookmark = ref(false);
-const { isLoading } = useImage({ src: 'http://127.0.0.1:8000' + props.post.image })
 const showComments = ref(false);
 
 const videoPlayer = ref(null);
 const isPlaying = ref(false);
+
+const following = ref(props.followed);
 
 const togglePlayPause = () => {
     if (videoPlayer.value.paused) {
@@ -86,69 +87,94 @@ const likeUnlikePost = id => {
 }
 const bookmarkPost = () => {
     bookmark.value = !bookmark.value;
-    sendBookmark(props.post.id,bookmark.value);
+    sendBookmark(props.post.id, bookmark.value);
 }
 
 const toggleComments = () => {
     showComments.value = !showComments.value;
 }
 
+const sendFollow = () => {
+    axios.post('/follow/' + props.post.user.id)
+        .then(res => {
+            following.value = res.data;
+        });
+}
+
 </script>
 
 <template>
-    <div class="max-w-[470px]">
+    <div class="w-[530px]">
         <div v-if="showComments">
             <Comments v-model:showComments="showComments" v-model:bookmark="bookmark" v-model:like="like"
                 :likeUnlikePost="likeUnlikePost" :bookmarkPost="bookmarkPost" :post="post" />
         </div>
-        <div v-show="!showComments" ref="postsRef">
-            <div class="flex justify-between items-center gap-3 mb-3">
-                <div class="flex gap-3 mb-3">
-                    <div>
-                        <img class="rounded-full" src="https://picsum.photos/seed/picsum/32/32" />
-                    </div>
-                    <div>
-                        <Link class="font-semibold" :href="'/profile/' + post.user.name">{{ post.user.name }}</Link>
-                        <p>{{ post.location }}</p>
+        <div class="flex items-end" v-show="!showComments" ref="postsRef">
+            <div class="h-[846px] hover:cursor-pointer flex items-center justify-center backdrop-blur-lg">
+                <div class="relative h-[846px] flex items-center justify-center">
+                    <video class="max-h-[846px] w-[476px]" ref="videoPlayer" @click="togglePlayPause">
+                        <source :src="post.video" />
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="play-button" v-if="!isPlaying" @click="togglePlayPause"></div>
+                    <div class="flex min-w-full absolute bottom-0 justify-between items-center gap-3 mb-3">
+                        <div class="flex px-4 items-center gap-2 mb-3">
+                            <div class="pr-2">
+                                <img class="rounded-full" src="https://picsum.photos/seed/picsum/32/32" />
+                            </div>
+                            <div>
+                                <Link class="font-semibold" :href="'/profile/' + post.user.name">{{ post.user.name }}</Link>
+                                <!-- <p>{{ post.location }}</p> -->
+                            </div>
+                            <div class="text-xl">
+                                •
+                            </div>
+                            <!-- To do / Suscribe -->
+                            <button v-if="!following" @click="sendFollow" class="font-semibold">
+                                Suivre
+                            </button>
+                            <button v-else @click="sendFollow" class="font-semibold">
+                                Ne plus suivre
+                            </button>
+                        </div>
+                        <!-- <unicon class="hover:cursor-pointer" name="ellipsis-h" fill="white"></unicon> -->
                     </div>
                 </div>
-                <unicon class="hover:cursor-pointer" name="ellipsis-h" fill="white"></unicon>
             </div>
-            <div
-                class="h-[550px] hover:cursor-pointer flex items-center justify-center backdrop-blur-lg">
-                <span v-if="isLoading">Chargement...</span>
-                <div v-else>
-                    <img v-if="post.image !== null" class="max-h-[550px]" :src="usePage().props.ziggy.url + post.image" />
-                    <div class="h-[550px]  flex items-center justify-center" v-else>
-                        <video class="max-h-[550px]" ref="videoPlayer" @click="togglePlayPause">
-                            <source :src="post.video" />
-                            Your browser does not support the video tag.
-                        </video>
-                        <div class="play-button" v-if="!isPlaying" @click="togglePlayPause"></div>
+            <div class="flex flex-col gap-6 ml-10">
+                <div  v-if="like">
+                    <div class="flex items-center">
+                        <svg-icon class="w-7 h-7 hover:cursor-pointer animate-heart " type="mdi" color="red"
+                            @click="likeUnlikePost(post.id)" :path="mdiHeart" />
                     </div>
-                </div>    
-            </div>
-            <div class="mt-3 mb-3 flex flex-row justify-between">
-                <div class="flex gap-3">
-                    <svg-icon v-if="like" class="w-7 h-7 hover:cursor-pointer animate-heart " type="mdi" color="red"
-                        @click="likeUnlikePost(post.id)" :path="mdiHeart" />
-                    <div v-else class="h-7" @click="likeUnlikePost(post.id)">
-                        <unicon class="w-7 h-7 hover:cursor-pointer" name="heart" fill="white" />
+                    <div class="min-w-full text-center mt-1">
+                        {{ post.likes.length }}
                     </div>
-                    <div class="inline" @click="toggleComments">
-                        <unicon class="w-7 h-7 hover:cursor-pointer" name="comment" fill="white"></unicon>
-                    </div>
-                    <unicon class="w-7 h-7" name="telegram-alt" fill="white"></unicon>
                 </div>
+                <div v-else  @click="likeUnlikePost(post.id)">
+                    <unicon class="w-7 h-7 hover:cursor-pointer" name="heart" fill="white" />
+                    <div class="min-w-full text-center mt-1">
+                        {{ post.likes.length }}
+                    </div>
+                </div>
+                <div class="inline text-center" @click="toggleComments">
+                    <unicon class="w-7 h-7 hover:cursor-pointer" name="comment" fill="white"></unicon>
+                    <div class="min-w-full">
+                        {{ post.comments.length }}
+                    </div>
+                </div>
+                <unicon class="w-7 h-7" name="telegram-alt" fill="white"></unicon>
+                <div class="h-7" v-if="!bookmark" @click="bookmarkPost">
+                    <unicon class="w-7 h-7 hover:cursor-pointer" name="bookmark" fill="white"></unicon>
+                </div>
+                <svg-icon v-else="like" class="w-7 h-7 hover:cursor-pointer" type="mdi" color="white" @click="bookmarkPost"
+                    :path="mdiBookmark" />
                 <div>
-                    <div class="h-7" v-if="!bookmark" @click="bookmarkPost">
-                        <unicon class="w-7 h-7 hover:cursor-pointer" name="bookmark" fill="white"></unicon>
-                    </div>
-                    <svg-icon v-else="like" class="w-7 h-7 hover:cursor-pointer" type="mdi" color="white"
-                        @click="bookmarkPost" :path="mdiBookmark" />
+                    <unicon class="hover:cursor-pointer" name="ellipsis-h" fill="white"></unicon>
                 </div>
             </div>
-            <div class="leading-8">
+
+            <!-- <div class="leading-8">
                 <div v-if="post.enable_likes">
                     {{ post.likes.length }} J'aime
                 </div>
@@ -174,7 +200,7 @@ const toggleComments = () => {
                             :native="true" @select="onSelectEmoji" />
                     </div>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
 </template>
@@ -236,6 +262,5 @@ const toggleComments = () => {
     border-style: solid;
     border-width: .5em .5em .5em 0;
 }
-
 </style>
 

@@ -11,7 +11,8 @@ const props = defineProps({
     active: {
         type: Number,
         default: '0'
-    }
+    },
+    isFollowing: Boolean
 });
 
 </script>
@@ -20,7 +21,7 @@ const props = defineProps({
     <Head :title="usePage().props.auth.user.name" />
     <div class="overflow-x-hidden">
         <div class="text-white grid grid-cols-11 mt-10">
-            <UserFollowersInfo :total_posts="total_posts" :user="user" />
+            <UserFollowersInfo :isFollowing="isFollowing" :total_posts="total_posts" :user="user" />
             <Sections :active="active" />
             <UserPosts />
         </div>
