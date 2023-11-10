@@ -3,7 +3,7 @@ import { router, usePage } from '@inertiajs/vue3';
 import SvgIcon from '@jamescoyle/vue-icon';
 import { mdiHeart, mdiBookmark, mdiEmoticonHappyOutline } from '@mdi/js';
 import { ref, watch, onMounted, watchEffect } from 'vue';
-import Comments from './Comments.vue';
+import ReelComments from './ReelComments.vue';
 import axios from 'axios';
 import { Link } from '@inertiajs/vue3'
 import EmojiPicker from 'vue3-emoji-picker'
@@ -104,12 +104,12 @@ const sendFollow = () => {
 </script>
 
 <template>
-    <div class="w-[530px]">
+    <div class="relative overflow-visible-important">
         <div v-if="showComments">
-            <Comments v-model:showComments="showComments" v-model:bookmark="bookmark" v-model:like="like"
+            <ReelComments v-model:showComments="showComments" v-model:bookmark="bookmark" v-model:like="like"
                 :likeUnlikePost="likeUnlikePost" :bookmarkPost="bookmarkPost" :post="post" />
         </div>
-        <div class="flex items-end" v-show="!showComments" ref="postsRef">
+        <div class="flex items-end" ref="postsRef">
             <div class="h-[846px] hover:cursor-pointer flex items-center justify-center backdrop-blur-lg">
                 <div class="relative h-[846px] flex items-center justify-center">
                     <video class="max-h-[846px] w-[476px]" ref="videoPlayer" @click="togglePlayPause">
@@ -173,34 +173,6 @@ const sendFollow = () => {
                     <unicon class="hover:cursor-pointer" name="ellipsis-h" fill="white"></unicon>
                 </div>
             </div>
-
-            <!-- <div class="leading-8">
-                <div v-if="post.enable_likes">
-                    {{ post.likes.length }} J'aime
-                </div>
-                <div v-if="post.description">
-                    <Link class="font-semibold" :href="'/profile/' + post.user.name">{{ post.user.name }}</Link> {{
-                        post.description }}
-                </div>
-                <div v-if="post.enable_comments">
-                    <div class="hover:cursor-pointer" @click="toggleComments">Affichier les {{ post.comments.length }}
-                        commentaires</div>
-                    <div class="flex items-center justify-end gap-4 mt-1 h-[7%] relative">
-                        <textarea @keydown.enter="publishComment" @input="resize($event)"
-                            class="bg-transparent overflow-auto p-0 no-scrollbar resize-none h-8 max-h-16 w-[93%] border-none focus:ring-0"
-                            placeholder="Ajouter un commentaire..." type="text" v-model="currentComment"></textarea>
-                        <button :class="{
-                            'text-[hsl(204,90%,49%)] text-xl hover:text-white': currentComment.length > 0,
-                            'text-gray-600 text-xl hover:cursor-default': currentComment.length === 0
-                        }" @click="publishComment" v-show="currentComment.length !== 0"
-                            :disabled="currentComment.length === 0">Publier</button>
-                        <svg-icon class="hover:cursor-pointer min-w-[20px] float-right" type="mdi" size="14"
-                            @click="showEmojiPicker = !showEmojiPicker" :path="mdiEmoticonHappyOutline" />
-                        <EmojiPicker ref="emojiRef" class="absolute bottom-[25%] right-[-285px] z-10" v-if="showEmojiPicker"
-                            :native="true" @select="onSelectEmoji" />
-                    </div>
-                </div>
-            </div> -->
         </div>
     </div>
 </template>
@@ -208,6 +180,10 @@ const sendFollow = () => {
 <style>
 .animate-heart {
     animation: growAndShrink 0.3s;
+}
+
+.overflow-visible-important {
+    overflow: visible !important;
 }
 
 @keyframes growAndShrink {

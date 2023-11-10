@@ -14,6 +14,7 @@ import { uniEllipsisH, uniHeart, uniComment, uniTelegramAlt, uniBookmark } from 
 import VueLazyload from 'vue-lazyload'
 import { createPinia } from 'pinia';
 import VScrollLock from 'v-scroll-lock'
+import PrimeVue from 'primevue/config';
 
 const pinia = createPinia()
 Unicon.add([uniEllipsisH, uniHeart, uniComment, uniTelegramAlt, uniBookmark])
@@ -29,6 +30,7 @@ createInertiaApp({
     setup({ el, App, props, plugin }) {
         const app = createApp({ render: () => h(App, props) })
             .use(plugin)
+            .use(PrimeVue)
             .use(VScrollLock)
             .use(Unicon)
             .use(pinia)

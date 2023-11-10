@@ -1,32 +1,68 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import Reel from './Reel.vue'
-import { useVirtualList } from '@vueuse/core'
-import { Head, Link, usePage } from "@inertiajs/vue3";
-import useInfiniteScroll from './Composables/useInfiniteScroll';
+import { Head, Link, usePage, router } from "@inertiajs/vue3";
 import { usePostStore } from './useStore/usePostStore';
-import 'vue3-carousel/dist/carousel.css'
-import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel'
+import Carousel from 'primevue/carousel';
+
 
 const landmark = ref(null);
 const posts = usePostStore();
-const open = ref(true);
+const currentPage = ref(0);
+
+const value = ref(usePage().props['posts']);
+const initialUrl = ref(usePage().url);
+
+watch(() => usePage().props['posts'], newValue => {
+    value.value = newValue;
+})
+
+const loadMoreData = () => {
+    if (!value.value.next_page_url)
+        return;
+    router.get(value.value.next_page_url, {}, {
+        preserveScroll: true,
+        preserveState: true,
+        replace: false,
+        only: ['posts'],
+        onFinish: () => {
+            window.history.replaceState({}, '', initialUrl.value);
+            posts.addPost(...value.value.data);
+        }
+    });
+}
+
+function handleMouseScroll(event) {
+    const delta = Math.sign(event.deltaY);
+    // Adjust the current page based on scroll direction
+    if (delta > 0) {
+        // Scroll down, move to the next page
+        if (currentPage.value != posts.getValue().length - 1) {
+            currentPage.value = currentPage.value + 1;
+            if (currentPage.value == posts.getValue().length - 1)
+                loadMoreData();
+        }
+
+    } else if (delta < 0) {
+        // Scroll up, move to the previous page
+        if (currentPage.value != 0)
+            currentPage.value = currentPage.value - 1;
+    }
+}
 
 const props = defineProps({
-    posts: Object,
     followed: Boolean,
 })
 
 const items = usePage().props['posts'].data;
+posts.setPosts(items);
 
-// useInfiniteScroll('posts', landmark, '0px 0px 150px 0px');
-const { list, containerProps, wrapperProps } = useVirtualList(props.posts.data, { itemHeight: 830 })
 
 </script>
 
 <template>
     <Head title="Home" />
-    <div class="overflow-x-hidden overflow-auto" v-bind="containerProps">
+    <div>
         <div class="flex gap-4 border-b border-[#262626] font-bold mx-20 mt-12 text-lg pb-3">
             <Link href="/reels" :class="{ 'text-white ': !followed, 'text-[#868686]': followed }">
             Suggestions
@@ -35,23 +71,18 @@ const { list, containerProps, wrapperProps } = useVirtualList(props.posts.data, 
             Suivi(e)
             </Link>
         </div>
-        <div class="text-white mt-24" v-bind="wrapperProps">
-            <div v-scroll-lock="open">
-
-                <carousel class="bg-white text-black h-screen w-full flex-col" :items-to-show="1.5">
-                    <slide class="h-[500px] flex-col" v-for="post in items" :key="post.id">
-                        <Reel :followed="followed" v-if="post"
-                            class="pb-6 col-start-3 col-span-4 border-b border-[#262626] mr-36" :post="post" />
-                    </slide>
-
-                    <template #addons>
-                        <navigation />
-                        <pagination />
-                    </template>
-                </carousel>
-
-            </div>
-            <div class="w-[319px]">
+        <div @wheel="handleMouseScroll" class="text-white  h-full">
+            <div class="w-full mt-4 flex justify-center">
+                <div class="2xl:w-[930px] w-[600px]">
+                    <Carousel ref="carousel" :page.sync="currentPage" :showNavigators="false" :value="posts.getValue()"
+                        :numVisible="1" :numScroll="1" orientation="vertical" verticalViewPortHeight="88vh"
+                        containerStyle="height: 30vh" contentClass="flex align-items-center">
+                        <template #item="post">
+                            <Reel :followed="followed" v-if="post.data" class=" ml-[40px] mt-4" :post="post.data" />
+                        </template>
+                        <button nextButtonProps>Next</button>
+                    </Carousel>
+                </div>
             </div>
         </div>
         <div ref="landmark"></div>
@@ -59,6 +90,11 @@ const { list, containerProps, wrapperProps } = useVirtualList(props.posts.data, 
 </template>
 
 <style>
+
+.p-carousel-content.p-carousel-content {
+    transition: transform 3.5s ease;
+  }
+
 .no-scroll {
     overflow: hidden !important;
 }

@@ -21,8 +21,8 @@ export default function infiniteScroll(propName, landmark = null, margin = '0px 
         router.get(value.next_page_url, {}, {
             preserveScroll: true,
             preserveState: true,
-            replace:false,
-            only:['posts'],
+            replace: false,
+            only: ['posts'],
             onFinish: () => {
                 window.history.replaceState({}, '', initialUrl);
                 posts.addPost(...value.data);
