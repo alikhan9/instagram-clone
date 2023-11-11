@@ -34,7 +34,7 @@ const stopAnimate = () => {
     <div :class="{ 'scale-[1.05] transition duration-75': animateIcon }">
         <svg-icon size="30" type="mdi" :path="path" />
     </div>
-    <p>
+    <p class="hidden  lg:block">
         <slot></slot>
     </p>
     </Link>
@@ -45,7 +45,7 @@ const stopAnimate = () => {
         <div :class="{ 'scale-[1.05] transition duration-75': animateIcon }">
             <svg-icon size="30" type="mdi" :path="path" />
         </div>
-        <p>
+        <p class="hidden  lg:block">
             <slot></slot>
         </p>
     </div>

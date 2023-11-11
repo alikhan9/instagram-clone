@@ -108,11 +108,11 @@ const addResponseComment = (data) => {
 
 <template>
     <div
-        class="absolute z-40 2xl:right-[0%] right-[15%] top-[8%] bg-[#262626] items-center w-[343.5px] h-[643px] rounded-lg  max-h-[664px] border-[#262626] border" ref="target">
+        class="absolute z-40 2xl:right-[10%] 2xl:top-[17%] lg:right-[30%] right-10 top-[8%] bg-[#262626] items-center w-[343.5px] h-[643px] rounded-lg  max-h-[664px] border-[#262626] border" ref="target">
         <div >
             <div class="flex h-full">
                 <div>
-                    <div class="text-center relative flex justify-center gap-8 py-5 border-[#262626]">
+                    <div class="text-white text-center relative flex justify-center gap-8 py-5 border-[#262626]">
                         <div  class="px-6 absolute self-start left-0 ">
                             <svg-icon class="hover:cursor-pointer " @click="() => emit('update:showComments', false)" type="mdi" :path="mdiClose"></svg-icon>
                         </div>

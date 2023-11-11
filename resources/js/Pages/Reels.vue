@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, computed } from 'vue';
 import Reel from './Reel.vue'
 import { Head, Link, usePage, router } from "@inertiajs/vue3";
 import { usePostStore } from './useStore/usePostStore';
@@ -9,6 +9,7 @@ import Carousel from 'primevue/carousel';
 const landmark = ref(null);
 const posts = usePostStore();
 const currentPage = ref(0);
+const stopVideo = ref(false);
 
 const value = ref(usePage().props['posts']);
 const initialUrl = ref(usePage().url);
@@ -38,6 +39,7 @@ function handleMouseScroll(event) {
     if (delta > 0) {
         // Scroll down, move to the next page
         if (currentPage.value != posts.getValue().length - 1) {
+            stopVideo.value = !stopVideo.value;
             currentPage.value = currentPage.value + 1;
             if (currentPage.value == posts.getValue().length - 1)
                 loadMoreData();
@@ -45,8 +47,10 @@ function handleMouseScroll(event) {
 
     } else if (delta < 0) {
         // Scroll up, move to the previous page
-        if (currentPage.value != 0)
+        if (currentPage.value != 0) {
             currentPage.value = currentPage.value - 1;
+            stopVideo.value = !stopVideo.value;
+        }
     }
 }
 
@@ -54,16 +58,15 @@ const props = defineProps({
     followed: Boolean,
 })
 
-const items = usePage().props['posts'].data;
-posts.setPosts(items);
+posts.setPosts(usePage().props['posts'].data);
 
 
 </script>
 
 <template>
     <Head title="Home" />
-    <div>
-        <div class="flex gap-4 border-b border-[#262626] font-bold mx-20 mt-12 text-lg pb-3">
+    <div id="reel">
+        <div class="flex gap-4 border-b border-[#262626] font-bold mx-20 pt-12 text-lg pb-3">
             <Link href="/reels" :class="{ 'text-white ': !followed, 'text-[#868686]': followed }">
             Suggestions
             </Link>
@@ -71,31 +74,19 @@ posts.setPosts(items);
             Suivi(e)
             </Link>
         </div>
-        <div @wheel="handleMouseScroll" class="text-white  h-full">
+        <div @wheel="handleMouseScroll" class="text-white  h-full overflow-auto max-h-screen">
             <div class="w-full mt-4 flex justify-center">
-                <div class="2xl:w-[930px] w-[600px]">
+                <div class="2xl:w-[930px] w-[500px]">
                     <Carousel ref="carousel" :page.sync="currentPage" :showNavigators="false" :value="posts.getValue()"
                         :numVisible="1" :numScroll="1" orientation="vertical" verticalViewPortHeight="88vh"
                         containerStyle="height: 30vh" contentClass="flex align-items-center">
-                        <template #item="post">
-                            <Reel :followed="followed" v-if="post.data" class=" ml-[40px] mt-4" :post="post.data" />
+                        <template #item="{ data, index }">
+                            <Reel :stopVideo="stopVideo" :followed="followed"
+                                v-if="data && index > currentPage - 2 && index < currentPage + 1" :post="data" />
                         </template>
-                        <button nextButtonProps>Next</button>
                     </Carousel>
                 </div>
             </div>
         </div>
-        <div ref="landmark"></div>
     </div>
 </template>
-
-<style>
-
-.p-carousel-content.p-carousel-content {
-    transition: transform 3.5s ease;
-  }
-
-.no-scroll {
-    overflow: hidden !important;
-}
-</style>

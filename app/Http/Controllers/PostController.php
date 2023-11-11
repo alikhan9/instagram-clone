@@ -12,8 +12,17 @@ class PostController extends Controller
 {
     public function index()
     {
+        $posts = Post::orderByDesc('created_at')
+    ->paginate(3)
+    ->withQueryString();
+
+        $posts->getCollection()->transform(function ($post) {
+            $post->userLiked = $post->userLiked();
+            return $post;
+        });
+
         return Inertia::render('Home', [
-            'posts' => Post::orderByDesc('created_at')->paginate(2)->withQueryString()
+            'posts' => $posts
         ]);
     }
 

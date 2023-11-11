@@ -14,21 +14,32 @@ import { useDebounceFn } from '@vueuse/core'
 
 const props = defineProps({
     post: Object,
-    followed: Boolean
+    followed: Boolean,
+    stopVideo: {
+        type: Boolean,
+        default: false,
+    },
 })
 
 const posts = usePostStore();
 const emojiRef = ref(null);
 const currentComment = ref('');
 const showEmojiPicker = ref(false);
-const like = ref();
+const like = ref(props.post.userLiked);
 const bookmark = ref(false);
 const showComments = ref(false);
+const videoPlayer = ref();
+const glowOverlay = ref();
 
-const videoPlayer = ref(null);
 const isPlaying = ref(false);
 
+
 const following = ref(props.followed);
+
+watch(() => props.stopVideo, (newValue, oldValue) => {
+    if (newValue != oldValue)
+        videoPlayer.value.pause();
+});
 
 const togglePlayPause = () => {
     if (videoPlayer.value.paused) {
@@ -49,11 +60,53 @@ const sendBookmark = useDebounceFn((id, value) => {
 }, 500);
 
 onMounted(() => {
-    like.value = props.post.user_liked.length !== 0;
+    videoPlayer.value.addEventListener('loadedmetadata', handleVideoLoaded);
+
+    function handleVideoLoaded() {
+        // Listen for the 'play' event to start updating the glow color
+        videoPlayer.value.addEventListener('play', updateGlowColor);
+    }
+
+    function updateGlowColor() {
+        if(!videoPlayer.value)
+            return;
+        // Create a canvas to extract the video frame
+        const canvas = document.createElement('canvas');
+        canvas.width = videoPlayer.value.videoWidth;
+        canvas.height = videoPlayer.value.videoHeight;
+        const context = canvas.getContext('2d');
+
+        // Draw the current video frame onto the canvas
+        context.drawImage(videoPlayer.value, 0, 0, canvas.width, canvas.height);
+
+        // Get the pixel data from the canvas
+        const pixelData = context.getImageData(0, 0, canvas.width, canvas.height).data;
+
+        // Calculate the average color of the video frame
+        let totalR = 0;
+        let totalG = 0;
+        let totalB = 0;
+        for (let i = 0; i < pixelData.length; i += 4) {
+            totalR += pixelData[i];
+            totalG += pixelData[i + 1];
+            totalB += pixelData[i + 2];
+        }
+        const avgR = Math.round(totalR / (pixelData.length / 4));
+        const avgG = Math.round(totalG / (pixelData.length / 4));
+        const avgB = Math.round(totalB / (pixelData.length / 4));
+
+        // Set the glow color based on the average color of the video frame
+        const glowColor = `rgba(${avgR},${avgG},${avgB},0.5)`;
+        glowOverlay.value.style.boxShadow = `0 0 40px ${glowColor}`;
+
+        // Repeat the process on the next animation frame
+        requestAnimationFrame(updateGlowColor);
+    }
+
 });
 
 watch(() => props.post, newValue => {
-    like.value = newValue.user_liked.length !== 0;
+    like.value = newValue.userLiked;
 })
 
 onClickOutside(emojiRef, () => {
@@ -104,18 +157,22 @@ const sendFollow = () => {
 </script>
 
 <template>
-    <div class="relative overflow-visible-important">
+    <div>
         <div v-if="showComments">
-            <ReelComments v-model:showComments="showComments" v-model:bookmark="bookmark" v-model:like="like"
-                :likeUnlikePost="likeUnlikePost" :bookmarkPost="bookmarkPost" :post="post" />
+            <Teleport to="#reel">
+                <ReelComments v-model:showComments="showComments" v-model:bookmark="bookmark" v-model:like="like"
+                    :likeUnlikePost="likeUnlikePost" :bookmarkPost="bookmarkPost" :post="post" />
+            </Teleport>
+
         </div>
         <div class="flex items-end" ref="postsRef">
             <div class="h-[846px] hover:cursor-pointer flex items-center justify-center backdrop-blur-lg">
-                <div class="relative h-[846px] flex items-center justify-center">
+                <div class="relative h-[846px] flex ml-6 mt-8 items-center justify-center">
                     <video class="max-h-[846px] w-[476px]" ref="videoPlayer" @click="togglePlayPause">
                         <source :src="post.video" />
                         Your browser does not support the video tag.
                     </video>
+                    <div ref="glowOverlay" class="glow-overlay absolute inset-0 rounded-md pointer-events-none"></div>
                     <div class="play-button" v-if="!isPlaying" @click="togglePlayPause"></div>
                     <div class="flex min-w-full absolute bottom-0 justify-between items-center gap-3 mb-3">
                         <div class="flex px-4 items-center gap-2 mb-3">
@@ -129,7 +186,6 @@ const sendFollow = () => {
                             <div class="text-xl">
                                 •
                             </div>
-                            <!-- To do / Suscribe -->
                             <button v-if="!following" @click="sendFollow" class="font-semibold">
                                 Suivre
                             </button>
@@ -137,12 +193,11 @@ const sendFollow = () => {
                                 Ne plus suivre
                             </button>
                         </div>
-                        <!-- <unicon class="hover:cursor-pointer" name="ellipsis-h" fill="white"></unicon> -->
                     </div>
                 </div>
             </div>
             <div class="flex flex-col gap-6 ml-10">
-                <div  v-if="like">
+                <div v-if="like">
                     <div class="flex items-center">
                         <svg-icon class="w-7 h-7 hover:cursor-pointer animate-heart " type="mdi" color="red"
                             @click="likeUnlikePost(post.id)" :path="mdiHeart" />
@@ -151,7 +206,7 @@ const sendFollow = () => {
                         {{ post.likes.length }}
                     </div>
                 </div>
-                <div v-else  @click="likeUnlikePost(post.id)">
+                <div v-else @click="likeUnlikePost(post.id)">
                     <unicon class="w-7 h-7 hover:cursor-pointer" name="heart" fill="white" />
                     <div class="min-w-full text-center mt-1">
                         {{ post.likes.length }}
@@ -205,6 +260,18 @@ const sendFollow = () => {
     width: 100%;
     height: 0;
     padding-bottom: 56.25%;
+    overflow: hidden;
+}
+
+.glow-overlay {
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border-radius: 10px;
+    pointer-events: none;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
 }
 
 .video-container video {

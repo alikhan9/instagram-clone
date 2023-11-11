@@ -21,7 +21,7 @@ const posts = usePostStore();
 const emojiRef = ref(null);
 const currentComment = ref('');
 const showEmojiPicker = ref(false);
-const like = ref();
+const like = ref(props.post.userLiked);
 const bookmark = ref(false);
 const { isLoading } = useImage({ src: 'http://127.0.0.1:8000' + props.post.image })
 const showComments = ref(false);
@@ -47,12 +47,8 @@ const sendBookmark = useDebounceFn((id, value) => {
     axios.post(`/bookmark`, { post_id: id, value })
 }, 500);
 
-onMounted(() => {
-    like.value = props.post.user_liked.length !== 0;
-});
-
 watch(() => props.post, newValue => {
-    like.value = newValue.user_liked.length !== 0;
+    like.value = newValue.userLiked;
 })
 
 onClickOutside(emojiRef, () => {
@@ -115,11 +111,11 @@ const toggleComments = () => {
                 <unicon class="hover:cursor-pointer" name="ellipsis-h" fill="white"></unicon>
             </div>
             <div
-                class="h-[550px] hover:cursor-pointer flex items-center justify-center backdrop-blur-lg">
+                class="max-h-[550px] hover:cursor-pointer flex items-center justify-center backdrop-blur-lg">
                 <span v-if="isLoading">Chargement...</span>
                 <div v-else>
                     <img v-if="post.image !== null" class="max-h-[550px]" :src="usePage().props.ziggy.url + post.image" />
-                    <div class="h-[550px]  flex items-center justify-center" v-else>
+                    <div class="max-h-[550px]  flex items-center justify-center" v-else>
                         <video class="max-h-[550px]" ref="videoPlayer" @click="togglePlayPause">
                             <source :src="post.video" />
                             Your browser does not support the video tag.
