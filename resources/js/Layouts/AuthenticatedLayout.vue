@@ -46,10 +46,14 @@ const changeNotificationsState = () => {
     showNotifications.value = !showNotifications.value;
 }
 
+const toggleShowCreatePost = () => {
+    showCreatePost.value = !showCreatePost.value;
+}
+
 </script>
 <template>
     <div class="bg-black min-h-screen w-screen">
-        <div>
+        <div  v-scroll-lock="showCreatePost">
             <div class="absolute bg-opacity-40 z-50">
                 <Transition enter-from-class="opacity-0" enter-leave-class="opacity-100"
                     enter-active-class="transition-opacity ease-in duration-400" leave-to-class="opacity-0"
@@ -102,7 +106,7 @@ const changeNotificationsState = () => {
                             @click="changeNotificationsState" :isLink="false">
                             <span v-if="!showSearch && !showNotifications">Notifications</span>
                         </MenuComponent>
-                        <MenuComponent @click="showCreatePost = !showCreatePost" :path="mdiPlusBoxOutline" :isLink="false"
+                        <MenuComponent @click="toggleShowCreatePost" :path="mdiPlusBoxOutline" :isLink="false"
                             :mini="showSearch || showNotifications">
                             <span v-if="!showSearch && !showNotifications">Créer </span>
                         </MenuComponent>
@@ -162,3 +166,9 @@ const changeNotificationsState = () => {
 
     </div>
 </template>
+
+<style>
+body.modal-open {
+    overflow: hidden;
+}
+</style>

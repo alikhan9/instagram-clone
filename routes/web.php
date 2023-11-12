@@ -23,12 +23,15 @@ Route::middleware('auth')->group(function () {
     Route::post('/post/comment/response', [CommentsController::class, 'storeResponse']);
     Route::post('/post/comment', [CommentsController::class, 'storeComment']);
     Route::get('/profile/{username}', [UserController::class, 'get']);
+    Route::get('/profile/{username}/followers', [UserController::class, 'get']);
+    Route::get('/profile/{username}/following', [UserController::class, 'get']);
 
     Route::get('/search/{username}', [UserController::class, 'search']);
 
     Route::post('/bookmark', [BookmarkController::class, 'store']);
 
     Route::get('/reels', [ReelsController::class,'index']);
+    Route::get('/reels/{post}/', [ReelsController::class,'index']);
     Route::post('/follow/{user}', [FollowController::class,'store']);
 
 });

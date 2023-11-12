@@ -64,7 +64,7 @@ onMounted(() => {
 
     function handleVideoLoaded() {
         // Listen for the 'play' event to start updating the glow color
-        videoPlayer.value.addEventListener('play', updateGlowColor);
+        videoPlayer.value?.addEventListener('play', updateGlowColor);
     }
 
     function updateGlowColor() {
@@ -192,6 +192,7 @@ const sendFollow = () => {
                             <button v-else @click="sendFollow" class="font-semibold">
                                 Ne plus suivre
                             </button>
+                            {{ post.id }}
                         </div>
                     </div>
                 </div>

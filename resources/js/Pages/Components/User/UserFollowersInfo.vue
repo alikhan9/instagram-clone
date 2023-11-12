@@ -2,10 +2,13 @@
 import SvgIcon from '@jamescoyle/vue-icon';
 import { mdiAccountPlus, mdiDotsHorizontal } from '@mdi/js';
 import { ref } from 'vue';
+import { Link, router } from '@inertiajs/vue3';
 const props = defineProps({
     total_posts: Number,
     user: Object,
-    isFollowing:Boolean
+    isFollowing: Boolean,
+    followersCount: Number,
+    followingCount: Number
 })
 
 const following = ref(props.isFollowing);
@@ -17,6 +20,20 @@ const sendFollow = () => {
             following.value = res.data;
         });
 }
+
+const loadFollowers = () => {
+    router.get("/profile/" + props.user.username + "/followers", {}, {
+        preserveState: true,
+        only: ['followers', 'openFollowers']
+    })
+}
+const loadFollowing = () => {
+    router.get("/profile/" + props.user.username + "/following", {}, {
+        preserveState: true,
+        only: ['following', 'openFollowing']
+    })
+}
+
 </script>
 
 <template>
@@ -26,8 +43,10 @@ const sendFollow = () => {
             <div class="w-[70%] text-lg">
                 <div class="flex items-center gap-4">
                     <div class="mr-10 text-xl font-semibold">{{ user.username }}</div>
-                    <div v-if="!following" class="px-6 py-1  bg-[#1877F2] rounded-lg hover:cursor-pointer" @click="sendFollow">Suivre</div>
-                    <div v-else class="px-6 py-1  bg-red-500 rounded-lg hover:cursor-pointer" @click="sendFollow">Ne plus suivre</div>
+                    <div v-if="!following" class="px-6 py-1  bg-[#1877F2] rounded-lg hover:cursor-pointer"
+                        @click="sendFollow">Suivre</div>
+                    <div v-else class="px-6 py-1  bg-red-500 rounded-lg hover:cursor-pointer" @click="sendFollow">Ne plus
+                        suivre</div>
                     <div class="w-[93px] text-center text-black font-semibold py-1 bg-[#DBDBDB] rounded-lg">
                         Contacter
                     </div>
@@ -41,10 +60,12 @@ const sendFollow = () => {
                         <span class="font-semibold">{{ total_posts }}</span> publications
                     </div>
                     <div>
-                        <span class="font-semibold">6 M</span> followers
+                        <button @click="loadFollowers"><span class="font-semibold mr-1">{{ followersCount
+                        }} </span>followers</button>
                     </div>
                     <div>
-                        <span class="font-semibold">4</span> suivi(e)s
+                        <button @click="loadFollowing"><span class="font-semibold mr-1">{{ followingCount
+                        }} </span>suivi(e)s</button>
                     </div>
                 </div>
                 <div class="mt-10 text-base font-semibold">{{ user.name }}</div>

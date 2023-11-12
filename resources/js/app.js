@@ -30,8 +30,8 @@ createInertiaApp({
     setup({ el, App, props, plugin }) {
         const app = createApp({ render: () => h(App, props) })
             .use(plugin)
-            .use(PrimeVue)
             .use(VScrollLock)
+            .use(PrimeVue)
             .use(Unicon)
             .use(pinia)
             .use(VueLazyload, {

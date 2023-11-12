@@ -6,6 +6,7 @@ use App\Models\Post;
 use App\Models\User;
 use DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class UserController extends Controller
@@ -40,18 +41,47 @@ class UserController extends Controller
             $active = 3;
         }
 
+        $followers  = [];
+        if(Str::contains($request->path(), 'followers')) {
+            $followers = $user->followers()->select('users.name', 'users.id', 'users.username')->get()->map(function ($follower) use ($user) {
+                // Add a virtual attribute followedByUser to each follower
+                $follower->followedByUser = $user->isFollowing($follower);
+
+                return $follower;
+            });
+        }
+        $following  = [];
+        if(Str::contains($request->path(), 'following')) {
+            $following = $user->following()->select('users.name', 'users.id', 'users.username')->get()->map(function ($followingUser) use ($user) {
+                // Add a virtual attribute followingUser to each user
+                $followingUser->followedByUser = true;
+                return $followingUser;
+            });
+        }
+
+        $user->followers()->count();
+
         return Inertia::render('User', [
             'user' => $user,
             'posts' => $posts,
             'total_posts' => $user->posts()->count(),
             'active' => $active,
-            'isFollowing' => $isFollowing
+            'isFollowing' => $isFollowing,
+            'followersCount' => $user->followers()->count(),
+            'followingCount' => $user->following()->count(),
+            'openFollowers' => Str::contains($request->path(), 'followers'),
+            'openFollowing' => Str::contains($request->path(), 'following'),
+            'followers' => $followers,
+            'following' => $following
         ]);
     }
 
     public function search($username)
     {
-        return User::where(DB::raw('LOWER(username)'), 'like', '%' . strtolower($username) . '%')->get();
+        return User::select('id', 'name', 'username')->where(DB::raw('LOWER(username)'), 'like', '%' . strtolower($username) . '%')->get()->map(function ($user) {
+            $user->followersCount = $user->followers()->count();
+            return $user;
+        });
 
     }
 }

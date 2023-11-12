@@ -100,7 +100,7 @@ const togglePlayPause = () => {
 </script>
 
 <template>
-    <div class="absolute z-30 flex w-screen h-screen justify-center items-center text-white">
+    <div class="fixed z-30 flex w-screen h-screen justify-center items-center text-white">
         <div class="text-white backdrop-brightness-[0.4] z-10 w-screen absolute  h-screen flex justify-center items-center"
             @click="leave">
         </div>

@@ -1,10 +1,11 @@
 <script setup>
 import useInfiniteScroll from '../../Composables/useInfiniteScroll.js'
 import { usePostStore } from '../../useStore/usePostStore.js'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import Comments from '../../Comments.vue'
 import axios from 'axios';
 import { useDebounceFn } from '@vueuse/core'
+import empty from '@/../images/empty.png'
 
 const landmark = ref(null);
 const posts = usePostStore();
@@ -12,6 +13,21 @@ const showComments = ref(false);
 const bookmark = ref(false);
 const like = ref(false);
 const post = ref(null);
+
+
+
+
+const getSlicedPosts = n => {
+    return computed(() => {
+        const startIndex = n * 3
+        const endIndex = startIndex + 3;
+        const result = posts.value.slice(startIndex, endIndex);
+        while (result.length < 3) {
+            result.push(null);
+        }
+        return result;
+    });
+};
 
 const sendLike = useDebounceFn((id, value) => {
     axios.post(`/post/${id}/like`, { value })
@@ -33,10 +49,11 @@ const toggleComments = selected_post => {
     showComments.value = true;
 }
 
+
 </script>
 
 <template>
-    <div class="col-start-3 overflow-x-hidden w-[935px]">
+    <div class="col-start-3 overflow-x-hidden xl:w-[935px] ">
         <div v-if="showComments">
             <Transition enter-from-class="opacity-0" enter-leave-class="opacity-100"
                 enter-active-class="transition-opacity ease-in duration-100" leave-to-class="opacity-0"
@@ -46,14 +63,18 @@ const toggleComments = selected_post => {
             </Transition>
         </div>
         <div class="">
-            <div class="post-grid">
-                <div v-for="(post, index) in posts.getValue()" :key="index">
-                    <img v-if="post.image !== null" class="w-[309px] hover:cursor-pointer h-[309px]"
-                        @click="toggleComments(post)" :src="post.image.replace('medium', 'small')" alt="">
-                    <video v-else class="w-[309px] hover:cursor-pointer h-[309px]" @click="toggleComments(post)">
+            <div class="min-w-full max-h-[309px] flex overflow-hidden"
+                v-for="(item, index) in posts.getValue().filter((_, i) => i % 3 === 0)" :key="index">
+                <div v-for="(post, indexSmall) in getSlicedPosts(index).value" :key="indexSmall">
+                    <img v-if="post && post.image !== null"
+                        class="w-[309px] aspect-square hover:cursor-pointer object-cover " @click="toggleComments(post)"
+                        :src="post.image.replace('medium', 'small')" alt="">
+                    <video v-else-if="post" class="object-cover aspect-square w-[309px]  hover:cursor-pointer "
+                        @click="toggleComments(post)">
                         <source :src="post.video" />
                         Your browser does not support the video tag.
                     </video>
+                    <img v-else class="w-[309px] aspect-square object-cover " :src="empty" alt="">
                 </div>
             </div>
             <div class="w-[319px]">
@@ -62,12 +83,3 @@ const toggleComments = selected_post => {
         <div ref="landmark"></div>
     </div>
 </template>
-
-<style>
-.post-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 309px);
-    grid-template-rows: 309px;
-    gap: .3em;
-}
-</style>

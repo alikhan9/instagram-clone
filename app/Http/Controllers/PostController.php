@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Intervention\Image\Facades\Image;
@@ -21,8 +22,17 @@ class PostController extends Controller
             return $post;
         });
 
+        $mostFollowedUsers = User::select('id', 'name', 'username')
+        ->withCount('following')
+        ->whereNotIn('users.id',auth()->user()->following()->select('users.id'))
+        ->orderBy('following_count', 'desc')
+        ->take(5)
+        ->get();
+
+
         return Inertia::render('Home', [
-            'posts' => $posts
+            'posts' => $posts,
+            'mostFollowedUsers' => $mostFollowedUsers,
         ]);
     }
 
