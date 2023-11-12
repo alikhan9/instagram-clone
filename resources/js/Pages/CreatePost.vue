@@ -7,12 +7,9 @@ import SvgIcon from '@jamescoyle/vue-icon';
 import ExpendableMenu from './ExpendableMenu.vue';
 import InerMenuCheckbox from './InerMenuCheckbox.vue';
 import { router } from '@inertiajs/vue3';
+import ImageFilterApp from './ImageFilterApp.vue';
 
-const emit = defineEmits(['update:showCreatePost']);
-
-const props = defineProps({
-    "showCreatePost": Boolean
-})
+const emit = defineEmits(['toggleShowCreatePost']);
 
 const step = ref(0);
 const url = ref();
@@ -32,7 +29,7 @@ const onFileChange = (e) => {
 
 const leave = () => {
     step.value = 0;
-    emit("update:showCreatePost", false);
+    emit("toggleShowCreatePost");
 }
 
 const back = () => {
@@ -100,11 +97,12 @@ const togglePlayPause = () => {
 </script>
 
 <template>
-    <div class="fixed z-30 flex w-screen h-screen justify-center items-center text-white">
+    <div class="fixed bg-opacity-40 z-[99] flex w-screen h-screen justify-center items-center text-white">
         <div class="text-white backdrop-brightness-[0.4] z-10 w-screen absolute  h-screen flex justify-center items-center"
             @click="leave">
         </div>
-        <div :class="{
+        <ImageFilterApp class="z-20 rounded-xl bg-[#262626]" />
+        <!-- <div :class="{
             'w-[40vw] h-[85vh] z-20 rounded-xl bg-[#262626] overflow-hidden': step == 0,
             'w-[58vw] h-[85vh] z-20 rounded-xl bg-[#262626] overflow-hidden': step == 1
         }">
@@ -188,7 +186,8 @@ const togglePlayPause = () => {
                                 <ExpendableMenu title="Accessibilité">
                                     <p class="text-gray-400 text-sm">
                                         Le texte alternatif décrit vos photos pour les personnes malvoyantes.
-                                        Il est généré automatiquement pour vos photos, mais vous pouvez choisir de l'écrire
+                                        Il est généré automatiquement pour vos photos, mais vous pouvez choisir de
+                                        l'écrire
                                         vous-même.
                                     </p>
                                     <div class="flex gap-4 mt-3 items-center">
@@ -202,7 +201,8 @@ const togglePlayPause = () => {
                                     <InerMenuCheckbox @updateValue="updateShowLikes"
                                         title="Masquer le nombre de J'aime et de vues sur cette publication">
                                         <p class="text-sm text-gray-400 mb-5">
-                                            Vous êtes la seule personne à pouvoir voir le nombre total de J'aime et de vues
+                                            Vous êtes la seule personne à pouvoir voir le nombre total de J'aime et de
+                                            vues
                                             sur
                                             cette publication.
                                             Vous pourrez modifier ceci plus tard via le menu ⋮ présent en haut de la
@@ -219,7 +219,8 @@ const togglePlayPause = () => {
 
                                     <InerMenuCheckbox @updateValue="updateShowComments" title="Désactivez les commentaires">
                                         <p class="text-sm text-gray-400">
-                                            Vous pourrez modifier ce paramètre plus tard dans le menu ··· en haut de votre
+                                            Vous pourrez modifier ce paramètre plus tard dans le menu ··· en haut de
+                                            votre
                                             publication.
                                         </p>
                                     </InerMenuCheckbox>
@@ -229,7 +230,7 @@ const togglePlayPause = () => {
                     </Transition>
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
 </template>
 

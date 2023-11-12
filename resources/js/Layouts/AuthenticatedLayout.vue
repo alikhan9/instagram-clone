@@ -11,6 +11,7 @@ import Search from '@/Pages/Search.vue';
 import { usePage } from '@inertiajs/vue3';
 import { usePostStore } from '@/Pages/useStore/usePostStore';
 import Notifications from '@/Pages/Notifications.vue';
+import '../../css/app.css'
 
 const showCreatePost = ref(false);
 const showPlusMenu = ref(false);
@@ -48,20 +49,19 @@ const changeNotificationsState = () => {
 
 const toggleShowCreatePost = () => {
     showCreatePost.value = !showCreatePost.value;
+    document.documentElement.style.overflow = showCreatePost.value ? 'hidden' : '';
 }
 
 </script>
 <template>
     <div class="bg-black min-h-screen w-screen">
-        <div  v-scroll-lock="showCreatePost">
-            <div class="absolute bg-opacity-40 z-50">
-                <Transition enter-from-class="opacity-0" enter-leave-class="opacity-100"
-                    enter-active-class="transition-opacity ease-in duration-400" leave-to-class="opacity-0"
-                    leave-active-class="transition duration-200 ease-in">
-                    <create-post class="absolute" v-model:showCreatePost="showCreatePost"
-                        v-if="showCreatePost"></create-post>
-                </Transition>
-            </div>
+        <div>
+            <Transition enter-from-class="opacity-0" enter-leave-class="opacity-100"
+                enter-active-class="transition-opacity ease-in duration-400" leave-to-class="opacity-0"
+                leave-active-class="transition duration-200 ease-in">
+                <create-post @toggleShowCreatePost="toggleShowCreatePost" v-model:showCreatePost="showCreatePost"
+                    v-if="showCreatePost"></create-post>
+            </Transition>
             <Transition enter-from-class="scale-x-0" enter-leave-class="scale-x-100 "
                 enter-active-class="transition ease-out duration-300 origin-left" leave-from-class="translate-x-[-20px]"
                 leave-to-class="translate-x-[-130%]" leave-active-class="transition duration-200 ease-in">
@@ -158,7 +158,7 @@ const toggleShowCreatePost = () => {
                     </div>
 
                 </div>
-                <div class="lg:ml-[200px] ml-[70px] xl:ml-[335px]">
+                <div class="lg:ml-[200px] ml-[70px] xl:ml-[335px] lock-scroll">
                     <slot></slot>
                 </div>
             </div>
@@ -166,9 +166,3 @@ const toggleShowCreatePost = () => {
 
     </div>
 </template>
-
-<style>
-body.modal-open {
-    overflow: hidden;
-}
-</style>
