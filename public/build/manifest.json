@@ -1,0 +1,31 @@
+{
+  "resources/images/default.jpg": {
+    "file": "assets/default-76dc7194.jpg",
+    "src": "resources/images/default.jpg"
+  },
+  "resources/images/empty.png": {
+    "file": "assets/empty-5e17a991.png",
+    "src": "resources/images/empty.png"
+  },
+  "resources/images/login.webp": {
+    "file": "assets/login-e21ddf2a.webp",
+    "src": "resources/images/login.webp"
+  },
+  "resources/js/app.css": {
+    "file": "assets/app-1ee946b8.css",
+    "src": "resources/js/app.css"
+  },
+  "resources/js/app.js": {
+    "assets": [
+      "assets/login-e21ddf2a.webp",
+      "assets/empty-5e17a991.png",
+      "assets/default-76dc7194.jpg"
+    ],
+    "css": [
+      "assets/app-1ee946b8.css"
+    ],
+    "file": "assets/app-31d6b625.js",
+    "isEntry": true,
+    "src": "resources/js/app.js"
+  }
+}
