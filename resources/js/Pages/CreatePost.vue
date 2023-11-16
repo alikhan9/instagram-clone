@@ -97,14 +97,14 @@ const togglePlayPause = () => {
 </script>
 
 <template>
-    <div class="fixed bg-opacity-40 z-[99] flex w-screen h-screen justify-center items-center text-white">
-        <div class="text-white backdrop-brightness-[0.4] z-10 w-screen absolute  h-screen flex justify-center items-center"
+    <div
+        class="sm:fixed bg-opacity-40 sm:z-[99] overflow-auto xl:overflow-hidden sm:flex h-full w-screen sm:h-screen justify-center items-center text-white">
+        <div class="text-white sm:backdrop-brightness-[0.4] xl:overflow-hidden z-10 w-screen absolute hidden  h-screen sm:flex justify-center items-center"
             @click="leave">
         </div>
-        <ImageFilterApp class="z-20 rounded-xl bg-[#262626]" />
-        <!-- <div :class="{
-            'w-[40vw] h-[85vh] z-20 rounded-xl bg-[#262626] overflow-hidden': step == 0,
-            'w-[58vw] h-[85vh] z-20 rounded-xl bg-[#262626] overflow-hidden': step == 1
+        <div :class="{
+            'sm:w-[40vw] sm:h-[85vh] h-full  shrink-0 xl:overflow-hidden overflow-auto sm:z-20 sm:rounded-xl sm:bg-[#262626]': step == 0,
+            'sm:w-[58vw] sm:max-w-[1200px] sm:max-h-[85vh] sm:z-20 shrink-0 grow rounded-xl sm:bg-[#262626] overflow-auto xl:overflow-hidden ': step == 1 || step == 2,
         }">
             <div v-if="!url" class="border-b border-[hsl(0,0%,20%)] py-3 text-center text-lg font-semibold">
                 Créer une publication
@@ -112,18 +112,29 @@ const togglePlayPause = () => {
             <div v-else>
                 <div v-if="step == 0"
                     class="border-b min-w-full flex justify-between border-[hsl(0,0%,20%)] py-3 text-center text-lg font-semibold px-5">
-                    <svg-icon class="hover:cursor-pointer" type="mdi" size="26" @click="back" :path="mdiArrowLeft" />
-                    <p>Rogner</p>
-                    <button class="text-[hsl(204,90%,49%)] text-base hover:text-white" @click="step++">Suivant</button>
+                    <div>
+                        <svg-icon class="hover:cursor-pointer" type="mdi" size="26" @click="back" :path="mdiArrowLeft" />
+                    </div>
+                    <p>Sélectioner</p>
+                    <button class="text-[hsl(204,90%,49%)] text-base hover:text-white"
+                        @click="() => step++">Suivant</button>
                 </div>
-                <div v-else
+                <div v-if="step == 1"
+                    class="border-b min-w-full flex justify-between border-[hsl(0,0%,20%)] py-3 text-center text-lg font-semibold px-5">
+                    <div>
+                        <svg-icon class="hover:cursor-pointer" type="mdi" size="26" @click="back" :path="mdiArrowLeft" />
+                    </div>
+                    <p>Filtrer</p>
+                    <button class="text-[hsl(204,90%,49%)] text-base hover:text-white"
+                        @click="() => step++">Suivant</button>
+                </div>
+                <div v-else-if="step == 2"
                     class="border-b min-w-full flex justify-between border-[hsl(0,0%,20%)] py-3 text-center text-lg font-semibold px-5">
                     <svg-icon class="hover:cursor-pointer" type="mdi" size="26" @click="back" :path="mdiArrowLeft" />
                     <p>Créer une publication</p>
                     <button class="text-[hsl(204,90%,49%)] text-base hover:text-white"
                         @click="validatePost">Partager</button>
                 </div>
-
             </div>
             <div class="flex flex-col gap-4 h-full items-center justify-center text-2xl " v-if="!url">
                 <svg-icon class="w-64" type="mdi" size="64" :path="mdiMultimedia"></svg-icon>
@@ -136,7 +147,6 @@ const togglePlayPause = () => {
                         </p>
                     </div>
                     <input id="dropzone-file" type="file" class="hidden" @change="onFileChange" />
-
                 </label>
             </div>
             <div v-else>
@@ -150,39 +160,44 @@ const togglePlayPause = () => {
                         <div class="play-button" v-if="!isPlaying" @click="togglePlayPause"></div>
                     </div>
                 </div>
-                <div v-else class="grid grid-cols-3 ">
-                    <div class="col-span-2 flex justify-center">
-                        <img v-if="file.type.includes('image/')" :src="url" />
-                        <div class="relative" v-else>
-                            <video ref="videoPlayer" @click="togglePlayPause">
-                                <source :src="url" type="video/mp4" />
-                                Your browser does not support the video tag.
-                            </video>
-                            <div class="play-button" v-if="!isPlaying" @click="togglePlayPause"></div>
+                <div v-else>
+                    <div v-if="step == 1">
+                        <div class="col-span-2 flex justify-center">
+                            <ImageFilterApp v-if="file.type.includes('image/')" :url="url"
+                                class="sm:bg-[#262626]" />
+                            <div class="relative" v-else>
+                                <video ref="videoPlayer" @click="togglePlayPause">
+                                    <source :src="url" type="video/mp4" />
+                                    Your browser does not support the video tag.
+                                </video>
+                                <div class="play-button" v-if="!isPlaying" @click="togglePlayPause"></div>
+                            </div>
                         </div>
                     </div>
-                    <Transition enter-from-class="scale-x-0" enter-leave-class="scale-x-100"
-                        enter-active-class="transition duration-1000 origin-left">
-                        <div v-if="step !== 0" class="p-5 border-l-[1px] border-[hsl(0,0%,20%)] flex flex-col h-[81vh]">
-                            <div>
-                                <div class="flex gap-3 mb-3 items-center">
-                                    <img class="rounded-full" src="https://picsum.photos/seed/picsum/32/32" />
-                                    <p>Name</p>
+                    <Transition v-else enter-from-class="scale-x-0" enter-leave-class="scale-x-100"
+                        enter-active-class="transition duration-1000 origin-left grid grid-cols-3">
+                        <div v-if="step == 2"
+                            class="lg:border-l-[1px] border-[hsl(0,0%,20%)] flex flex-col gap-4 lg:flex-row sm:h-[81vh]">
+                            <img class="lg:max-w-[70%]" :src="url" />
+                            <div class="flex w-full lg:mt-4 flex-col px-4 lg:mx-0 mb-4 sm:mb-0 h-full gap-6">
+                                <div>
+                                    <div class="text-lg sm:text-base flex gap-3 mb-3 items-center">
+                                        <img class="rounded-full" src="https://picsum.photos/seed/picsum/32/32" />
+                                        <p>Name</p>
+                                    </div>
+                                    <textarea
+                                        class="bg-[#262626] w-full resize-none overflow-auto border-transparent focus:border-transparent focus:ring-0"
+                                        placeholder="Ajouter une légende" id="" cols="30" rows="8" maxlength="2200"
+                                        v-model="description" />
                                 </div>
-                                <textarea
-                                    class="bg-[#262626] w-full resize-none overflow-auto border-transparent focus:border-transparent focus:ring-0"
-                                    placeholder="Ajouter une légende" id="" cols="30" rows="8" maxlength="2200"
-                                    v-model="description" />
-                            </div>
-                            <div class="flex justify-between relative">
-                                <svg-icon class="hover:cursor-pointer" type="mdi" size="24"
-                                    @click="showEmojiPicker = !showEmojiPicker" :path="mdiEmoticonHappyOutline" />
-                                <EmojiPicker class="absolute top-10 z-10" v-if="showEmojiPicker" :native="true"
-                                    @select="onSelectEmoji" />
-                                <p class="text-gray-500">{{ description?.length }}/2200</p>
-                            </div>
-                            <div class="flex flex-col gap-6">
-                                <CityPicker @updateCity="updateCity" class="min-w-[85%] z-20" />
+                                <div class="flex justify-between relative">
+                                    <svg-icon class="hover:cursor-pointer" type="mdi" size="24"
+                                        @click="showEmojiPicker = !showEmojiPicker" :path="mdiEmoticonHappyOutline" />
+                                    <EmojiPicker class="absolute left-10 sm:left-0 top-0 sm:top-10 z-10" v-if="showEmojiPicker" :native="true"
+                                        @select="onSelectEmoji" />
+                                    <p class="text-gray-500">{{ description?.length }}/2200</p>
+                                </div>
+                                <CityPicker @updateCity="updateCity" class="min-w-[85%] sm:z-20" />
                                 <ExpendableMenu title="Accessibilité">
                                     <p class="text-gray-400 text-sm">
                                         Le texte alternatif décrit vos photos pour les personnes malvoyantes.
@@ -201,16 +216,10 @@ const togglePlayPause = () => {
                                     <InerMenuCheckbox @updateValue="updateShowLikes"
                                         title="Masquer le nombre de J'aime et de vues sur cette publication">
                                         <p class="text-sm text-gray-400 mb-5">
-                                            Vous êtes la seule personne à pouvoir voir le nombre total de J'aime et de
-                                            vues
-                                            sur
-                                            cette publication.
-                                            Vous pourrez modifier ceci plus tard via le menu ⋮ présent en haut de la
-                                            publication.
-                                            Pour masquer le nombre de J'aime sur les publications d'autres personnes,
-                                            accédez
-                                            aux
-                                            paramètres de votre compte.
+                                            Vous êtes la seule personne à pouvoir voir le nombre total de J'aime et de vues
+                                            sur cette publication. Vous pourrez modifier ceci plus tard via le menu ⋮
+                                            présent en haut de la publication. Pour masquer le nombre de J'aime sur les
+                                            publications d'autres personnes, accédez aux paramètres de votre compte.
                                             <span class="text-white hover:cursor-pointer hover:underline">
                                                 En savoir plus
                                             </span>
@@ -218,9 +227,8 @@ const togglePlayPause = () => {
                                     </InerMenuCheckbox>
 
                                     <InerMenuCheckbox @updateValue="updateShowComments" title="Désactivez les commentaires">
-                                        <p class="text-sm text-gray-400">
-                                            Vous pourrez modifier ce paramètre plus tard dans le menu ··· en haut de
-                                            votre
+                                        <p class="text-sm text-gray-400 sm:mb-4 xl:mb-0">
+                                            Vous pourrez modifier ce paramètre plus tard dans ··· en haut de votre
                                             publication.
                                         </p>
                                     </InerMenuCheckbox>
@@ -230,7 +238,7 @@ const togglePlayPause = () => {
                     </Transition>
                 </div>
             </div>
-        </div> -->
+        </div>
     </div>
 </template>
 

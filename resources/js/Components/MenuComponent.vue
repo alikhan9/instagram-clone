@@ -28,7 +28,7 @@ const stopAnimate = () => {
 </script>
 <template>
     <Link v-if="isLink" :href="url" @mouseover="startAnimate" @mouseleave="stopAnimate" :class="{
-        'flex  items-center gap-4 p-2 text-lg font-bold  transition ease-in rounded-lg duration-300 hover:cursor-pointer': true,
+        'flex shrink min-w-0 items-center gap-4 p-2 text-lg font-bold  transition ease-in rounded-lg duration-300 hover:cursor-pointer': true,
         'hover:bg-[hsl(0,0%,10%)]': !mini
     }">
     <div :class="{ 'scale-[1.05] transition duration-75': animateIcon }">
@@ -39,7 +39,7 @@ const stopAnimate = () => {
     </p>
     </Link>
     <div v-else :href="url" @mouseover="startAnimate" @mouseleave="stopAnimate" :class="{
-        'flex  items-center gap-4 p-2 text-lg font-bold  transition ease-in rounded-lg duration-200 hover:cursor-pointer': true,
+        'flex min-w-0 sm:w-full items-center gap-4 p-2 text-lg font-bold  transition ease-in rounded-lg duration-200 hover:cursor-pointer': true,
         'hover:bg-[#262626]': !mini
     }">
         <div :class="{ 'scale-[1.05] transition duration-75': animateIcon }">

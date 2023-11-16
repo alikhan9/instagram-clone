@@ -33,9 +33,9 @@ const sendFollow = (id) => {
 <template>
     <Head title="Home" />
     <div>
-        <div class="text-white xl:grid grid-cols-10 gap-28 xl:pt-24 min-h-screen w-full">
+        <div class="text-white xl:grid grid-cols-10 gap-28 xl:pt-24 sm:min-h-screen w-full">
             <div class="col-start-3 flex items-center flex-col col-span-4 ">
-                <div class="flex gap-4 border-b border-[#262626] w-full font-bold  text-lg pb-3">
+                <div class="sm:flex gap-4 hidden border-b border-[#262626] w-full font-bold  text-lg pb-3">
                     <Link href="/reels" :class="{ 'text-white ': !followed, 'text-[#868686]': followed }">
                     Pour vous
                     </Link>
@@ -48,7 +48,7 @@ const sendFollow = (id) => {
                     <Post class="pb-6 border-b border-[#262626]" :post="post" />
                 </div>
             </div>
-            <div class=" w-[319px]">
+            <div class=" w-[319px] hidden sm:block">
                 <div class="flex justify-between items-center gap-3 mb-2">
                     <div class="flex gap-3 mb-4">
                         <div>

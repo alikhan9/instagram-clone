@@ -92,7 +92,7 @@ const toggleComments = () => {
 </script>
 
 <template>
-    <div class="max-w-[470px]">
+    <div class="max-w-[470px] xl:min-w-[470px] pr-3 sm:pr-0 w-full grow">
         <div v-if="showComments">
             <Comments v-model:showComments="showComments" v-model:bookmark="bookmark" v-model:like="like"
                 :likeUnlikePost="likeUnlikePost" :bookmarkPost="bookmarkPost" :post="post" />
