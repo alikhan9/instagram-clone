@@ -23,7 +23,7 @@ const currentComment = ref('');
 const showEmojiPicker = ref(false);
 const like = ref(props.post.userLiked);
 const bookmark = ref(false);
-const { isLoading } = useImage({ src: 'http://127.0.0.1:8000' + props.post.image })
+const { isLoading } = useImage({ src: usePage().props.ziggy.url + props.post.image })
 const showComments = ref(false);
 
 const videoPlayer = ref(null);
@@ -82,7 +82,7 @@ const likeUnlikePost = id => {
 }
 const bookmarkPost = () => {
     bookmark.value = !bookmark.value;
-    sendBookmark(props.post.id,bookmark.value);
+    sendBookmark(props.post.id, bookmark.value);
 }
 
 const toggleComments = () => {
@@ -110,8 +110,7 @@ const toggleComments = () => {
                 </div>
                 <unicon class="hover:cursor-pointer" name="ellipsis-h" fill="white"></unicon>
             </div>
-            <div
-                class="max-h-[550px] hover:cursor-pointer flex items-center justify-center backdrop-blur-lg">
+            <div class="max-h-[550px] hover:cursor-pointer flex items-center justify-center backdrop-blur-lg">
                 <span v-if="isLoading">Chargement...</span>
                 <div v-else>
                     <img v-if="post.image !== null" class="max-h-[550px]" :src="usePage().props.ziggy.url + post.image" />
@@ -122,7 +121,7 @@ const toggleComments = () => {
                         </video>
                         <div class="play-button" v-if="!isPlaying" @click="togglePlayPause"></div>
                     </div>
-                </div>    
+                </div>
             </div>
             <div class="mt-3 mb-3 flex flex-row justify-between">
                 <div class="flex gap-3">
@@ -232,6 +231,5 @@ const toggleComments = () => {
     border-style: solid;
     border-width: .5em .5em .5em 0;
 }
-
 </style>
 

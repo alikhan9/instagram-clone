@@ -45,7 +45,7 @@ const sendFollow = (id) => {
                     </Link>
                 </div>
                 <div v-for="(post, index) in posts.getValue()" :key="index" class="px-4 flex flex-col justify-center mt-6">
-                    <Post class="pb-6 border-b border-[#262626]" :post="post" />
+                        <Post class="pb-6 border-b border-[#262626]" :post="post" />
                 </div>
             </div>
             <div class=" w-[319px] hidden sm:block">
