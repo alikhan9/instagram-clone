@@ -34,6 +34,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/reels/{post}/', [ReelsController::class,'index']);
     Route::post('/follow/{user}', [FollowController::class,'store']);
 
+    Route::get('/comments', [CommentsController::class, 'index']);
+
 });
 Broadcast::routes(['middleware' => ['auth:sanctum']]);
 require __DIR__.'/auth.php';

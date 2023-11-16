@@ -114,7 +114,8 @@ const addResponseComment = (data) => {
                     <img v-if="post.image !== null" class="ml-2 w-full max-w-[99.4%]"
                         :src="usePage().props.ziggy.url + post.image.replace('medium', 'big')" />
                     <div v-else>
-                        <video class="w-full mx-auto object-fill h-full" width="100%" ref="videoPlayer" @click="togglePlayPause">
+                        <video class="w-full mx-auto object-fill h-full" width="100%" ref="videoPlayer"
+                            @click="togglePlayPause">
                             <source :src="post.video" />
                             Your browser does not support the video tag.
                         </video>

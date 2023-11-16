@@ -11,10 +11,10 @@ use Storage;
 
 class PostController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $posts = Post::orderByDesc('created_at')
-    ->paginate(3)
+    ->paginate(5)
     ->withQueryString();
 
         $posts->getCollection()->transform(function ($post) {
@@ -24,7 +24,7 @@ class PostController extends Controller
 
         $mostFollowedUsers = User::select('id', 'name', 'username')
         ->withCount('following')
-        ->whereNotIn('users.id',auth()->user()->following()->select('users.id'))
+        ->whereNotIn('users.id', auth()->user()->following()->select('users.id'))
         ->orderBy('following_count', 'desc')
         ->take(5)
         ->get();
@@ -33,6 +33,8 @@ class PostController extends Controller
         return Inertia::render('Home', [
             'posts' => $posts,
             'mostFollowedUsers' => $mostFollowedUsers,
+            'sComments' => $request->has('showComments') ? filter_var($request->showComments, FILTER_VALIDATE_BOOLEAN) : false,
+            'comments' => [],
         ]);
     }
 

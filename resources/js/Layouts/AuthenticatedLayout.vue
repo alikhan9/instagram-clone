@@ -107,9 +107,9 @@ const toggleShowCreatePost = () => {
                             <span v-if="!showSearch && !showNotifications">Profil</span>
                         </MenuComponent>
                     </div>
-                    <div class="text-white w-full pr-8 absolute bottom-0 mb-5" v-on-click-outside="closePlusMenu">
+                    <div class="text-white w-full pr-8 absolute max-w-[300px] bottom-0 mb-5" v-on-click-outside="closePlusMenu">
                         <MenuComponent @click="togglePlusMenu" :path="mdiMenu" :is-link="false" :mini="true">
-                            <span v-if="!showSearch && !showNotifications">Plus</span>
+                            <span class="w-full" v-if="!showSearch && !showNotifications">Plus</span>
                         </MenuComponent>
                         <div v-if="showPlusMenu" class="bg-[#262626] absolute top-[-390px] rounded-2xl p-1">
                             <div class="border-b-[6px] rounded-b-none border-[#353535] p-2">
@@ -162,7 +162,7 @@ const toggleShowCreatePost = () => {
                 <create-post @toggleShowCreatePost="toggleShowCreatePost" v-model:showCreatePost="showCreatePost"
                     v-if="showCreatePost"></create-post>
             </Transition>
-                <div
+                <div id="main-content"
                     :class="{ 'flex-1 overflow-auto w-full h-full sm:lock-scroll': true,'hidden sm:block':showCreatePost }">
                     <slot></slot>
                 </div>

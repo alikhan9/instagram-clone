@@ -2,8 +2,8 @@
 import { router, usePage } from '@inertiajs/vue3';
 import SvgIcon from '@jamescoyle/vue-icon';
 import { mdiHeart, mdiBookmark, mdiEmoticonHappyOutline } from '@mdi/js';
-import { useImage, useFullscreen } from '@vueuse/core';
-import { ref, watch, onMounted, watchEffect } from 'vue';
+import { useImage } from '@vueuse/core';
+import { ref, watch } from 'vue';
 import Comments from './Comments.vue';
 import axios from 'axios';
 import { Link } from '@inertiajs/vue3'
@@ -16,6 +16,8 @@ import { useDebounceFn } from '@vueuse/core'
 const props = defineProps({
     post: Object,
 })
+
+const emit = defineEmits(['update:showFullPost']);
 
 const posts = usePostStore();
 const emojiRef = ref(null);
@@ -87,6 +89,9 @@ const bookmarkPost = () => {
 
 const toggleComments = () => {
     showComments.value = !showComments.value;
+    document.getElementById('home').style.overflow = showComments.value ? 'hidden' : 'auto';
+    emit('update:showFullPost', showComments.value);
+
 }
 
 </script>
@@ -109,7 +114,7 @@ const toggleComments = () => {
             <Comments v-model:showComments="showComments" v-model:bookmark="bookmark" v-model:like="like"
                 :likeUnlikePost="likeUnlikePost" :bookmarkPost="bookmarkPost" :post="post" />
         </div>
-        <div v-show="!showComments" ref="postsRef">
+        <div>
             <div class="flex justify-between items-center gap-3 mb-3 px-3 sm:px-0">
                 <div class="flex gap-3 mb-3">
                     <div>
@@ -126,8 +131,7 @@ const toggleComments = () => {
                 class="xl:h-[585px] xl:w-[470px] hover:cursor-pointer w-full border border-[#262626] rounded flex items-center justify-center backdrop-blur-lg">
                 <div>
                     <img v-if="post.image !== null" class="" :src="usePage().props.ziggy.url + post.image" />
-                    <div class="max-h-[550px]  w-full border border-[#262626] rounded flex items-center justify-center"
-                        v-else>
+                    <div class="max-h-[550px]  border border-[#262626] rounded flex items-center justify-center" v-else>
                         <video class="max-h-[550px]" ref="videoPlayer" @click="togglePlayPause">
                             <source :src="post.video" />
                             Your browser does not support the video tag.
@@ -146,6 +150,9 @@ const toggleComments = () => {
                     <div class="inline" @click="toggleComments">
                         <unicon class="w-7 h-7 hover:cursor-pointer" name="comment" fill="white"></unicon>
                     </div>
+                    <Link href="/" :preserveState="true" :preserveScroll="true" :data="{ showComments: true }">
+                    <unicon class="w-7 h-7 hover:cursor-pointer" name="comment" fill="red"></unicon>
+                    </Link>
                     <unicon class="w-7 h-7" name="telegram-alt" fill="white"></unicon>
                 </div>
                 <div>
@@ -202,6 +209,7 @@ const toggleComments = () => {
     from {
         background-color: hsl(0, 0%, 30%);
     }
+
     to {
         background-color: hsl(0, 0%, 22%);
     }
