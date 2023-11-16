@@ -66,9 +66,9 @@ const toggleShowCreatePost = () => {
                 leave-to-class="translate-x-[-130%]" leave-active-class="transition duration-200 ease-in">
                 <Notifications class="z-50" v-if="showNotifications" v-on-click-outside="closeSearchOrNotifications" />
             </Transition>
-            <div class="flex h-full flex-col">
+            <div class="flex h-full flex-col sm:flex-row">
                 <div
-                    :class="{ 'lg:w-[200px] w-[70px] xl:w-[335px] hidden sm:block z-30 p-4 border-[#262626] border-r fixed h-screen': true, 'border-r': !showSearch && !showNotifications }">
+                    :class="{ 'lg:w-[200px] w-[70px] xl:w-[335px] shrink-0 hidden sm:block z-30 p-4 border-[#262626] border-r h-screen': true, 'border-r': !showSearch && !showNotifications }">
                     <div :class="{ 'text-[#E0F1FF] flex flex-col gap-3': true }">
                         <div class="mb-12 hidden lg:block">
                             <h1 v-if="!showSearch && !showNotifications" class="text-4xl p-6 ">Instagram</h1>
@@ -163,7 +163,7 @@ const toggleShowCreatePost = () => {
                     v-if="showCreatePost"></create-post>
             </Transition>
                 <div
-                    :class="{ 'lg:ml-[200px] flex-1 sm:ml-[70px] overflow-auto w-full h-full xl:ml-[335px] sm:lock-scroll': true,'hidden sm:block':showCreatePost }">
+                    :class="{ 'flex-1 overflow-auto w-full h-full sm:lock-scroll': true,'hidden sm:block':showCreatePost }">
                     <slot></slot>
                 </div>
                 <div :class="{ 'shrink-0 sm:hidden  z-50 p-4 border-[#262626] border-t': true }">

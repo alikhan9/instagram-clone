@@ -166,8 +166,8 @@ const sendFollow = () => {
 
         </div>
         <div class="flex items-end" ref="postsRef">
-            <div class="h-[846px] hover:cursor-pointer flex items-center justify-center backdrop-blur-lg">
-                <div class="relative h-[846px] flex ml-6 mt-8 items-center justify-center">
+            <div class="sm:h-[846px] hover:cursor-pointer flex items-center justify-center backdrop-blur-lg">
+                <div class="relative sm:h-[846px] flex ml-6 mt-8 items-center justify-center">
                     <video class="max-h-[846px] w-[476px]" ref="videoPlayer" @click="togglePlayPause">
                         <source :src="post.video" />
                         Your browser does not support the video tag.

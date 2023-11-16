@@ -92,13 +92,25 @@ const toggleComments = () => {
 </script>
 
 <template>
-    <div class="max-w-[470px] xl:min-w-[470px] pr-3 sm:pr-0 w-full grow">
+    <div v-if="isLoading" class="w-screen sm:w-[570px] 2xl:w-[470px] h-[470px] mb-16">
+        <div class="flex gap-4 mb-4">
+            <div class="rounded-full bg-[hsl(0,0%,30%)] animate-pulse-bg w-10 h-10"></div>
+            <div>
+                <div class="w-[200px] animate-pulse-bg h-4 rounded-md bg-[hsl(0,0%,30%)]"></div>
+                <div class="w-[130px] animate-pulse-bg mt-2 h-4 rounded-md bg-[hsl(0,0%,30%)]"></div>
+            </div>
+        </div>
+        <div class="min-w-full animate-pulse-bg bg-[hsl(0,0%,30%)] rounded min-h-full">
+        </div>
+    </div>
+
+    <div v-else class="xl:w-[470px]  sm:pr-0 w-full grow">
         <div v-if="showComments">
             <Comments v-model:showComments="showComments" v-model:bookmark="bookmark" v-model:like="like"
                 :likeUnlikePost="likeUnlikePost" :bookmarkPost="bookmarkPost" :post="post" />
         </div>
         <div v-show="!showComments" ref="postsRef">
-            <div class="flex justify-between items-center gap-3 mb-3">
+            <div class="flex justify-between items-center gap-3 mb-3 px-3 sm:px-0">
                 <div class="flex gap-3 mb-3">
                     <div>
                         <img class="rounded-full" src="https://picsum.photos/seed/picsum/32/32" />
@@ -110,11 +122,12 @@ const toggleComments = () => {
                 </div>
                 <unicon class="hover:cursor-pointer" name="ellipsis-h" fill="white"></unicon>
             </div>
-            <div class="max-h-[550px] hover:cursor-pointer flex items-center justify-center backdrop-blur-lg">
-                <span v-if="isLoading">Chargement...</span>
-                <div v-else>
-                    <img v-if="post.image !== null" class="max-h-[550px]" :src="usePage().props.ziggy.url + post.image" />
-                    <div class="max-h-[550px]  flex items-center justify-center" v-else>
+            <div
+                class="xl:h-[585px] xl:w-[470px] hover:cursor-pointer w-full border border-[#262626] rounded flex items-center justify-center backdrop-blur-lg">
+                <div>
+                    <img v-if="post.image !== null" class="" :src="usePage().props.ziggy.url + post.image" />
+                    <div class="max-h-[550px]  w-full border border-[#262626] rounded flex items-center justify-center"
+                        v-else>
                         <video class="max-h-[550px]" ref="videoPlayer" @click="togglePlayPause">
                             <source :src="post.video" />
                             Your browser does not support the video tag.
@@ -123,7 +136,7 @@ const toggleComments = () => {
                     </div>
                 </div>
             </div>
-            <div class="mt-3 mb-3 flex flex-row justify-between">
+            <div class="mt-3 mb-3 px-3 sm:px-0 flex flex-row justify-between">
                 <div class="flex gap-3">
                     <svg-icon v-if="like" class="w-7 h-7 hover:cursor-pointer animate-heart " type="mdi" color="red"
                         @click="likeUnlikePost(post.id)" :path="mdiHeart" />
@@ -143,7 +156,7 @@ const toggleComments = () => {
                         @click="bookmarkPost" :path="mdiBookmark" />
                 </div>
             </div>
-            <div class="leading-8">
+            <div class="leading-8 mb-3 px-3 sm:px-0">
                 <div v-if="post.enable_likes">
                     {{ post.likes.length }} J'aime
                 </div>
@@ -152,9 +165,10 @@ const toggleComments = () => {
                         post.description }}
                 </div>
                 <div v-if="post.enable_comments">
-                    <div class="hover:cursor-pointer" @click="toggleComments">Affichier les {{ post.comments.length }}
+                    <div class="hover:cursor-pointer text-[hsl(0,0%,45%)]" @click="toggleComments">Affichier les {{
+                        post.comments.length }}
                         commentaires</div>
-                    <div class="flex items-center justify-end gap-4 mt-1 h-[7%] relative">
+                    <div class=" items-center hidden sm:flex justify-end gap-4 mt-1 h-[7%] relative">
                         <textarea @keydown.enter="publishComment" @input="resize($event)"
                             class="bg-transparent overflow-auto p-0 no-scrollbar resize-none h-8 max-h-16 w-[93%] border-none focus:ring-0"
                             placeholder="Ajouter un commentaire..." type="text" v-model="currentComment"></textarea>
@@ -177,6 +191,20 @@ const toggleComments = () => {
 <style>
 .animate-heart {
     animation: growAndShrink 0.3s;
+}
+
+.animate-pulse-bg {
+    animation: pulse-bg 1s infinite alternate ease-in-out;
+}
+
+
+@keyframes pulse-bg {
+    from {
+        background-color: hsl(0, 0%, 30%);
+    }
+    to {
+        background-color: hsl(0, 0%, 22%);
+    }
 }
 
 @keyframes growAndShrink {
