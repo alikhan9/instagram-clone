@@ -22,23 +22,21 @@ const showComments = ref(null);
 
 const landmark = ref(null);
 const posts = usePostStore();
-const open = ref(true);
 
 
 const user = usePage().props.auth.user;
 
 watch(() => props.sComments, newValue => {
-    window.history.replaceState({}, '', '');
     toggleComments();
 })
 
 onMounted(() => {
-    window.history.replaceState({}, '', '');
+    window.history.replaceState({}, '', '/');
     if (props.sComments)
         toggleComments();
 })
 
-useInfiniteScroll('posts', landmark, '0px 0px 150px 0px');
+useInfiniteScroll('posts', landmark, '0px 0px 150px 0px', ['posts']);
 
 const sendFollow = (id) => {
     axios.post('/follow/' + id)
@@ -49,12 +47,10 @@ const sendFollow = (id) => {
 
 const toggleComments = () => {
     showComments.value = !showComments.value;
-    console.log(showComments.value);
     if (showComments.value)
         document.getElementById('main-content').style.overflow = 'hidden';
     else
         document.getElementById('main-content').style.overflow = 'auto';
-    console.log('wtf');
 }
 
 
@@ -81,7 +77,7 @@ const toggleComments = () => {
                         </div>
                         <div v-for="(post, index) in posts.getValue()" :key="index"
                             class="sm:px-4 flex flex-col justify-center mt-6">
-                            <Post class="pb-6 border-b border-[#262626]" :post="post" />
+                            <Post class="pb-6 border-b border-[#262626]" :showComments="showComments" :post="post" />
                         </div>
                         <div class="h-[10px] w-full" ref="landmark"></div>
                     </div>
@@ -121,7 +117,7 @@ const toggleComments = () => {
                 </div>
             </div>
         </div>
-       
+
     </div>
 </template>
 

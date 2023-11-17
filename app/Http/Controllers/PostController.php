@@ -13,14 +13,13 @@ class PostController extends Controller
 {
     public function index(Request $request)
     {
-        $posts = Post::orderByDesc('created_at')
-    ->paginate(5)
-    ->withQueryString();
-
-        $posts->getCollection()->transform(function ($post) {
+        $posts = Post::latest()->paginate(3)->through(function ($post) {
             $post->userLiked = $post->userLiked();
+            $post->numberOfComments = $post->comments()->count();
+            $post->numberOfLikes = $post->likes()->count();
             return $post;
         });
+
 
         $mostFollowedUsers = User::select('id', 'name', 'username')
         ->withCount('following')
@@ -34,7 +33,7 @@ class PostController extends Controller
             'posts' => $posts,
             'mostFollowedUsers' => $mostFollowedUsers,
             'sComments' => $request->has('showComments') ? filter_var($request->showComments, FILTER_VALIDATE_BOOLEAN) : false,
-            'comments' => [],
+            'post' => $request->has('postId') ? Post::find($request->postId)->get() : null,
         ]);
     }
 

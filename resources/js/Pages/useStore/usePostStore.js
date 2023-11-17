@@ -5,7 +5,8 @@ export let usePostStore = defineStore('posts', {
         return {
             value: [],
             propName: '',
-            notifications: []
+            notifications: [],
+            comments: [],
         }
     },
 
@@ -30,6 +31,9 @@ export let usePostStore = defineStore('posts', {
         },
         setPosts(posts) {
             this.value = posts;
+        },
+        setComments(comments) {
+            this.comments = comments;
         },
         addPost(post) {
             this.value.push(post);

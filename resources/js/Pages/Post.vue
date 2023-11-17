@@ -15,6 +15,7 @@ import { useDebounceFn } from '@vueuse/core'
 
 const props = defineProps({
     post: Object,
+    showComments: Boolean,
 })
 
 const emit = defineEmits(['update:showFullPost']);
@@ -40,6 +41,19 @@ const togglePlayPause = () => {
         isPlaying.value = false;
     }
 };
+
+
+const getComments = () => {
+    router.get('/', { showComments: true, postId: props.post.id }, {
+        preserveScroll: true,
+        preserveScroll: true,
+        only: ['sComments'],
+        onFinish: route => {
+            console.log(route);
+        }
+    })
+}
+
 
 const sendLike = useDebounceFn((id, value) => {
     axios.post(`/post/${id}/like`, { value })
@@ -150,9 +164,9 @@ const toggleComments = () => {
                     <div class="inline" @click="toggleComments">
                         <unicon class="w-7 h-7 hover:cursor-pointer" name="comment" fill="white"></unicon>
                     </div>
-                    <Link href="/" :preserveState="true" :preserveScroll="true" :data="{ showComments: true }">
-                    <unicon class="w-7 h-7 hover:cursor-pointer" name="comment" fill="red"></unicon>
-                    </Link>
+                    <div @click="getComments">
+                        <unicon class="w-7 h-7 hover:cursor-pointer" name="comment" fill="red"></unicon>
+                    </div>
                     <unicon class="w-7 h-7" name="telegram-alt" fill="white"></unicon>
                 </div>
                 <div>
@@ -165,7 +179,7 @@ const toggleComments = () => {
             </div>
             <div class="leading-8 mb-3 px-3 sm:px-0">
                 <div v-if="post.enable_likes">
-                    {{ post.likes.length }} J'aime
+                    {{ post.numberOfLinkes }} J'aime
                 </div>
                 <div v-if="post.description">
                     <Link class="font-semibold" :href="'/profile/' + post.user.name">{{ post.user.name }}</Link> {{
@@ -173,7 +187,7 @@ const toggleComments = () => {
                 </div>
                 <div v-if="post.enable_comments">
                     <div class="hover:cursor-pointer text-[hsl(0,0%,45%)]" @click="toggleComments">Affichier les {{
-                        post.comments.length }}
+                        post.numberOfComments }}
                         commentaires</div>
                     <div class=" items-center hidden sm:flex justify-end gap-4 mt-1 h-[7%] relative">
                         <textarea @keydown.enter="publishComment" @input="resize($event)"

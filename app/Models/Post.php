@@ -15,7 +15,7 @@ class Post extends Model
     'description','location','video',
     'image','enable_comments','enable_likes','image_description'];
 
-    protected $with = ['user','likes','comments'];
+    protected $with = ['user'];
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id')->select('id', 'name', 'email');
@@ -23,7 +23,7 @@ class Post extends Model
 
     public function likes()
     {
-        return $this->belongsToMany(User::class, 'post_likes')->select('user_id')->withTimestamps();
+        return $this->belongsToMany(User::class, 'post_likes')->latest();
     }
 
     public function userLiked()
