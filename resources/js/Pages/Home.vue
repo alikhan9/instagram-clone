@@ -22,6 +22,7 @@ const showComments = ref(null);
 
 const landmark = ref(null);
 const posts = usePostStore();
+const scrollPosition = ref(null);
 
 
 const user = usePage().props.auth.user;
@@ -31,7 +32,6 @@ watch(() => props.sComments, newValue => {
 })
 
 onMounted(() => {
-    window.history.replaceState({}, '', '/');
     if (props.sComments)
         toggleComments();
 })
@@ -46,11 +46,18 @@ const sendFollow = (id) => {
 }
 
 const toggleComments = () => {
-    showComments.value = !showComments.value;
     if (showComments.value)
+        window.history.replaceState({}, '', '/');
+
+    showComments.value = !showComments.value;
+    if (showComments.value) {
+        scrollPosition.value = document.getElementById('home').scrollTop;
         document.getElementById('main-content').style.overflow = 'hidden';
-    else
+    }
+    else {
         document.getElementById('main-content').style.overflow = 'auto';
+        document.getElementById('home').scroll(0, scrollPosition.value);
+    }
 }
 
 
@@ -59,10 +66,10 @@ const toggleComments = () => {
 <template>
     <Head title="Home" />
     <div class="h-full w-full">
-        <div v-if="showComments">
+        <div class="z-[99]" v-if="showComments">
             <MobileComments @toggleComments="toggleComments" />
         </div>
-        <div id="home" :class="{ 'flex justify-center w-full': true }">
+        <div id="home" :class="{ 'flex z-0 justify-center w-full': true, 'hidden': showComments }">
             <div class="w-full ">
                 <div class="text-white flex justify-center sm:pt-4 gap-16 xl:pt-24 sm:min-h-screen">
                     <div class="col-start-3 shrink flex items-center flex-col col-span-4 ">

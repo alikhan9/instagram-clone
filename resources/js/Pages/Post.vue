@@ -12,11 +12,11 @@ import { onClickOutside } from '@vueuse/core'
 import { usePostStore } from './useStore/usePostStore';
 import { useDebounceFn } from '@vueuse/core'
 
-
 const props = defineProps({
     post: Object,
     showComments: Boolean,
 })
+
 
 const emit = defineEmits(['update:showFullPost']);
 
@@ -44,14 +44,11 @@ const togglePlayPause = () => {
 
 
 const getComments = () => {
-    router.get('/', { showComments: true, postId: props.post.id }, {
+    router.get('/', { showComments: true, postId: props.post.id, savePosts: true }, {
         preserveScroll: true,
         preserveScroll: true,
-        only: ['sComments'],
-        onFinish: route => {
-            console.log(route);
-        }
-    })
+        only: ['sComments', 'comments', 'post', 'savePosts'],
+    });
 }
 
 

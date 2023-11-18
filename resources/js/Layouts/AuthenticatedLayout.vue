@@ -107,7 +107,7 @@ const toggleShowCreatePost = () => {
                             <span v-if="!showSearch && !showNotifications">Profil</span>
                         </MenuComponent>
                     </div>
-                    <div class="text-white w-full pr-8 absolute max-w-[300px] bottom-0 mb-5" v-on-click-outside="closePlusMenu">
+                    <div class="text-white lg:w-full pr-8 absolute w-[70px] lg:max-w-[300px] bottom-0 mb-5" v-on-click-outside="closePlusMenu">
                         <MenuComponent @click="togglePlusMenu" :path="mdiMenu" :is-link="false" :mini="true">
                             <span class="w-full" v-if="!showSearch && !showNotifications">Plus</span>
                         </MenuComponent>

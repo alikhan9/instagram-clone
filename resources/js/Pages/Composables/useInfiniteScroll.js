@@ -10,28 +10,42 @@ export default function infiniteScroll(propName, landmark = null, margin = '0px 
     var value = usePage().props[propName];
     if (propName == 'posts')
         posts.setPosts(value.data);
-    if (propName == 'post')
-        posts.setPost(value.data);
+    if (propName == 'comments' && value)
+        posts.setComments(value.data);
     const initialUrl = usePage().url;
 
     watch(() => usePage().props[propName], newValue => {
+        if (propName == 'posts' && usePage().props['savePosts']) {
+            console.log('Success');
+            return;
+        }
         value = newValue;
     })
 
     const loadMoreData = () => {
-        if (!value.next_page_url)
+        if (value && !value.next_page_url)
             return;
         router.get(value.next_page_url, {}, {
             preserveScroll: true,
             preserveState: true,
             replace: false,
-            // only: only,
+            only: only,
+            replace: true,
             onFinish: () => {
-                console.log(value.data);
-                window.history.replaceState({}, '', initialUrl);
-                posts.addPost(...value.data);
+                if (propName == 'posts')
+                    // window.history.replaceState({}, '', '/');
+                    router.replace('/');
+                else
+                    window.history.replaceState({}, '', initialUrl);
+                if (propName == 'posts')
+                    posts.addPosts(value?.data);
+                if (propName == 'comments')
+                    posts.addComments(value?.data);
             }
         });
+        // axios.get(value.next_page_url).then(response => {
+        //     console.log(response);
+        // })
     }
 
     if (landmark)

@@ -30,13 +30,16 @@ export let usePostStore = defineStore('posts', {
             this.value.filter(p => p.id == post_id)[0].comments.filter(c => c.id == comment_id)[0].responses.filter(r => r.id == like.comment_response_id)[0].likes.splice(0, 1);
         },
         setPosts(posts) {
-            this.value = posts;
+            this.value = [...posts];
         },
         setComments(comments) {
-            this.comments = comments;
+            this.comments = [...comments ];
         },
-        addPost(post) {
-            this.value.push(post);
+        addPosts(posts) {
+            this.value = [...this.value, ...posts]
+        },
+        addComments(comments) {
+            this.comments = [...this.comments, ...comments]
         },
         setPropName(name) {
             this.propName = name;

@@ -17,8 +17,9 @@ class PostController extends Controller
             $post->userLiked = $post->userLiked();
             $post->numberOfComments = $post->comments()->count();
             $post->numberOfLikes = $post->likes()->count();
+            $post->comments = [];
             return $post;
-        });
+        })->withQueryString();
 
 
         $mostFollowedUsers = User::select('id', 'name', 'username')
@@ -28,12 +29,14 @@ class PostController extends Controller
         ->take(5)
         ->get();
 
-
+        dd($posts, $request);
         return Inertia::render('Home', [
             'posts' => $posts,
             'mostFollowedUsers' => $mostFollowedUsers,
             'sComments' => $request->has('showComments') ? filter_var($request->showComments, FILTER_VALIDATE_BOOLEAN) : false,
-            'post' => $request->has('postId') ? Post::find($request->postId)->get() : null,
+            'post' => $request->has('postId') ? Post::find($request->postId) : null,
+            'comments' => $request->has('postId') ? Post::find($request->postId)->comments()->paginate(6)->withQueryString() : null,
+            'savePosts' => $request->savePosts
         ]);
     }
 
