@@ -13,7 +13,7 @@ class PostController extends Controller
 {
     public function index(Request $request)
     {
-        $posts = Post::latest()->paginate(3)->through(function ($post) {
+        $posts = Post::latest()->paginate(3, ['*'], 'p')->through(function ($post) {
             $post->userLiked = $post->userLiked();
             $post->numberOfComments = $post->comments()->count();
             $post->numberOfLikes = $post->likes()->count();
@@ -22,21 +22,31 @@ class PostController extends Controller
         })->withQueryString();
 
 
-        $mostFollowedUsers = User::select('id', 'name', 'username')
+        $mostFollowedUsers = User::select(['id', 'name', 'username'])
         ->withCount('following')
         ->whereNotIn('users.id', auth()->user()->following()->select('users.id'))
         ->orderBy('following_count', 'desc')
         ->take(5)
         ->get();
 
-        dd($posts, $request);
+        $post = null;
+        if($request->has('pid')) {
+            $post = Post::find($request->pid);
+            $post['userLiked'] = $post->userLiked();
+            $post['numberOfComments'] = $post->comments()->count();
+            $post['numberOfLikes'] = $post->likes()->count();
+            $post['likes'] = $post->likes()->count();
+            $post['userBookmarked'] = $post->userBookmarked();
+        }
+
+
+
+        // dd($request->has('postId') ? Post::find($request->postId) : null);
         return Inertia::render('Home', [
             'posts' => $posts,
             'mostFollowedUsers' => $mostFollowedUsers,
-            'sComments' => $request->has('showComments') ? filter_var($request->showComments, FILTER_VALIDATE_BOOLEAN) : false,
-            'post' => $request->has('postId') ? Post::find($request->postId) : null,
-            'comments' => $request->has('postId') ? Post::find($request->postId)->comments()->paginate(6)->withQueryString() : null,
-            'savePosts' => $request->savePosts
+            'post' => $post,
+            'comments' => $request->has('pid') ? Post::find($request->pid)->comments()->paginate(15, ['*'], 'c')->withQueryString() : null,
         ]);
     }
 

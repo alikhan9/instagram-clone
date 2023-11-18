@@ -5,6 +5,8 @@ import { Head, Link, usePage } from "@inertiajs/vue3";
 import useInfiniteScroll from './Composables/useInfiniteScroll';
 import { usePostStore } from './useStore/usePostStore';
 import MobileComments from './MobileComments.vue';
+import Comments from './Comments.vue';
+import { useWindowSize } from '@vueuse/core'
 
 const props = defineProps({
     mostFollowedUsers: Object,
@@ -16,23 +18,23 @@ const props = defineProps({
     comments: Object,
 });
 
-
-
 const showComments = ref(null);
 
 const landmark = ref(null);
 const posts = usePostStore();
 const scrollPosition = ref(null);
+const { width, height } = useWindowSize()
 
 
 const user = usePage().props.auth.user;
 
-watch(() => props.sComments, newValue => {
-    toggleComments();
+watch(() => usePage().props.post, (newValue, oldValue) => {
+    if (newValue?.id != oldValue?.id)
+        toggleComments();
 })
 
 onMounted(() => {
-    if (props.sComments)
+    if (usePage().props.post)
         toggleComments();
 })
 
@@ -47,7 +49,7 @@ const sendFollow = (id) => {
 
 const toggleComments = () => {
     if (showComments.value)
-        window.history.replaceState({}, '', '/');
+        window.history.replaceState({}, '', '');
 
     showComments.value = !showComments.value;
     if (showComments.value) {
@@ -65,9 +67,10 @@ const toggleComments = () => {
 
 <template>
     <Head title="Home" />
-    <div class="h-full w-full">
-        <div class="z-[99]" v-if="showComments">
-            <MobileComments @toggleComments="toggleComments" />
+    <div class="relative w-full h-full" @scroll="updateScrollPosition">
+        <div v-if="showComments">
+            <Comments v-if="width > 1023" @toggleComments="toggleComments" />
+            <MobileComments v-else @toggleComments="toggleComments" />
         </div>
         <div id="home" :class="{ 'flex z-0 justify-center w-full': true, 'hidden': showComments }">
             <div class="w-full ">

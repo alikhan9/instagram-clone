@@ -9,23 +9,20 @@ import { onUnmounted, onMounted } from "vue";
 import CommentContent from "./CommentContent.vue";
 import { usePostStore } from "./useStore/usePostStore";
 import axios from "axios";
+import { useDebounceFn } from '@vueuse/core'
+import useInfiniteScroll from './Composables/useInfiniteScroll';
 
-const emit = defineEmits(["update:showComments"]);
-const props = defineProps({
-    post: Object,
-    like: Boolean,
-    bookmark: Boolean,
-    likeUnlikePost: Function,
-    bookmarkPost: Function,
-});
 
+const post = usePage().props.post;
+const like = post?.userLiked;
+const bookmark = ref(post.userBookmarked)
 const posts = usePostStore();
 const showEmojiPicker = ref(false);
 const target = ref(null);
 const currentComment = ref("");
 const inputRef = ref(null);
 const responseTo = ref(null);
-onClickOutside(target, () => emit("update:showComments", false));
+const landmarkComments = ref(null);
 
 const videoPlayer = ref(null);
 const isPlaying = ref(false);
@@ -41,9 +38,26 @@ const togglePlayPause = () => {
 };
 
 
+const sendLike = useDebounceFn((id, value) => {
+    axios.post(`/post/${id}/like`, { value })
+}, 500);
+
+const sendBookmark = useDebounceFn((id, value) => {
+    axios.post(`/bookmark`, { post_id: id, value })
+}, 500);
+
+const likeUnlikePost = id => {
+    like.value = !like.value;
+    sendLike(id, like.value);
+}
+const bookmarkPost = () => {
+    bookmark.value = !bookmark.value;
+    sendBookmark(post.id, bookmark.value);
+}
+
 onMounted(() => {
-    window.Echo.channel("post-" + props.post.id).listen(".comments", (e) => {
-        if (!e[1]) posts.addCommentToPost(e[0]);
+    window.Echo.channel("post-" + post.id).listen(".comments", (e) => {
+        if (!e[1]) posts.addComment(e[0]);
         else posts.addCommentResponse(e[0]);
     })
         .listen(".likes", (e) => {
@@ -63,7 +77,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-    window.Echo.leave("post-" + props.post.id);
+    window.Echo.leave("post-" + post.id);
 });
 
 const onSelectEmoji = (emoji) => {
@@ -72,9 +86,19 @@ const onSelectEmoji = (emoji) => {
 };
 
 const close = () => {
-    emit("update:showComments", false);
-};
+    router.get('/', {}, {
+        preserveState: true,
+        preserveScroll: true,
+        only: ['post', 'comments']
+    });
+}
 
+
+
+useInfiniteScroll('comments', landmarkComments, '0px 0px 150px 0px', ['comments']);
+
+
+onClickOutside(target, () => close());
 const publishComment = (event) => {
     if (event.shiftKey) return;
 
@@ -86,7 +110,7 @@ const publishComment = (event) => {
         });
     else
         axios.post("/post/comment", {
-            post_id: props.post.id,
+            post_id: post.id,
             content: currentComment.value,
         });
 
@@ -104,10 +128,14 @@ const addResponseComment = (data) => {
     responseTo.value = data;
     inputRef.value.focus();
 };
+
+
+
 </script>
 
 <template>
-    <div class="fixed z-50 backdrop-brightness-[0.4] flex justify-center top-0 right-0 items-center w-screen h-screen">
+    <div
+        class="fixed z-50 backdrop-brightness-[0.4] flex justify-center top-0 right-0 items-center w-screen h-screen">
         <div ref="target">
             <div class="h-[90vh] min-w-[50vw] flex bg-black">
                 <div class="max-w-[60%] flex items-center relative">
@@ -123,7 +151,7 @@ const addResponseComment = (data) => {
                     </div>
                 </div>
 
-                <div class="w-[500px] border-l border-[#262626]">
+                <div class="w-[500px] text-white border-l border-[#262626]">
                     <div class="flex justify-between border-b items-center py-5 border-[#262626]">
                         <div class="flex gap-3 px-6 items-center w-full">
                             <img class="rounded-full" src="https://picsum.photos/seed/picsum/32/32" />
@@ -134,10 +162,11 @@ const addResponseComment = (data) => {
                         </div>
                     </div>
                     <div class="border-b py-5 h-[73%] border-[#262626] overflow-auto no-scrollbar">
-                        <div class="mx-6 mb-8" v-for="(comment, index) in post.comments" :key="index">
+                        <div class="mx-6 mb-8" v-for="(comment, index) in posts.comments" :key="index">
                             <CommentContent @sendResponseComment="addResponseComment" :postId="post.id"
                                 :comment="comment" />
                         </div>
+                        <div ref="landmarkComments"></div>
                     </div>
                     <div class="border-b border-[#262626] py-5">
                         <div class="px-6 flex flex-row justify-between">
@@ -161,7 +190,7 @@ const addResponseComment = (data) => {
                             </div>
                         </div>
                         <div class="px-6 mt-5">
-                            <p class="text-xl">{{ post.likes.length }} J'aime</p>
+                            <p class="text-xl">{{ post.likes }} J'aime</p>
                             <p class="text-sm text-[hsl(0,0%,60%)]">{{ post.created_at }}</p>
                         </div>
                     </div>

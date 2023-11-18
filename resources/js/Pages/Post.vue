@@ -44,10 +44,10 @@ const togglePlayPause = () => {
 
 
 const getComments = () => {
-    router.get('/', { showComments: true, postId: props.post.id, savePosts: true }, {
+    router.get('/', { pid: props.post.id }, {
         preserveScroll: true,
-        preserveScroll: true,
-        only: ['sComments', 'comments', 'post', 'savePosts'],
+        preserveState: true,
+        only:['post','comments']
     });
 }
 
@@ -98,12 +98,6 @@ const bookmarkPost = () => {
     sendBookmark(props.post.id, bookmark.value);
 }
 
-const toggleComments = () => {
-    showComments.value = !showComments.value;
-    document.getElementById('home').style.overflow = showComments.value ? 'hidden' : 'auto';
-    emit('update:showFullPost', showComments.value);
-
-}
 
 </script>
 
@@ -121,10 +115,6 @@ const toggleComments = () => {
     </div>
 
     <div v-else class="xl:w-[470px]  sm:pr-0 w-full grow">
-        <div v-if="showComments">
-            <Comments v-model:showComments="showComments" v-model:bookmark="bookmark" v-model:like="like"
-                :likeUnlikePost="likeUnlikePost" :bookmarkPost="bookmarkPost" :post="post" />
-        </div>
         <div>
             <div class="flex justify-between items-center gap-3 mb-3 px-3 sm:px-0">
                 <div class="flex gap-3 mb-3">
@@ -158,11 +148,8 @@ const toggleComments = () => {
                     <div v-else class="h-7" @click="likeUnlikePost(post.id)">
                         <unicon class="w-7 h-7 hover:cursor-pointer" name="heart" fill="white" />
                     </div>
-                    <div class="inline" @click="toggleComments">
+                    <div class="inline" @click="getComments">
                         <unicon class="w-7 h-7 hover:cursor-pointer" name="comment" fill="white"></unicon>
-                    </div>
-                    <div @click="getComments">
-                        <unicon class="w-7 h-7 hover:cursor-pointer" name="comment" fill="red"></unicon>
                     </div>
                     <unicon class="w-7 h-7" name="telegram-alt" fill="white"></unicon>
                 </div>
@@ -183,7 +170,7 @@ const toggleComments = () => {
                         post.description }}
                 </div>
                 <div v-if="post.enable_comments">
-                    <div class="hover:cursor-pointer text-[hsl(0,0%,45%)]" @click="toggleComments">Affichier les {{
+                    <div class="hover:cursor-pointer text-[hsl(0,0%,45%)]" @click="getComments">Affichier les {{
                         post.numberOfComments }}
                         commentaires</div>
                     <div class=" items-center hidden sm:flex justify-end gap-4 mt-1 h-[7%] relative">

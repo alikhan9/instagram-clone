@@ -6,7 +6,7 @@ import { usePostStore } from '../useStore/usePostStore'
 
 export default function infiniteScroll(propName, landmark = null, margin = '0px 0px 50px 0px', only = []) {
 
-    const posts = usePostStore();
+    const posts = usePostStore()
     var value = usePage().props[propName];
     if (propName == 'posts')
         posts.setPosts(value.data);
@@ -15,32 +15,27 @@ export default function infiniteScroll(propName, landmark = null, margin = '0px 
     const initialUrl = usePage().url;
 
     watch(() => usePage().props[propName], newValue => {
-        if (propName == 'posts' && usePage().props['savePosts']) {
-            console.log('Success');
-            return;
-        }
         value = newValue;
     })
 
     const loadMoreData = () => {
         if (value && !value.next_page_url)
             return;
-        router.get(value.next_page_url, {}, {
+        router.get(value.next_page_url, { pid: usePage().props?.post?.id }, {
             preserveScroll: true,
             preserveState: true,
-            replace: false,
             only: only,
-            replace: true,
+            // replace: true,
             onFinish: () => {
                 if (propName == 'posts')
-                    // window.history.replaceState({}, '', '/');
-                    router.replace('/');
+                    window.history.replaceState({}, '', '/');
                 else
                     window.history.replaceState({}, '', initialUrl);
                 if (propName == 'posts')
                     posts.addPosts(value?.data);
-                if (propName == 'comments')
+                if (propName == 'comments') {
                     posts.addComments(value?.data);
+                }
             }
         });
         // axios.get(value.next_page_url).then(response => {

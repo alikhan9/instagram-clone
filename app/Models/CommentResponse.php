@@ -7,6 +7,32 @@ use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 
+/**
+ * App\Models\CommentResponse
+ *
+ * @property int $id
+ * @property int $post_comment_id
+ * @property int $user_id
+ * @property string $content
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ResponseLike> $likes
+ * @property-read int|null $likes_count
+ * @property-read \App\Models\PostComment $postComment
+ * @property-read \App\Models\User $user
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ResponseLike> $userLiked
+ * @property-read int|null $user_liked_count
+ * @method static \Illuminate\Database\Eloquent\Builder|CommentResponse newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|CommentResponse newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|CommentResponse query()
+ * @method static \Illuminate\Database\Eloquent\Builder|CommentResponse whereContent($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CommentResponse whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CommentResponse whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CommentResponse wherePostCommentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CommentResponse whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CommentResponse whereUserId($value)
+ * @mixin \Eloquent
+ */
 class CommentResponse extends Model
 {
     use HasFactory;

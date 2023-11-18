@@ -54,7 +54,7 @@ const toggleShowCreatePost = () => {
 
 </script>
 <template>
-    <div class="bg-black min-h-screen w-screen inset-0 fixed">
+    <div class="bg-black inset-0 fixed">
         <div class="h-full">
             <Transition enter-from-class="scale-x-0" enter-leave-class="scale-x-100 "
                 enter-active-class="transition ease-out duration-300 origin-left" leave-from-class="translate-x-[-20px]"
@@ -107,7 +107,7 @@ const toggleShowCreatePost = () => {
                             <span v-if="!showSearch && !showNotifications">Profil</span>
                         </MenuComponent>
                     </div>
-                    <div class="text-white lg:w-full pr-8 absolute w-[70px] lg:max-w-[300px] bottom-0 mb-5" v-on-click-outside="closePlusMenu">
+                    <div class="text-white lg:w-[170px] w-[70px] xl:w-[335px] pr-8 absolute  bottom-0 mb-5" v-on-click-outside="closePlusMenu">
                         <MenuComponent @click="togglePlusMenu" :path="mdiMenu" :is-link="false" :mini="true">
                             <span class="w-full" v-if="!showSearch && !showNotifications">Plus</span>
                         </MenuComponent>
