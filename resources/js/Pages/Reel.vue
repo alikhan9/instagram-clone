@@ -26,7 +26,7 @@ const emojiRef = ref(null);
 const currentComment = ref('');
 const showEmojiPicker = ref(false);
 const like = ref(props.post.userLiked);
-const bookmark = ref(false);
+const bookmark = ref(props.post.userBookmark);
 const showComments = ref(false);
 const videoPlayer = ref();
 const glowOverlay = ref();
@@ -41,6 +41,10 @@ watch(() => props.stopVideo, (newValue, oldValue) => {
         videoPlayer.value.pause();
 });
 
+watch(() => usePage().props['showComments'], (newValue, oldValue) => {
+    toggleComments();
+})
+
 const togglePlayPause = () => {
     if (videoPlayer.value.paused) {
         videoPlayer.value.play();
@@ -50,6 +54,21 @@ const togglePlayPause = () => {
         isPlaying.value = false;
     }
 };
+
+
+const getComments = () => {
+    router.get('/reels', { pid: props.post.id, sC: true }, {
+        preserveScroll: true,
+        preserveState: true,
+        only: ['post', 'comments', 'showComments']
+    });
+}
+
+const toggleComments = () => {
+    if (showComments.value)
+        window.history.replaceState({}, '', '');
+    showComments.value = !showComments.value;
+}
 
 const sendLike = useDebounceFn((id, value) => {
     axios.post(`/post/${id}/like`, { value })
@@ -68,7 +87,7 @@ onMounted(() => {
     }
 
     function updateGlowColor() {
-        if(!videoPlayer.value)
+        if (!videoPlayer.value)
             return;
         // Create a canvas to extract the video frame
         const canvas = document.createElement('canvas');
@@ -143,10 +162,6 @@ const bookmarkPost = () => {
     sendBookmark(props.post.id, bookmark.value);
 }
 
-const toggleComments = () => {
-    showComments.value = !showComments.value;
-}
-
 const sendFollow = () => {
     axios.post('/follow/' + props.post.user.id)
         .then(res => {
@@ -181,7 +196,6 @@ const sendFollow = () => {
                             </div>
                             <div>
                                 <Link class="font-semibold" :href="'/profile/' + post.user.name">{{ post.user.name }}</Link>
-                                <!-- <p>{{ post.location }}</p> -->
                             </div>
                             <div class="text-xl">
                                 •
@@ -203,20 +217,20 @@ const sendFollow = () => {
                         <svg-icon class="w-7 h-7 hover:cursor-pointer animate-heart " type="mdi" color="red"
                             @click="likeUnlikePost(post.id)" :path="mdiHeart" />
                     </div>
-                    <div class="min-w-full text-center mt-1">
-                        {{ post.likes.length }}
+                    <div class="min-w-full text-white text-center mt-1">
+                        {{ post.numberOfComments }}
                     </div>
                 </div>
                 <div v-else @click="likeUnlikePost(post.id)">
                     <unicon class="w-7 h-7 hover:cursor-pointer" name="heart" fill="white" />
                     <div class="min-w-full text-center mt-1">
-                        {{ post.likes.length }}
+                        {{ post.likes }}
                     </div>
                 </div>
-                <div class="inline text-center" @click="toggleComments">
+                <div class="inline text-center" @click="getComments">
                     <unicon class="w-7 h-7 hover:cursor-pointer" name="comment" fill="white"></unicon>
                     <div class="min-w-full">
-                        {{ post.comments.length }}
+                        {{ post.numberOfComments }}
                     </div>
                 </div>
                 <unicon class="w-7 h-7" name="telegram-alt" fill="white"></unicon>

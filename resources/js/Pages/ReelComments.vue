@@ -9,6 +9,8 @@ import { onUnmounted, onMounted } from "vue";
 import CommentContent from "./CommentContent.vue";
 import { usePostStore } from "./useStore/usePostStore";
 import axios from "axios";
+import useInfiniteScroll from './Composables/useInfiniteScroll';
+
 
 const emit = defineEmits(["update:showComments"]);
 const props = defineProps({
@@ -25,25 +27,14 @@ const target = ref(null);
 const currentComment = ref("");
 const inputRef = ref(null);
 const responseTo = ref(null);
-onClickOutside(target, () => emit("update:showComments", false));
+const reelComments = ref(null);
+onClickOutside(target, () => close());
 
-const videoPlayer = ref(null);
-const isPlaying = ref(false);
-
-const togglePlayPause = () => {
-    if (videoPlayer.value.paused) {
-        videoPlayer.value.play();
-        isPlaying.value = true;
-    } else {
-        videoPlayer.value.pause();
-        isPlaying.value = false;
-    }
-};
-
+useInfiniteScroll('comments', reelComments, '0px 0px 150px 0px', ['comments']);
 
 onMounted(() => {
     window.Echo.channel("post-" + props.post.id).listen(".comments", (e) => {
-        if (!e[1]) posts.addCommentToPost(e[0]);
+        if (!e[1]) posts.addComment(e[0]);
         else posts.addCommentResponse(e[0]);
     })
         .listen(".likes", (e) => {
@@ -72,7 +63,11 @@ const onSelectEmoji = (emoji) => {
 };
 
 const close = () => {
-    emit("update:showComments", false);
+    router.get('/reels', {}, {
+        preserveState: true,
+        preserveScroll: true,
+        only: ['post', 'comments','showComments']
+    });
 };
 
 const publishComment = (event) => {
@@ -107,24 +102,26 @@ const addResponseComment = (data) => {
 </script>
 
 <template>
-    <div
-        class="absolute z-40 2xl:right-[10%] 2xl:top-[17%] lg:right-[30%] right-10 top-[8%] bg-[#262626] items-center w-[343.5px] h-[643px] rounded-lg  max-h-[664px] border-[#262626] border" ref="target">
-        <div >
+    <div class="absolute z-40 2xl:right-[10%] 2xl:top-[17%] lg:right-[30%] right-10 top-[8%] bg-[#262626] items-center w-[343.5px] h-[643px] rounded-lg  max-h-[664px] border-[#262626] border"
+        ref="target">
+        <div>
             <div class="flex h-full">
                 <div>
                     <div class="text-white text-center relative flex justify-center gap-8 py-5 border-[#262626]">
-                        <div  class="px-6 absolute self-start left-0 ">
-                            <svg-icon class="hover:cursor-pointer " @click="() => emit('update:showComments', false)" type="mdi" :path="mdiClose"></svg-icon>
+                        <div class="px-6 absolute self-start left-0 ">
+                            <svg-icon class="hover:cursor-pointer " @click="close"
+                                type="mdi" :path="mdiClose"></svg-icon>
                         </div>
                         <div class="text-center text-xl">
                             Commentaire
                         </div>
                     </div>
                     <div class="border-b py-5 h-[530px] overflow-auto border-[#262626]">
-                        <div class="mx-6 mb-8" v-for="(comment, index) in post.comments" :key="index">
+                        <div class="mx-6 mb-8" v-for="(comment, index) in posts.comments" :key="index">
                             <CommentContent @sendResponseComment="addResponseComment" :postId="post.id"
                                 :comment="comment" />
                         </div>
+                        <div ref="reelComments"></div>
                     </div>
                     <div class="flex items items-center gap-4 h-[7%] px-6 py-5">
                         <svg-icon class="hover:cursor-pointer" type="mdi" size="32"

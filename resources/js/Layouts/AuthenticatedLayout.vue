@@ -45,6 +45,7 @@ const changeSearchState = () => {
 }
 const changeNotificationsState = () => {
     showNotifications.value = !showNotifications.value;
+    axios.post('/notifications');
 }
 
 const toggleShowCreatePost = () => {
@@ -107,7 +108,8 @@ const toggleShowCreatePost = () => {
                             <span v-if="!showSearch && !showNotifications">Profil</span>
                         </MenuComponent>
                     </div>
-                    <div class="text-white lg:w-[170px] w-[70px] xl:w-[335px] pr-8 absolute  bottom-0 mb-5" v-on-click-outside="closePlusMenu">
+                    <div class="text-white lg:w-[170px] w-[70px] xl:w-[335px] pr-8 absolute  bottom-0 mb-5"
+                        v-on-click-outside="closePlusMenu">
                         <MenuComponent @click="togglePlusMenu" :path="mdiMenu" :is-link="false" :mini="true">
                             <span class="w-full" v-if="!showSearch && !showNotifications">Plus</span>
                         </MenuComponent>
@@ -157,13 +159,13 @@ const toggleShowCreatePost = () => {
                     </div>
                 </div>
                 <Transition enter-from-class="opacity-0" enter-leave-class="opacity-100"
-                enter-active-class="transition-opacity ease-in duration-400" leave-to-class="opacity-0"
-                leave-active-class="transition duration-200 ease-in">
-                <create-post @toggleShowCreatePost="toggleShowCreatePost" v-model:showCreatePost="showCreatePost"
-                    v-if="showCreatePost"></create-post>
-            </Transition>
+                    enter-active-class="transition-opacity ease-in duration-400" leave-to-class="opacity-0"
+                    leave-active-class="transition duration-200 ease-in">
+                    <create-post @toggleShowCreatePost="toggleShowCreatePost" v-model:showCreatePost="showCreatePost"
+                        v-if="showCreatePost"></create-post>
+                </Transition>
                 <div id="main-content"
-                    :class="{ 'flex-1 overflow-auto w-full h-full sm:lock-scroll': true,'hidden sm:block':showCreatePost }">
+                    :class="{ 'flex-1 overflow-auto w-full h-full sm:lock-scroll': true, 'hidden sm:block': showCreatePost }">
                     <slot></slot>
                 </div>
                 <div :class="{ 'shrink-0 sm:hidden  z-50 p-4 border-[#262626] border-t': true }">

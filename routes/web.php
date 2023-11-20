@@ -26,7 +26,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile/{username}', [UserController::class, 'get']);
     Route::get('/profile/{username}/followers', [UserController::class, 'get']);
     Route::get('/profile/{username}/following', [UserController::class, 'get']);
-
+    Route::post('/notifications', [UserController::class, 'checkNotifications']);
     Route::get('/search/{username}', [UserController::class, 'search']);
 
     Route::post('/bookmark', [BookmarkController::class, 'store']);

@@ -39,9 +39,6 @@ class PostController extends Controller
             $post['userBookmarked'] = $post->userBookmarked();
         }
 
-
-
-        // dd($request->has('postId') ? Post::find($request->postId) : null);
         return Inertia::render('Home', [
             'posts' => $posts,
             'mostFollowedUsers' => $mostFollowedUsers,

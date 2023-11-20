@@ -152,8 +152,8 @@ const togglePlayPause = () => {
             <div v-else>
                 <div class="flex justify-center" v-if="step == 0">
                     <img v-if="file.type.includes('image/')" class="max-h-[80.5vh]" :src="url" />
-                    <div v-else>
-                        <video ref="videoPlayer" @click="togglePlayPause">
+                    <div v-else class="">
+                        <video ref="videoPlayer" class="object-cover" @click="togglePlayPause">
                             <source :src="url" type="video/mp4" />
                             Your browser does not support the video tag.
                         </video>
@@ -165,7 +165,7 @@ const togglePlayPause = () => {
                         <div class="col-span-2 flex justify-center">
                             <ImageFilterApp v-if="file.type.includes('image/')" :url="url"
                                 class="sm:bg-[#262626]" />
-                            <div class="relative" v-else>
+                            <div class="video-container" v-else>
                                 <video ref="videoPlayer" @click="togglePlayPause">
                                     <source :src="url" type="video/mp4" />
                                     Your browser does not support the video tag.
@@ -178,7 +178,14 @@ const togglePlayPause = () => {
                         enter-active-class="transition duration-1000 origin-left grid grid-cols-3">
                         <div v-if="step == 2"
                             class="lg:border-l-[1px] border-[hsl(0,0%,20%)] flex flex-col gap-4 lg:flex-row sm:h-[81vh]">
-                            <img class="lg:max-w-[70%]" :src="url" />
+                            <img class="lg:max-w-[70%]" v-if="file.type.includes('image/')" :src="url" />
+                            <div class="video-container" v-else>
+                                <video ref="videoPlayer" class="object-cover" @click="togglePlayPause">
+                                    <source :src="url" type="video/mp4" />
+                                    Your browser does not support the video tag.
+                                </video>
+                                <div class="play-button" v-if="!isPlaying" @click="togglePlayPause"></div>
+                            </div>
                             <div class="flex w-full lg:mt-4 flex-col px-4 lg:mx-0 mb-4 sm:mb-0 h-full gap-6">
                                 <div>
                                     <div class="text-lg sm:text-base flex gap-3 mb-3 items-center">
@@ -246,8 +253,7 @@ const togglePlayPause = () => {
 .video-container {
     position: relative;
     width: 100%;
-    height: 0;
-    padding-bottom: 56.25%;
+    height: 100%;
 }
 
 .video-container video {

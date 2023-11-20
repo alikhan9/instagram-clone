@@ -38,7 +38,7 @@ const loadMoreData = () => {
         onFinish: () => {
             window.history.replaceState({}, '', '/reels/' + posts.getValue()[currentPage.value].id + '/' + urlFollowed.value);
             if (value.value.data.length > 0)
-                posts.addPost(...value.value.data);
+                posts.addPosts(...value.value.data);
         }
     });
 }
@@ -93,8 +93,7 @@ posts.setPosts(usePage().props['posts'].data);
             <div class="w-full mt-4 flex justify-center">
                 <div class="2xl:w-[600px] w-[500px]">
                     <Carousel ref="carousel" :page.sync="currentPage" :showNavigators="false" :value="posts.getValue()"
-                        :numVisible="1" :numScroll="1" orientation="vertical" verticalViewPortHeight="88vh"
-                       >
+                        :numVisible="1" :numScroll="1" orientation="vertical" verticalViewPortHeight="88vh">
                         <template #item="{ data, index }">
                             <Reel :stopVideo="stopVideo" :followed="followed"
                                 v-if="data && index > currentPage - 2 && index < currentPage + 1" :post="data" />
