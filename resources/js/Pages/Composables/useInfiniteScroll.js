@@ -21,11 +21,10 @@ export default function infiniteScroll(propName, landmark = null, margin = '0px 
     const loadMoreData = () => {
         if (value && !value.next_page_url)
             return;
-        router.get(value.next_page_url, { pid: usePage().props?.post?.id }, {
+        router.get(value.next_page_url, {}, {
             preserveScroll: true,
             preserveState: true,
             only: only,
-            // replace: true,
             onFinish: () => {
                 if (propName == 'posts')
                     window.history.replaceState({}, '', '/');
@@ -38,9 +37,6 @@ export default function infiniteScroll(propName, landmark = null, margin = '0px 
                 }
             }
         });
-        // axios.get(value.next_page_url).then(response => {
-        //     console.log(response);
-        // })
     }
 
     if (landmark)

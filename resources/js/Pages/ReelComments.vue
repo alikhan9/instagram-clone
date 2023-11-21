@@ -102,7 +102,7 @@ const addResponseComment = (data) => {
 </script>
 
 <template>
-    <div class="absolute z-40 2xl:right-[10%] 2xl:top-[17%] lg:right-[30%] right-10 top-[8%] bg-[#262626] items-center w-[343.5px] h-[643px] rounded-lg  max-h-[664px] border-[#262626] border"
+    <div class="absolute z-40 2xl:right-[10%] 2xl:top-[17%] lg:right-[30%] sm:right-10 top-[8%] bg-[#262626] items-center w-full sm:w-[343.5px] h-full sm:h-[643px] rounded-lg  max-h-[664px] border-[#262626] border"
         ref="target">
         <div>
             <div class="flex h-full">

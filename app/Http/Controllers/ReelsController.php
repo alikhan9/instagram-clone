@@ -51,10 +51,11 @@ class ReelsController extends Controller
             }
         }
 
+
         return Inertia::render('Reels', [
             'posts' => $posts,
             'post' => $post,
-            'comments' => $request->has('pid') ? Post::find($request->pid)->comments()->paginate(15, ['*'], 'c')->withQueryString() : null,
+            'comments' => $request->has('sC') && $request->has('pid') ? Post::find($request->pid)->comments()->paginate(15, ['*'], 'coms')->withQueryString() : null,
             'followed' => $followed,
             'showComments' => $request->has('sC') ? true : false,
         ]);

@@ -29,7 +29,6 @@ const like = ref(props.post.userLiked);
 const bookmark = ref(props.post.userBookmarked);
 const showComments = ref(false);
 const videoPlayer = ref();
-const glowOverlay = ref();
 
 const isPlaying = ref(false);
 
@@ -79,49 +78,6 @@ const sendBookmark = useDebounceFn((id, value) => {
 onMounted(() => {
     if (usePage().props['showComments'])
         toggleComments();
-    videoPlayer.value.addEventListener('loadedmetadata', handleVideoLoaded);
-
-    function handleVideoLoaded() {
-        // Listen for the 'play' event to start updating the glow color
-        videoPlayer.value?.addEventListener('play', updateGlowColor);
-    }
-
-    function updateGlowColor() {
-        if (!videoPlayer.value)
-            return;
-        // Create a canvas to extract the video frame
-        const canvas = document.createElement('canvas');
-        canvas.width = videoPlayer.value.videoWidth;
-        canvas.height = videoPlayer.value.videoHeight;
-        const context = canvas.getContext('2d');
-
-        // Draw the current video frame onto the canvas
-        context.drawImage(videoPlayer.value, 0, 0, canvas.width, canvas.height);
-
-        // Get the pixel data from the canvas
-        const pixelData = context.getImageData(0, 0, canvas.width, canvas.height).data;
-
-        // Calculate the average color of the video frame
-        let totalR = 0;
-        let totalG = 0;
-        let totalB = 0;
-        for (let i = 0; i < pixelData.length; i += 4) {
-            totalR += pixelData[i];
-            totalG += pixelData[i + 1];
-            totalB += pixelData[i + 2];
-        }
-        const avgR = Math.round(totalR / (pixelData.length / 4));
-        const avgG = Math.round(totalG / (pixelData.length / 4));
-        const avgB = Math.round(totalB / (pixelData.length / 4));
-
-        // Set the glow color based on the average color of the video frame
-        const glowColor = `rgba(${avgR},${avgG},${avgB},0.5)`;
-        glowOverlay.value.style.boxShadow = `0 0 40px ${glowColor}`;
-
-        // Repeat the process on the next animation frame
-        requestAnimationFrame(updateGlowColor);
-    }
-
 });
 
 watch(() => props.post, newValue => {
@@ -157,42 +113,40 @@ const sendFollow = () => {
             <Teleport to="#reel">
                 <ReelComments v-model:showComments="showComments" :post="post" />
             </Teleport>
-
         </div>
-        <div class="flex h-full items-end" ref="postsRef">
-            <div class="sm:h-[846px] h-full hover:cursor-pointer flex items-center justify-center backdrop-blur-lg">
-                <div class="relative sm:h-[846px] flex ml-6 mt-8 items-center justify-center">
-                    <video class="max-h-[846px] w-[476px]" ref="videoPlayer" @click="togglePlayPause">
+        <div class="flex h-[96vh] sm:h-screen relative overflow-hidden items-start" ref="postsRef">
+            <div class="hover:cursor-pointer h-full backdrop-blur-lg">
+                <div class="relative h-full flex items-center w-full">
+                    <video class="w-screen  h-full" ref="videoPlayer" @click="togglePlayPause">
                         <source :src="post.video" />
                         Your browser does not support the video tag.
                     </video>
-                    <div ref="glowOverlay" class="glow-overlay absolute inset-0 rounded-md pointer-events-none"></div>
                     <div class="play-button" v-if="!isPlaying" @click="togglePlayPause"></div>
-                    <div class="flex min-w-full absolute bottom-0 justify-between items-center gap-3 mb-3">
-                        <div class="flex px-4 items-center gap-2 mb-3">
-                            <div class="pr-2">
-                                <img class="rounded-full" src="https://picsum.photos/seed/picsum/32/32" />
-                            </div>
-                            <div>
-                                <Link class="font-semibold" :href="'/profile/' + post.user.name">{{ post.user.name }}</Link>
-                            </div>
-                            <div class="text-xl">
-                                •
-                            </div>
-                            <button v-if="!following" @click="sendFollow" class="font-semibold">
-                                Suivre
-                            </button>
-                            <button v-else @click="sendFollow" class="font-semibold">
-                                Ne plus suivre
-                            </button>
-                        </div>
-                    </div>
                 </div>
             </div>
-            <div class="flex flex-col gap-6 ml-10">
+            <div class="flex absolute bottom-0 justify-between items-center gap-3 mb-3">
+                <div class="flex px-4 items-center text-white gap-2 mb-3">
+                    <div class="pr-2">
+                        <img class="rounded-full" src="https://picsum.photos/seed/picsum/32/32" />
+                    </div>
+                    <div>
+                        <Link class="font-semibold" :href="'/profile/' + post.user.name">{{ post.user.name }}</Link>
+                    </div>
+                    <div class="text-xl">
+                        •
+                    </div>
+                    <button v-if="!following" @click="sendFollow" class="font-semibold">
+                        Suivre
+                    </button>
+                    <button v-else @click="sendFollow" class="font-semibold">
+                        Ne plus suivre
+                    </button>
+                </div>
+            </div>
+            <div class="flex flex-col absolute text-white bottom-4 z-[99]  right-[20px] gap-6 ml-10">
                 <div v-if="like">
                     <div class="flex items-center">
-                        <svg-icon class="w-7 h-7 hover:cursor-pointer animate-heart " type="mdi" color="red"
+                        <svg-icon class="w-7 h-7 hover:cursor-pointer animate-heart  " type="mdi" color="red"
                             @click="likeUnlikePost(post.id)" :path="mdiHeart" />
                     </div>
                     <div class="min-w-full text-white text-center mt-1">
@@ -200,7 +154,7 @@ const sendFollow = () => {
                     </div>
                 </div>
                 <div v-else @click="likeUnlikePost(post.id)">
-                    <unicon class="w-7 h-7 hover:cursor-pointer" name="heart" fill="white" />
+                    <unicon class="w-7 h-7 hover:cursor-pointer backdrop-blur-lg" name="heart" fill="white" />
                     <div class="min-w-full text-center mt-1">
                         {{ post.numberOfLikes }}
                     </div>

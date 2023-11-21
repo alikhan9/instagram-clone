@@ -48,11 +48,11 @@ const sendName = () => {
 	<div class="flex gap-5 mb-5">
 		<img class="rounded-full w-9 h-9" src="https://picsum.photos/seed/picsum/32/32" />
 		<div class="w-[95%]">
-			<div class="flex gap-3 mb-2 text-white">
-				<div class="font-bold">
+			<div class="flex flex-col gap-1 mb-2 w-full text-white">
+				<div class="shrink-0 font-bold flex-wrap">
 					{{ comment.user.name }}
 				</div>
-				<div class="flex gap-1">
+				<div class="flex flex-fill break-words h-full flex-wrap gap-1 w-full">
 					<div v-for="(text, index) in  comment.content.split(' ')" :key="index">
 						<Link v-if="text[0] == '@'" :href="'/profile/' + text.substring(1)">{{ text }}</Link>
 						<span v-else>{{ text }}</span>

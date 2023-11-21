@@ -11,6 +11,7 @@ import Search from '@/Pages/Search.vue';
 import { usePage } from '@inertiajs/vue3';
 import { usePostStore } from '@/Pages/useStore/usePostStore';
 import Notifications from '@/Pages/Notifications.vue';
+import { useWindowSize } from '@vueuse/core'
 import '../../css/app.css'
 
 const showCreatePost = ref(false);
@@ -18,6 +19,7 @@ const showPlusMenu = ref(false);
 const showSearch = ref(false);
 const showNotifications = ref(false);
 const posts = usePostStore();
+const { width, height } = useWindowSize()
 
 onMounted(() => {
     posts.setNotifications(usePage().props.auth.notifications.sort((a, b) => a.created_at - b.created_at));
@@ -146,8 +148,8 @@ const toggleShowCreatePost = () => {
                     </div>
 
                 </div>
-                <div
-                    :class="{ 'sm:hidden border-[#262626] p-4 border-b flex w-full max-w-full  text-white items-center': true }">
+                <div v-if="width < 1023 && !usePage().url.includes('reels')"
+                    :class="{ 'sm:hidden border-[#262626] p-4 border-b flex w-full max-w-full text-white items-center': true }">
                     <div class="flex-shrink-[2] w-full min-w-0 text-3xl truncate font-bold">Pour vous</div>
                     <input type="text" @input="getUsers($event.target.value)" placeholder="Rechercher"
                         class=" bg-[hsl(0,0%,15%)] shrink rounded-md w-[400px] outline-none border-none py-3 px-4 focus:ring-0" />
@@ -165,11 +167,11 @@ const toggleShowCreatePost = () => {
                         v-if="showCreatePost"></create-post>
                 </Transition>
                 <div id="main-content"
-                    :class="{ 'flex-1 overflow-auto w-full h-full sm:lock-scroll': true, 'hidden sm:block': showCreatePost }">
+                    :class="{ 'flex-1 overflow-auto w-full h-full scrollbar-hide lg:scrollbar-default sm:lock-scroll': true, 'hidden sm:block': showCreatePost }">
                     <slot></slot>
                 </div>
-                <div :class="{ 'shrink-0 sm:hidden  z-50 p-4 border-[#262626] border-t': true }">
-                    <div :class="{ 'text-[#E0F1FF] flex gap-3 justify-evenly': true }">
+                <div :class="{ 'shrink-0 sm:hidden h-[46px] flex items-center z-50 p-4 border-[#262626] border-t': true }">
+                    <div :class="{ 'text-[#E0F1FF] grid grid-cols-6 w-full gap-3 justify-evenly': true }">
                         <MenuComponent :path="mdiHome" url="/" :mini="true">
                             <span>Accueil</span>
                         </MenuComponent>
