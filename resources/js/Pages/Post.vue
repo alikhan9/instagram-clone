@@ -102,7 +102,7 @@ const bookmarkPost = () => {
 </script>
 
 <template>
-    <div v-if="isLoading" class="w-screen sm:w-[570px] 2xl:w-[470px] h-[470px] mb-16">
+    <div v-if="isLoading" class="max-w-screen sm:w-[570px] 2xl:w-[470px] h-[470px] mb-16">
         <div class="flex gap-4 mb-4">
             <div class="rounded-full bg-[hsl(0,0%,30%)] animate-pulse-bg w-10 h-10"></div>
             <div>
