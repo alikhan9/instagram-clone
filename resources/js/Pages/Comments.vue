@@ -14,7 +14,7 @@ import useInfiniteScroll from './Composables/useInfiniteScroll';
 
 
 const post = usePage().props.post;
-const like = post?.userLiked;
+const like = ref(post?.userLiked);
 const bookmark = ref(post.userBookmarked)
 const posts = usePostStore();
 const showEmojiPicker = ref(false);
@@ -134,8 +134,7 @@ const addResponseComment = (data) => {
 </script>
 
 <template>
-    <div
-        class="fixed z-50 backdrop-brightness-[0.4] flex justify-center top-0 right-0 items-center w-screen h-screen">
+    <div class="fixed z-50 backdrop-brightness-[0.4] flex justify-center top-0 right-0 items-center w-screen h-screen">
         <div ref="target">
             <div class="h-[90vh] min-w-[50vw] flex bg-black">
                 <div class="max-w-[60%] flex items-center relative">

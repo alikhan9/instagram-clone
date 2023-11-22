@@ -110,7 +110,7 @@ else {
             <div class="w-full mt-4 flex justify-center">
                 <div class="2xl:w-[600px] w-[500px]">
                     <Carousel ref="carousel" :page.sync="currentPage" :showNavigators="false" :value="posts.getValue()"
-                        :numVisible="1" :numScroll="1" orientation="vertical" verticalViewPortHeight="88vh">
+                        :numVisible="1" :numScroll="1" orientation="vertical" verticalViewPortHeight="87vh">
                         <template #item="{ data, index }">
                             <Reel :stopVideo="stopVideo" :followed="followed" :hideComments="hideComments"
                                 v-if="data && index > currentPage - 2 && index < currentPage + 1" :post="data" />

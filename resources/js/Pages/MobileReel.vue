@@ -1,14 +1,11 @@
 <script setup>
 import { router, usePage } from '@inertiajs/vue3';
 import SvgIcon from '@jamescoyle/vue-icon';
-import { mdiHeart, mdiBookmark, mdiEmoticonHappyOutline } from '@mdi/js';
-import { ref, watch, onMounted, watchEffect } from 'vue';
-import ReelComments from './ReelComments.vue';
+import { mdiHeart, mdiBookmark } from '@mdi/js';
+import { ref, watch, onMounted } from 'vue';
+import MobileReelComments from './MobileReelComments.vue';
 import axios from 'axios';
 import { Link } from '@inertiajs/vue3'
-import EmojiPicker from 'vue3-emoji-picker'
-import { onClickOutside } from '@vueuse/core'
-import { usePostStore } from './useStore/usePostStore';
 import { useDebounceFn } from '@vueuse/core'
 
 
@@ -21,17 +18,12 @@ const props = defineProps({
     },
 })
 
-const posts = usePostStore();
-const emojiRef = ref(null);
-const currentComment = ref('');
-const showEmojiPicker = ref(false);
 const like = ref(props.post.userLiked);
 const bookmark = ref(props.post.userBookmarked);
 const showComments = ref(false);
 const videoPlayer = ref();
 
 const isPlaying = ref(false);
-
 
 const following = ref(props.followed);
 
@@ -59,12 +51,17 @@ const getComments = () => {
     router.get('/reels', { pid: props.post.id, sC: true }, {
         preserveScroll: true,
         preserveState: true,
-        only: ['post', 'comments', 'showComments']
+        only: ['post', 'comments', 'showComments'],
+        onFinish: () => {
+            if (!showComments.value)
+                showComments.value = true;
+        }
     });
 }
 
 const toggleComments = () => {
     showComments.value = !showComments.value;
+    window.history.replaceState({}, '', '');
 }
 
 const sendLike = useDebounceFn((id, value) => {
@@ -83,11 +80,6 @@ onMounted(() => {
 watch(() => props.post, newValue => {
     like.value = newValue.userLiked;
 })
-
-onClickOutside(emojiRef, () => {
-    if (showEmojiPicker.value)
-        showEmojiPicker.value = false
-});
 
 const likeUnlikePost = id => {
     like.value = !like.value;
@@ -109,12 +101,13 @@ const sendFollow = () => {
 
 <template>
     <div>
-        <div v-if="showComments">
-            <Teleport to="#reel">
-                <ReelComments v-model:showComments="showComments" :post="post" />
-            </Teleport>
+        <div>
+            <Transition name="slide-vertical" appear>
+                <MobileReelComments v-if="showComments" @toggleComments="toggleComments" :post="post" />
+            </Transition>
         </div>
-        <div class="flex h-[96vh] sm:h-screen relative overflow-hidden items-start" ref="postsRef">
+        <div :class="{ 'flex h-[96vh] sm:h-screen relative overflow-hidden items-start': true, 'transition-all brightness-75': showComments }"
+            ref="postsRef">
             <div class="hover:cursor-pointer h-full backdrop-blur-lg">
                 <div class="relative h-full flex items-center w-full">
                     <video class="w-screen  h-full" ref="videoPlayer" @click="togglePlayPause">
@@ -150,13 +143,13 @@ const sendFollow = () => {
                             @click="likeUnlikePost(post.id)" :path="mdiHeart" />
                     </div>
                     <div class="min-w-full text-white text-center mt-1">
-                        {{ post.numberOfComments }}
+                        {{ post.userLiked ? post.numberOfLikes : post.numberOfLikes + 1 }}
                     </div>
                 </div>
                 <div v-else @click="likeUnlikePost(post.id)">
-                    <unicon class="w-7 h-7 hover:cursor-pointer backdrop-blur-lg" name="heart" fill="white" />
+                    <unicon class="w-7 h-7 hover:cursor-pointer" name="heart" fill="white" />
                     <div class="min-w-full text-center mt-1">
-                        {{ post.numberOfLikes }}
+                        {{ post.userLiked ? post.numberOfLikes - 1 : post.numberOfLikes }}
                     </div>
                 </div>
                 <div class="inline text-center" @click="getComments">
@@ -180,6 +173,18 @@ const sendFollow = () => {
 </template>
 
 <style>
+.slide-vertical-enter-active,
+.slide-vertical-leave-active {
+    transition: all 0.3s ease-in-out;
+}
+
+.slide-vertical-enter-from,
+.slide-vertical-leave-to {
+    transform: translateY(80vh);
+}
+
+
+
 .animate-heart {
     animation: growAndShrink 0.3s;
 }

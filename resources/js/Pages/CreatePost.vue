@@ -163,8 +163,7 @@ const togglePlayPause = () => {
                 <div v-else>
                     <div v-if="step == 1">
                         <div class="col-span-2 flex justify-center">
-                            <ImageFilterApp v-if="file.type.includes('image/')" :url="url"
-                                class="sm:bg-[#262626]" />
+                            <ImageFilterApp v-if="file.type.includes('image/')" :url="url" class="sm:bg-[#262626]" />
                             <div class="video-container" v-else>
                                 <video ref="videoPlayer" @click="togglePlayPause">
                                     <source :src="url" type="video/mp4" />
@@ -200,8 +199,8 @@ const togglePlayPause = () => {
                                 <div class="flex justify-between relative">
                                     <svg-icon class="hover:cursor-pointer" type="mdi" size="24"
                                         @click="showEmojiPicker = !showEmojiPicker" :path="mdiEmoticonHappyOutline" />
-                                    <EmojiPicker class="absolute left-10 sm:left-0 top-0 sm:top-10 z-10" v-if="showEmojiPicker" :native="true"
-                                        @select="onSelectEmoji" />
+                                    <EmojiPicker class="absolute left-10 sm:left-0 top-0 sm:top-10 z-10"
+                                        v-if="showEmojiPicker" :native="true" @select="onSelectEmoji" />
                                     <p class="text-gray-500">{{ description?.length }}/2200</p>
                                 </div>
                                 <CityPicker @updateCity="updateCity" class="min-w-[85%] sm:z-20" />

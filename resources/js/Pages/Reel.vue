@@ -157,7 +157,6 @@ const sendFollow = () => {
             <Teleport to="#reel">
                 <ReelComments v-model:showComments="showComments" :post="post" />
             </Teleport>
-
         </div>
         <div class="flex h-full items-end" ref="postsRef">
             <div class="sm:h-[846px] h-full hover:cursor-pointer flex items-center justify-center backdrop-blur-lg">
@@ -196,13 +195,13 @@ const sendFollow = () => {
                             @click="likeUnlikePost(post.id)" :path="mdiHeart" />
                     </div>
                     <div class="min-w-full text-white text-center mt-1">
-                        {{ post.numberOfComments }}
+                        {{ post.userLiked ? post.numberOfLikes : post.numberOfLikes + 1 }}
                     </div>
                 </div>
                 <div v-else @click="likeUnlikePost(post.id)">
                     <unicon class="w-7 h-7 hover:cursor-pointer" name="heart" fill="white" />
                     <div class="min-w-full text-center mt-1">
-                        {{ post.numberOfLikes }}
+                        {{ post.userLiked ? post.numberOfLikes - 1 : post.numberOfLikes }}
                     </div>
                 </div>
                 <div class="inline text-center" @click="getComments">

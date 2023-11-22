@@ -146,7 +146,6 @@ const toggleShowCreatePost = () => {
                             </div>
                         </div>
                     </div>
-
                 </div>
                 <div v-if="width < 1023 && !usePage().url.includes('reels')"
                     :class="{ 'sm:hidden border-[#262626] p-4 border-b flex w-full max-w-full text-white items-center': true }">

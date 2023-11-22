@@ -15,7 +15,6 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/', [PostController::class, 'index']);
-    // Route::post('/', [PostController::class, 'index']);
     Route::post('/post/comment/{comment}/like', [LikeController::class, 'likeComment']);
     Route::post('/post/comment/response/{response}/like', [LikeController::class, 'likeResponse']);
 

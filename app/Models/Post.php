@@ -58,7 +58,7 @@ class Post extends Model
 
     public function likes()
     {
-        return $this->belongsToMany(User::class, 'post_likes')->latest();
+        return $this->belongsToMany(User::class, 'post_likes');
     }
 
     public function userLiked()
