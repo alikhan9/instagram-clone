@@ -163,7 +163,7 @@ const bookmarkPost = () => {
             </div>
             <div class="leading-8 mb-3 px-3 sm:px-0">
                 <div v-if="post.enable_likes">
-                    {{ post.numberOfLinkes }} J'aime
+                    {{ post.numberOfLikes }} J'aime
                 </div>
                 <div v-if="post.description">
                     <Link class="font-semibold" :href="'/profile/' + post.user.name">{{ post.user.name }}</Link> {{
