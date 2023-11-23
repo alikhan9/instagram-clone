@@ -47,7 +47,7 @@ const getComments = () => {
     router.get('/', { pid: props.post.id }, {
         preserveScroll: true,
         preserveState: true,
-        only:['post','comments']
+        only: ['post', 'comments']
     });
 }
 
@@ -132,8 +132,9 @@ const bookmarkPost = () => {
                 class="xl:h-[585px] xl:w-[470px] hover:cursor-pointer w-full border border-[#262626] rounded flex items-center justify-center backdrop-blur-lg">
                 <div>
                     <img v-if="post.image !== null" class="" :src="usePage().props.ziggy.url + post.image" />
-                    <div class="max-h-[550px]  border border-[#262626] rounded flex items-center justify-center" v-else>
-                        <video class="max-h-[550px]" ref="videoPlayer" @click="togglePlayPause">
+                    <div class="max-h-[550px] max-w-[470px]  border border-[#262626] rounded flex items-center justify-center"
+                        v-else>
+                        <video class="max-h-[550px] max-w-[470px]" ref="videoPlayer" @click="togglePlayPause">
                             <source :src="post.video" />
                             Your browser does not support the video tag.
                         </video>

@@ -166,7 +166,7 @@ const toggleShowCreatePost = () => {
                         v-if="showCreatePost"></create-post>
                 </Transition>
                 <div id="main-content"
-                    :class="{ 'flex-1 overflow-auto w-full h-full scrollbar-hide lg:scrollbar-default sm:lock-scroll': true, 'hidden sm:block': showCreatePost }">
+                    :class="{ 'flex-1 overflow-auto w-full h-full scrollbar-hide lg:scrollbar-default relative sm:lock-scroll': true, 'hidden sm:block': showCreatePost }">
                     <slot></slot>
                 </div>
                 <div :class="{ 'shrink-0 sm:hidden h-[46px] flex items-center z-50 p-4 border-[#262626] border-t': true }">

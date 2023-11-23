@@ -18,11 +18,13 @@ defineProps({
 
 <template>
     <Link :href="$page.props.ziggy.location" :data="{ value }" :only="['posts','active','total_posts ']" :class="{
-        'py-5 flex items-center hover:cursor-pointer': true,
+        'py-5 shrink flex items-center hover:cursor-pointer': true,
         'border-t': active == whenActive,
         'text-[#A8A8A8]': active != whenActive
     }">
-    <svg-icon class="mr-2" type="mdi" size="13" :path="path"></svg-icon>
-    <p>{{ title }}</p>
+    <div>
+        <svg-icon class="mr-2 w-16 sm:w-8" type="mdi" :path="path"></svg-icon>
+    </div>
+    <p class="hidden sm:block">{{ title }}</p>
     </Link>
 </template>
