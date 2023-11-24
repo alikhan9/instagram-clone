@@ -89,6 +89,7 @@ const close = () => {
     router.get('/', {}, {
         preserveState: true,
         preserveScroll: true,
+        replace: true,
         only: ['post', 'comments']
     });
 }

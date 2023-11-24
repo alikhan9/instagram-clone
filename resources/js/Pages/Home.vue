@@ -74,8 +74,8 @@ const toggleComments = () => {
         </div>
         <div id="home" :class="{ 'flex z-0 justify-center w-full': true, 'hidden': showComments }">
             <div class="w-full ">
-                <div class="text-white flex justify-center sm:pt-4 gap-16 xl:pt-24 sm:min-h-screen">
-                    <div class="col-start-3 shrink overflow-x-hidden w-full flex items-center flex-col col-span-4 ">
+                <div class="text-white flex justify-center w-full sm:pt-4 gap-16 xl:pt-24 sm:min-h-screen">
+                    <div class="col-start-3 shrink overflow-x-hidden w-full xl:max-w-[500px] 2xl:max-w-[600px] flex items-center flex-col col-span-4 ">
                         <div class="sm:flex gap-4 hidden border-b border-[#262626] w-full font-bold  text-lg pb-3">
                             <Link href="/reels" :class="{ 'text-white ': !followed, 'text-[#868686]': followed }">
                             Pour vous
@@ -86,8 +86,8 @@ const toggleComments = () => {
                             </Link>
                         </div>
                         <div v-for="(post, index) in posts.getValue()" :key="index"
-                            class="sm:px-4 flex flex-col justify-center mt-6">
-                            <Post class="pb-6 border-b border-[#262626]" :showComments="showComments" :post="post" />
+                            class="sm:px-4 flex flex-col sm:justify-center mt-6">
+                            <Post class="pb-6 border-b sm:w-full w-screen border-[#262626]" :showComments="showComments" :post="post" />
                         </div>
                         <div class="h-[10px] w-full" ref="landmark"></div>
                     </div>
