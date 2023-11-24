@@ -75,7 +75,7 @@ const toggleComments = () => {
         <div id="home" :class="{ 'flex z-0 justify-center w-full': true, 'hidden': showComments }">
             <div class="w-full ">
                 <div class="text-white flex justify-center sm:pt-4 gap-16 xl:pt-24 sm:min-h-screen">
-                    <div class="col-start-3 shrink w-full flex items-center flex-col col-span-4 ">
+                    <div class="col-start-3 shrink overflow-x-hidden w-full flex items-center flex-col col-span-4 ">
                         <div class="sm:flex gap-4 hidden border-b border-[#262626] w-full font-bold  text-lg pb-3">
                             <Link href="/reels" :class="{ 'text-white ': !followed, 'text-[#868686]': followed }">
                             Pour vous
