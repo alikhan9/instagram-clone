@@ -130,12 +130,12 @@ const bookmarkPost = () => {
                 <unicon class="hover:cursor-pointer" name="ellipsis-h" fill="white"></unicon>
             </div>
             <div
-                class="xl:h-[585px] xl:w-[470px] hover:cursor-pointer w-full border border-[#262626] rounded flex items-center justify-center backdrop-blur-lg">
+                class="sm:max-h-[550px] overflow-hidden max-h-[50dvh] w-screen sm:w-[550px] xl:max-w-[470px]  hover:cursor-pointer border border-[#262626] rounded flex items-center justify-center backdrop-blur-lg">
                 <div>
-                    <img v-if="post.image !== null" class="" :src="usePage().props.ziggy.url + post.image" />
-                    <div class="max-h-[550px] overflow-hidden w-full sm:w-[550px] xl:max-w-[470px]  border border-[#262626] rounded flex items-center justify-center"
+                    <img v-if="post.image !== null" class="sm:max-h-[550px] object-contain max-h-[50dvh] w-full" :src="usePage().props.ziggy.url + post.image" />
+                    <div class="flex items-center justify-center"
                         v-else>
-                        <video class="object-fill" ref="videoPlayer" @click="togglePlayPause">
+                        <video class="sm:max-h-[550px] relative object-contain max-h-[50dvh] w-full" ref="videoPlayer" @click="togglePlayPause">
                             <source :src="post.video" />
                             Your browser does not support the video tag.
                         </video>
