@@ -3,11 +3,12 @@ import useInfiniteScroll from '../../Composables/useInfiniteScroll.js'
 import { usePostStore } from '../../useStore/usePostStore.js'
 import { ref, computed } from 'vue'
 import Comments from '../../Comments.vue'
-import MobileComments from '@/Pages/MobileComments.vue'
+import MobileUserPagePost from '@/Pages/MobileUserPagePost.vue'
 import axios from 'axios';
 import { useDebounceFn } from '@vueuse/core'
 import empty from '@/../images/empty.png'
 import { router, usePage } from '@inertiajs/vue3';
+import { useWindowSize } from '@vueuse/core'
 
 const landmark = ref(null);
 const posts = usePostStore();
@@ -16,6 +17,7 @@ const bookmark = ref(false);
 const like = ref(false);
 const post = ref(null);
 
+const { width, height } = useWindowSize()
 
 
 
@@ -47,6 +49,8 @@ const bookmarkPost = () => {
 }
 
 const toggleComments = selected_post => {
+    console.log('what?');
+
     if (!showComments.value)
         router.get(usePage().url, { pid: selected_post.id }, {
             preserveScroll: true,
@@ -57,8 +61,9 @@ const toggleComments = selected_post => {
                 showComments.value = true;
             }
         });
-    else
+    else {
         showComments.value = false;
+    }
 }
 
 
@@ -70,12 +75,12 @@ const toggleComments = selected_post => {
             <Transition enter-from-class="opacity-0" enter-leave-class="opacity-100"
                 enter-active-class="transition-opacity ease-in duration-100" leave-to-class="opacity-0"
                 leave-active-class="transition duration-200 ease-in">
-                <Comments class="hidden lg:block z-[999]" @close="toggleComments" />
+                <Comments v-if="width > 1023" class="hidden lg:block z-[999]" @close="toggleComments" />
             </Transition>
             <Transition enter-from-class="opacity-0" enter-leave-class="opacity-100"
                 enter-active-class="transition-opacity ease-in duration-100" leave-to-class="opacity-0"
                 leave-active-class="transition duration-200 ease-in">
-                <MobileComments class="lg:hidden z-[999]" @close="toggleComments" />
+                <MobileUserPagePost v-if="width < 1024" class="lg:hidden z-[999]" @close="toggleComments" />
             </Transition>
         </div>
         <div class="">

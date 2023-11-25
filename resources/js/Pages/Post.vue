@@ -190,8 +190,6 @@ const bookmarkPost = () => {
                         <EmojiPicker ref="emojiRef" class="absolute bottom-[25%] right-[-285px] z-10" v-if="showEmojiPicker"
                             :native="true" @select="onSelectEmoji" />
                     </div>
-                    {{ post.id }}
-
                 </div>
             </div>
         </div>
