@@ -3,7 +3,7 @@ import { Link } from "@inertiajs/vue3";
 </script>
 
 <template>
-    <div class="min-h-screen flex sm:justify-center items-center pt-6 sm:pt-0 bg-white">
+    <div class="overflow-hidden max-h-screen max-w-screen flex sm:justify-center items-center pt-6 sm:pt-0 bg-white">
         <div class="w-full hidden md:flex justify-end">
             <img src="./../../images/login.webp" class="max-w-[450px]" />
         </div>
