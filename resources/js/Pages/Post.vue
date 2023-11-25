@@ -103,7 +103,7 @@ const bookmarkPost = () => {
 </script>
 
 <template>
-    <div v-if="isLoading" class="w-full sm:w-[570px] 2xl:w-[470px] h-[470px] mb-16">
+    <div v-if="isLoading" class="w-full max-w-screen sm:w-[570px] 2xl:w-[470px] h-[470px] mb-16">
         <div class="flex gap-4 mb-4">
             <div class="rounded-full bg-[hsl(0,0%,30%)] animate-pulse-bg w-10 h-10"></div>
             <div>
@@ -115,7 +115,7 @@ const bookmarkPost = () => {
         </div>
     </div>
 
-    <div v-else class="xl:w-[470px]  sm:pr-0 w-full grow">
+    <div v-else class="xl:w-[470px] max-w-screen  sm:pr-0 w-full grow">
         <div>
             <div class="flex justify-between items-center gap-3 mb-3 px-3 sm:px-0">
                 <div class="flex gap-3 mb-3">
@@ -132,10 +132,11 @@ const bookmarkPost = () => {
             <div
                 class="sm:max-h-[550px] overflow-hidden max-h-[50dvh] w-screen sm:w-[550px] xl:max-w-[470px]  hover:cursor-pointer border border-[#262626] rounded flex items-center justify-center backdrop-blur-lg">
                 <div>
-                    <img v-if="post.image !== null" class="sm:max-h-[550px] object-contain max-h-[50dvh] w-full" :src="usePage().props.ziggy.url + post.image" />
-                    <div class="flex items-center justify-center"
-                        v-else>
-                        <video class="sm:max-h-[550px] relative object-contain max-h-[50dvh] w-full" ref="videoPlayer" @click="togglePlayPause">
+                    <img v-if="post.image !== null" class="sm:max-h-[550px] object-contain max-h-[50dvh] w-full"
+                        :src="usePage().props.ziggy.url + post.image" />
+                    <div class="flex items-center justify-center" v-else>
+                        <video class="sm:max-h-[550px] relative object-contain max-h-[50dvh] w-full" ref="videoPlayer"
+                            @click="togglePlayPause">
                             <source :src="post.video" />
                             Your browser does not support the video tag.
                         </video>
