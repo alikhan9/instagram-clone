@@ -27,7 +27,7 @@ export default function infiniteScroll(propName, landmark = null, margin = '0px 
             only: only,
             onFinish: () => {
                 if (propName == 'posts')
-                    window.history.replaceState({}, '', '/');
+                    window.history.replaceState({}, '', initialUrl);
                 else
                     window.history.replaceState({}, '', initialUrl);
                 if (propName == 'posts')

@@ -3,6 +3,7 @@ import useInfiniteScroll from '../../Composables/useInfiniteScroll.js'
 import { usePostStore } from '../../useStore/usePostStore.js'
 import { ref, computed } from 'vue'
 import Comments from '../../Comments.vue'
+import MobileComments from '@/Pages/MobileComments.vue'
 import axios from 'axios';
 import { useDebounceFn } from '@vueuse/core'
 import empty from '@/../images/empty.png'
@@ -69,7 +70,12 @@ const toggleComments = selected_post => {
             <Transition enter-from-class="opacity-0" enter-leave-class="opacity-100"
                 enter-active-class="transition-opacity ease-in duration-100" leave-to-class="opacity-0"
                 leave-active-class="transition duration-200 ease-in">
-                <Comments class="z-[999]" @close="toggleComments" />
+                <Comments class="hidden lg:block z-[999]" @close="toggleComments" />
+            </Transition>
+            <Transition enter-from-class="opacity-0" enter-leave-class="opacity-100"
+                enter-active-class="transition-opacity ease-in duration-100" leave-to-class="opacity-0"
+                leave-active-class="transition duration-200 ease-in">
+                <MobileComments class="lg:hidden z-[999]" @close="toggleComments" />
             </Transition>
         </div>
         <div class="">

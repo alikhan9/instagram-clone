@@ -71,7 +71,7 @@ const toggleShowCreatePost = () => {
             </Transition>
             <div class="flex h-full flex-col sm:flex-row">
                 <div
-                    :class="{ 'lg:w-[200px] w-[70px] xl:w-[335px] shrink-0 hidden sm:block z-30 p-4 border-[#262626] border-r h-screen': true, 'border-r': !showSearch && !showNotifications }">
+                    :class="{ 'lg:w-[200px] w-[70px] xl:w-[335px] shrink-0 hidden sm:block z-0 p-4 border-[#262626] border-r h-screen': true, 'border-r': !showSearch && !showNotifications }">
                     <div :class="{ 'text-[#E0F1FF] flex flex-col gap-3': true }">
                         <div class="mb-12 hidden lg:block">
                             <h1 v-if="!showSearch && !showNotifications" class="text-4xl p-6 ">Instagram</h1>

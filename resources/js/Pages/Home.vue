@@ -22,15 +22,14 @@ const showComments = ref(null);
 
 const landmark = ref(null);
 const posts = usePostStore();
-const scrollPosition = ref(null);
 const { width, height } = useWindowSize()
 
 
 const user = usePage().props.auth.user;
 
 watch(() => usePage().props.post, (newValue, oldValue) => {
-    if (newValue?.id != oldValue?.id)
-        toggleComments();
+    console.log('Mnt');
+    toggleComments();
 })
 
 onMounted(() => {
@@ -49,18 +48,7 @@ const sendFollow = (id) => {
 
 
 const toggleComments = () => {
-    if (showComments.value)
-        window.history.replaceState({}, '', '');
-
     showComments.value = !showComments.value;
-    if (showComments.value) {
-        scrollPosition.value = document.getElementById('home').scrollTop;
-        document.getElementById('main-content').style.overflow = 'hidden';
-    }
-    else {
-        document.getElementById('main-content').style.overflow = 'auto';
-        document.getElementById('home').scroll(0, scrollPosition.value);
-    }
 }
 
 
@@ -69,11 +57,11 @@ const toggleComments = () => {
 <template>
     <Head title="Home" />
     <div class="relative w-full h-full" @scroll="updateScrollPosition">
-        <div class="z-50" v-if="showComments">
+        <div class="z-50 h-full w-full" v-if="showComments">
             <Comments v-if="width > 1023" @close="toggleComments" />
             <MobileComments v-else @toggleComments="toggleComments" />
         </div>
-        <div id="home" :class="{ 'flex z-0 justify-center w-full': true, 'hidden': showComments && width < 1023 }">
+        <div id="home" :class="{ 'flex z-0 justify-center w-full': true }">
             <div class="w-full ">
                 <div class="text-white flex justify-center w-full sm:pt-4 gap-16 xl:pt-24 sm:min-h-screen">
                     <div

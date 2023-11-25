@@ -26,7 +26,7 @@ const close = () => {
     emit('toggleComments');
 }
 
-useInfiniteScroll('comments', landmarkMobileComments, '0px 0px 150px 0px', ['comments', 'post']);
+useInfiniteScroll('comments', landmarkMobileComments, '0px 0px 150px 0px', ['comments']);
 
 
 onMounted(() => {
@@ -88,7 +88,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <div class="text-white bg-black inset-0 absolute">
+    <div class="text-white bg-black inset-0 fixed z-[999]">
         <div class="mt-5 flex flex-col h-full">
             <div class="flex justify-between px-4 pb-4 border-[#262626] border-b">
                 <div>
