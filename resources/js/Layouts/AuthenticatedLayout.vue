@@ -57,7 +57,7 @@ const toggleShowCreatePost = () => {
 
 </script>
 <template>
-    <div class="bg-black inset-0 overflow-hidden max-h-screen max-w-screen fixed">
+    <div class="bg-black inset-0 overflow-hidden fixed">
         <div class="h-full">
             <Transition enter-from-class="scale-x-0" enter-leave-class="scale-x-100 "
                 enter-active-class="transition ease-out duration-300 origin-left" leave-from-class="translate-x-[-20px]"
