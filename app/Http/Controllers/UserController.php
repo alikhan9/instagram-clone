@@ -41,6 +41,15 @@ class UserController extends Controller
             $active = 3;
         }
 
+        $posts->getCollection()->transform(function ($post) {
+            $post->userLiked = $post->userLiked();
+            $post->numberOfComments = $post->comments()->count();
+            $post->numberOfLikes = $post->likes()->count();
+            $post->comments = [];
+            $post->userBookmarked = $post->userBookmarked();
+            return $post;
+        });
+
         $followers  = [];
         if(Str::contains($request->path(), 'followers')) {
             $followers = $user->followers()->select('users.name', 'users.id', 'users.username')->get()->map(function ($follower) use ($user) {
@@ -61,8 +70,20 @@ class UserController extends Controller
 
         $user->followers()->count();
 
+        $post = null;
+        if($request->has('pid')) {
+            $post = Post::find($request->pid);
+            $post['userLiked'] = $post->userLiked();
+            $post['numberOfComments'] = $post->comments()->count();
+            $post['numberOfLikes'] = $post->likes()->count();
+            $post['likes'] = $post->likes()->count();
+            $post['userBookmarked'] = $post->userBookmarked();
+        }
+
         return Inertia::render('User', [
             'user' => $user,
+            'post' =>  $post,
+            'comments' => $request->has('pid') ? Post::find($request->pid)->comments()->paginate(15, ['*'], 'c')->withQueryString() : null,
             'posts' => $posts,
             'total_posts' => $user->posts()->count(),
             'active' => $active,

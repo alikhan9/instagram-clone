@@ -12,6 +12,7 @@ import axios from "axios";
 import { useDebounceFn } from '@vueuse/core'
 import useInfiniteScroll from './Composables/useInfiniteScroll';
 
+const emit = defineEmits(['close']);
 
 const post = usePage().props.post;
 const like = ref(post?.userLiked);
@@ -86,12 +87,13 @@ const onSelectEmoji = (emoji) => {
 };
 
 const close = () => {
-    router.get('/', {}, {
-        preserveState: true,
-        preserveScroll: true,
-        replace: true,
-        only: ['post', 'comments']
-    });
+    emit('close');
+    // router.get('/', {}, {
+    //     preserveState: true,
+    //     preserveScroll: true,
+    //     replace: true,
+    //     only: ['post', 'comments']
+    // });
 }
 
 

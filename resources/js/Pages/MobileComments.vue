@@ -23,11 +23,7 @@ const responseTo = ref(null);
 const inputRef = ref(null);
 
 const close = () => {
-    router.get('/', {}, {
-        preserveState: true,
-        preserveScroll: true,
-        replace: true
-    });
+    emit('toggleComments');
 }
 
 useInfiniteScroll('comments', landmarkMobileComments, '0px 0px 150px 0px', ['comments', 'post']);
@@ -114,12 +110,12 @@ onUnmounted(() => {
                     :path="mdiEmoticonHappyOutline" />
                 <EmojiPicker class="absolute bottom-[10%] z-10" v-if="showEmojiPicker" :native="true"
                     @select="onSelectEmoji" />
-                    <div class="border border-[#262626] rounded-full py-2
+                <div class="border border-[#262626] rounded-full py-2
                      w-full">
-                        <input @keydown.enter="publishComment" @input="resize($event)" ref="inputRef"
-                            class="bg-transparent float-left no-scrollbar resize-none  w-[93%] border-none focus:ring-0"
-                            placeholder="Ajouter un commentaire..." type="text" v-model="currentComment"/>
-                    </div>
+                    <input @keydown.enter="publishComment" @input="resize($event)" ref="inputRef"
+                        class="bg-transparent float-left no-scrollbar resize-none  w-[93%] border-none focus:ring-0"
+                        placeholder="Ajouter un commentaire..." type="text" v-model="currentComment" />
+                </div>
                 <button :class="{
                     'text-[hsl(204,90%,49%)] text-xl hover:text-white':
                         currentComment.length > 0,

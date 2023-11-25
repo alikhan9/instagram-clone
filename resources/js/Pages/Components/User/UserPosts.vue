@@ -6,6 +6,7 @@ import Comments from '../../Comments.vue'
 import axios from 'axios';
 import { useDebounceFn } from '@vueuse/core'
 import empty from '@/../images/empty.png'
+import { router, usePage } from '@inertiajs/vue3';
 
 const landmark = ref(null);
 const posts = usePostStore();
@@ -45,8 +46,18 @@ const bookmarkPost = () => {
 }
 
 const toggleComments = selected_post => {
-    post.value = selected_post;
-    showComments.value = true;
+    if (!showComments.value)
+        router.get(usePage().url, { pid: selected_post.id }, {
+            preserveScroll: true,
+            preserveState: true,
+            replace: true,
+            only: ['post', 'comments'],
+            onFinish: () => {
+                showComments.value = true;
+            }
+        });
+    else
+        showComments.value = false;
 }
 
 
@@ -58,8 +69,7 @@ const toggleComments = selected_post => {
             <Transition enter-from-class="opacity-0" enter-leave-class="opacity-100"
                 enter-active-class="transition-opacity ease-in duration-100" leave-to-class="opacity-0"
                 leave-active-class="transition duration-200 ease-in">
-                <Comments class="z-[999]" v-model:showComments="showComments" v-model:bookmark="bookmark"
-                    v-model:like="like" :likeUnlikePost="likeUnlikePost" :bookmarkPost="bookmarkPost" :post="post" />
+                <Comments class="z-[999]" @close="toggleComments" />
             </Transition>
         </div>
         <div class="">
