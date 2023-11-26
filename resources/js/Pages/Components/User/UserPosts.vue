@@ -13,13 +13,8 @@ import { useWindowSize } from '@vueuse/core'
 const landmark = ref(null);
 const posts = usePostStore();
 const showComments = ref(false);
-const bookmark = ref(false);
-const like = ref(false);
-const post = ref(null);
 
-const { width, height } = useWindowSize()
-
-
+const { width } = useWindowSize()
 
 const getSlicedPosts = n => {
     return computed(() => {
@@ -33,24 +28,11 @@ const getSlicedPosts = n => {
     });
 };
 
-const sendLike = useDebounceFn((id, value) => {
-    axios.post(`/post/${id}/like`, { value })
-}, 500);
-
 useInfiniteScroll('posts', landmark, '0px 0px 150px 0px');
-
-
-const likeUnlikePost = id => {
-    like.value = !like.value;
-    sendLike(id, like.value);
-}
-const bookmarkPost = () => {
-    bookmark.value = !bookmark.value;
-}
 
 const toggleComments = selected_post => {
     if (!showComments.value)
-        router.get(usePage().url, { pid: selected_post.id }, {
+        router.get(usePage().props.ziggy.location, { pid: selected_post.id }, {
             preserveScroll: true,
             preserveState: true,
             replace: true,

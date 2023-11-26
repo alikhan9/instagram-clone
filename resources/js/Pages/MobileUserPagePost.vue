@@ -29,7 +29,6 @@ useInfiniteScroll('comments', landmarkMobileComments, '0px 0px 150px 0px', ['com
 
 
 onMounted(() => {
-    // FIXME: Les commentaires ne s'ajoute pas automatiquement a la list des commentaires  
     window.Echo.channel("post-" + post.id).listen(".comments", (e) => {
         if (!e[1]) posts.addComment(e[0]);
         else posts.addCommentResponse(e[0]);
@@ -78,10 +77,6 @@ const publishComment = (event) => {
     responseTo.value = null;
 };
 
-const resize = (e) => {
-    e.target.style.height = "auto";
-    e.target.style.height = `${e.target.scrollHeight - 32}px`;
-};
 
 const addResponseComment = (data) => {
     currentComment.value = "@" + data.user.name + " ";
