@@ -6,8 +6,6 @@ import { mdiArrowLeft } from '@mdi/js';
 import CommentContent from './CommentContent.vue';
 import useInfiniteScroll from './Composables/useInfiniteScroll';
 import { ref, onMounted, onUnmounted } from 'vue'
-import { mdiEmoticonHappyOutline } from "@mdi/js";
-import EmojiPicker from "vue3-emoji-picker";
 
 defineProps({
     scrollPosition: Number
@@ -17,7 +15,6 @@ const post = usePage().props.post;
 const posts = usePostStore()
 const emit = defineEmits(['close'])
 const landmarkMobileComments = ref(null);
-const showEmojiPicker = ref(false);
 const currentComment = ref('');
 const responseTo = ref(null);
 const inputRef = ref(null);
@@ -32,6 +29,7 @@ useInfiniteScroll('comments', landmarkMobileComments, '0px 0px 150px 0px', ['com
 
 
 onMounted(() => {
+    // FIXME: Les commentaires ne s'ajoute pas automatiquement a la list des commentaires  
     window.Echo.channel("post-" + post.id).listen(".comments", (e) => {
         if (!e[1]) posts.addComment(e[0]);
         else posts.addCommentResponse(e[0]);
