@@ -1,7 +1,7 @@
 <script setup>
 import MenuComponent from '@/Components/MenuComponent.vue';
 import PlusMenuComponent from '@/Components/PlusMenuComponent.vue';
-import { ref, onMounted } from "vue"
+import { ref, onMounted, watch } from "vue"
 import CreatePost from '@/Pages/CreatePost.vue';
 import { vOnClickOutside } from '@vueuse/components'
 import {
@@ -18,9 +18,15 @@ import '../../css/app.css'
 const showCreatePost = ref(false);
 const showPlusMenu = ref(false);
 const showSearch = ref(false);
+const directPage = ref(usePage().props.ziggy.location.includes('direct'));
 const showNotifications = ref(false);
 const posts = usePostStore();
 const { width } = useWindowSize()
+
+
+watch(() => usePage().props.ziggy.location, newValue => {
+    directPage.value = newValue.includes('direct');
+})
 
 onMounted(() => {
     posts.setNotifications(usePage().props.auth.notifications.sort((a, b) => a.created_at - b.created_at));
@@ -72,10 +78,10 @@ const toggleShowCreatePost = () => {
             </Transition>
             <div class="flex h-full flex-col sm:flex-row">
                 <div
-                    :class="{ 'lg:w-[200px] z-20 w-[70px] xl:w-[335px] shrink-0 hidden sm:block p-4 border-[#262626] border-r h-screen': true, 'border-r': !showSearch && !showNotifications }">
+                    :class="{ 'lg:w-[200px] z-20 w-[70px] xl:w-[335px] shrink-0 hidden sm:block p-4 border-[#262626] border-r h-screen': true, 'border-r xl:w-[70px] lg:w-[70px]': showSearch || showNotifications || directPage }">
                     <div :class="{ 'text-[#E0F1FF] flex flex-col gap-3': true }">
                         <div class="h-[130px] hidden lg:block">
-                            <h1 v-if="!showSearch && !showNotifications" class="text-4xl p-6 ">Instagram</h1>
+                            <h1 v-if="!showSearch && !showNotifications && !directPage" class="text-4xl p-6 ">Instagram</h1>
                             <div v-else>
                                 <MenuComponent v-motion-pop :mini="true" :path="mdiInstagram">
                                 </MenuComponent>
@@ -84,39 +90,41 @@ const toggleShowCreatePost = () => {
                         <div class="h-[130px] lg:hidden">
                             <MenuComponent v-motion-pop :path="mdiInstagram"></MenuComponent>
                         </div>
-                        <MenuComponent :path="mdiHome" url="/" :mini="showSearch || showNotifications">
+                        <MenuComponent :path="mdiHome" url="/" :mini="showSearch || showNotifications || directPage">
                             <span>Accueil</span>
                         </MenuComponent>
                         <MenuComponent :path="mdiMagnify" @click="changeSearchState"
-                            :mini="showSearch || showNotifications" :isLink="false">
+                            :mini="showSearch || showNotifications || directPage" :isLink="false">
                             <span>Recherche</span>
                         </MenuComponent>
-                        <MenuComponent :path="mdiCompassOutline" :mini="showSearch || showNotifications">
+                        <MenuComponent :path="mdiCompassOutline" :mini="showSearch || showNotifications || directPage">
                             <span>Découvrir</span>
                         </MenuComponent>
-                        <MenuComponent :path="mdiYoutube" url="/reels" :mini="showSearch || showNotifications">
+                        <MenuComponent :path="mdiYoutube" url="/reels"
+                            :mini="showSearch || showNotifications || directPage">
                             <span>Reels</span>
                         </MenuComponent>
-                        <MenuComponent :path="mdiNearMe" :mini="showSearch || showNotifications">
+                        <MenuComponent :path="mdiNearMe" url="/direct"
+                            :mini="showSearch || showNotifications || directPage">
                             <span>Messages</span>
                         </MenuComponent>
-                        <MenuComponent :path="mdiHeartOutline" :mini="showSearch || showNotifications"
+                        <MenuComponent :path="mdiHeartOutline" :mini="showSearch || showNotifications || directPage"
                             @click="changeNotificationsState" :isLink="false">
                             <span>Notifications</span>
                         </MenuComponent>
                         <MenuComponent @click="toggleShowCreatePost" :path="mdiPlusBoxOutline" :isLink="false"
-                            :mini="showSearch || showNotifications">
+                            :mini="showSearch || showNotifications || directPage">
                             <span>Créer </span>
                         </MenuComponent>
                         <MenuComponent :path="mdiAccount" :url="'/profile/' + usePage().props.auth.user.username"
-                            :mini="showSearch || showNotifications">
+                            :mini="showSearch || showNotifications || directPage">
                             <span>Profil</span>
                         </MenuComponent>
                     </div>
                     <div class="text-white lg:w-[170px] w-[70px] xl:w-[335px] pr-8 absolute  bottom-0 mb-5"
                         v-on-click-outside="closePlusMenu">
                         <MenuComponent @click="togglePlusMenu" :path="mdiMenu" :is-link="false"
-                            :mini="showSearch || showNotifications">
+                            :mini="showSearch || showNotifications || directPage">
                             <span class="w-full">Plus</span>
                         </MenuComponent>
                         <div v-if="showPlusMenu" class="bg-[#262626] absolute top-[-390px] rounded-2xl p-1">
@@ -173,7 +181,7 @@ const toggleShowCreatePost = () => {
                         <MenuComponent :path="mdiYoutube" url="/reels" :mini="true">
                             <span>Reels</span>
                         </MenuComponent>
-                        <MenuComponent :path="mdiNearMe" :mini="true">
+                        <MenuComponent :path="mdiNearMe" url="/direct" :mini="true">
                             <span>Messages</span>
                         </MenuComponent>
                         <MenuComponent @click="toggleShowCreatePost" :path="mdiPlusBoxOutline" :isLink="false" :mini="true">
@@ -188,4 +196,5 @@ const toggleShowCreatePost = () => {
             </div>
         </div>
 
-    </div></template>
+    </div>
+</template>

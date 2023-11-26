@@ -30,7 +30,7 @@ const stopAnimate = () => {
 
 </script>
 <template>
-    <Link v-if="isLink" :href="url" @mouseover="startAnimate" @mouseleave="stopAnimate" :class="{
+    <Link v-if="isLink" :href="url" @mouseover="startAnimate" :preserve-state="false" @mouseleave="stopAnimate" :class="{
         'flex shrink min-w-0 items-center hover:bg-[hsl(0,0%,10%)] gap-4 p-2 text-lg font-bold  transition ease-in rounded-lg duration-300 hover:cursor-pointer': true, 'w-[3.25rem]' : mini
     }">
     <div :class="{ 'scale-[1.05] transition duration-75': animateIcon }">

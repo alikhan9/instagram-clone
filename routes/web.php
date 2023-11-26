@@ -4,6 +4,7 @@ use App\Http\Controllers\BookmarkController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\FollowController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReelsController;
@@ -27,7 +28,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile/{username}/following', [UserController::class, 'get']);
     Route::post('/notifications', [UserController::class, 'checkNotifications']);
     Route::get('/search/{username}', [UserController::class, 'search']);
-
+    Route::get('/direct', [MessageController::class, 'index']);
     Route::post('/bookmark', [BookmarkController::class, 'store']);
 
     Route::get('/reels', [ReelsController::class,'index']);
