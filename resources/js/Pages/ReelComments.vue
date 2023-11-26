@@ -40,14 +40,14 @@ onMounted(() => {
         .listen(".likes", (e) => {
             if (e.add) {
                 if (!e.isResponse)
-                    posts.addLikeToComment(e.like, e.postId);
+                    posts.addLikeToComment(e.like);
                 else
-                    posts.addLikeToResponse(e.like, e.postId, e.commentId);
+                    posts.addLikeToResponse(e.like, e.commentId);
             } else {
                 if (!e.isResponse)
-                    posts.removeLikeFromComment(e.like, e.postId);
+                    posts.removeLikeFromComment(e.like);
                 else
-                    posts.removeLikeFromResponse(e.like, e.postId, e.commentId);
+                    posts.removeLikeFromResponse(e.like, e.commentId);
             }
 
         });
@@ -65,11 +65,6 @@ const onSelectEmoji = (emoji) => {
 const close = () => {
     window.history.replaceState({}, '', '/');
     emit("update:showComments", false);
-    // router.get('/reels', {}, {
-    //     preserveState: true,
-    //     preserveScroll: true,
-    //     only: ['post', 'comments','showComments']
-    // });
 };
 
 const publishComment = (event) => {
@@ -124,7 +119,7 @@ const addResponseComment = (data) => {
                         </div>
                         <div ref="reelComments"></div>
                     </div>
-                    <div class="flex items items-center gap-4 h-[7%] px-6 py-5">
+                    <div class="flex items items-center text-white gap-4 h-[7%] px-6 py-5">
                         <svg-icon class="hover:cursor-pointer" type="mdi" size="32"
                             @click="showEmojiPicker = !showEmojiPicker" :path="mdiEmoticonHappyOutline" />
                         <EmojiPicker class="absolute bottom-[10%] z-10" v-if="showEmojiPicker" :native="true"

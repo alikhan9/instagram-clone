@@ -10,6 +10,7 @@ import {
 import Search from '@/Pages/Search.vue';
 import { usePage } from '@inertiajs/vue3';
 import { usePostStore } from '@/Pages/useStore/usePostStore';
+import MobileMenuTop from '@/Pages/MobileMenuTop.vue';
 import Notifications from '@/Pages/Notifications.vue';
 import { useWindowSize } from '@vueuse/core'
 import '../../css/app.css'
@@ -147,19 +148,8 @@ const toggleShowCreatePost = () => {
                         </div>
                     </div>
                 </div>
-                <div v-if="width < 1023 && !usePage().url.includes('reels')"
-                    :class="{ 'sm:hidden border-[#262626] p-4 border-b flex w-full max-w-full text-white items-center': true }">
-                    <div class="flex-shrink-[2] w-full min-w-0 text-3xl truncate font-bold">Pour vous</div>
-                    <input type="text" @input="getUsers($event.target.value)" placeholder="Rechercher"
-                        class=" bg-[hsl(0,0%,15%)] shrink rounded-md w-[400px] outline-none border-none py-3 px-4 focus:ring-0" />
-                    <div class="flex items-center shrink-0 pl-3">
-                        <MenuComponent :path="mdiHeartOutline" :mini="true" @click="changeNotificationsState"
-                            :isLink="false">
-                            <span v-if="!showSearch && !showNotifications">Notifications</span>
-                        </MenuComponent>
-                    </div>
-                </div>
-                <Transition enter-from-class="opacity-0" enter-leave-class="opacity-100"
+                <MobileMenuTop v-if="width < 1023 && !usePage().url.includes('reels')" />
+                <Transition enter-from-class=" opacity-0" enter-leave-class="opacity-100"
                     enter-active-class="transition-opacity ease-in duration-400" leave-to-class="opacity-0"
                     leave-active-class="transition duration-200 ease-in">
                     <create-post @toggleShowCreatePost="toggleShowCreatePost" v-model:showCreatePost="showCreatePost"

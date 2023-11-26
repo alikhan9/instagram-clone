@@ -23,49 +23,15 @@ const props = defineProps({
     following: Object,
 });
 
-watch(() => props.openFollowers, (newValue, oldValue) => {
-    showFollowers.value = newValue;
-});
-
-watch(() => props.openFollowing, (newValue, oldValue) => {
-    showFollowing.value = newValue;
-});
-
 const showFollowing = ref(props.openFollowing);
 const showFollowers = ref(props.openFollowers);
 
 const toggleShowFollowing = () => {
     showFollowing.value = !showFollowing.value;
-    if (!showFollowing.value)
-        router.get("/profile/" + props.user.username, {}, {
-            preserveState: true,
-            onFinish: () => {
-                if (showFollowing.value) {
-                    document.getElementById('main-content').style.overflow = 'hidden';
-                }
-                else {
-                    document.getElementById('main-content').style.overflow = 'auto';
-                }
-            }
-        });
 }
 const toggleShowFollowers = () => {
     showFollowers.value = !showFollowers.value;
-    if (!showFollowers.value)
-        router.get("/profile/" + props.user.username, {}, {
-            preserveState: true,
-            onFinish: () => {
-                if (showFollowing.value) {
-                    document.getElementById('main-content').style.overflow = 'hidden';
-                }
-                else {
-                    document.getElementById('main-content').style.overflow = 'auto';
-                }
-            }
-        });
 }
-
-
 </script>
 
 <template>
@@ -76,7 +42,8 @@ const toggleShowFollowers = () => {
         <div :class="{ 'overflow-x-hidden': true, 'hidden lg:block': showFollowers || showFollowing }">
             <div class="text-white flex items-center flex-col w-full mt-10 mb-10">
                 <UserFollowersInfo :followingCount="followingCount" :followersCount="followersCount"
-                    :isFollowing="isFollowing" :total_posts="total_posts" :user="user" />
+                    :isFollowing="isFollowing" :total_posts="total_posts" :user="user"
+                    @toggleShowFollowers="toggleShowFollowers" @toggleShowFollowing="toggleShowFollowing" />
                 <Sections :user="user" :active="active" />
                 <UserPosts />
             </div>

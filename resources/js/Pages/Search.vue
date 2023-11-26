@@ -8,10 +8,11 @@ import { Link } from "@inertiajs/vue3";
 const users = ref(null);
 
 const getUsers = useDebounceFn(value => {
-    axios.get('/search/' + value)
-        .then(response => {
-            users.value = response.data;
-        })
+    if (value)
+        axios.get('/search/' + value)
+            .then(response => {
+                users.value = response.data;
+            })
 }, 1000)
 
 </script>
@@ -24,18 +25,19 @@ const getUsers = useDebounceFn(value => {
                 class="w-full mt-10 mb-5 bg-[hsl(0,0%,15%)] rounded-md outline-none border-none py-3 px-4 focus:ring-0" />
         </div>
         <div class="overflow-auto h-[85vh]">
-            <Link :href="'/profile/' + user.username" class="flex items-center gap-4 px-4 py-2 hover:bg-[hsl(0,0%,15%)]" v-for="(user, index) in users" v-if="users" :key="index">
-                <div class="w-11 h-11 rounded-full overflow-hidden">
-                    <img src="https://picsum.photos/seed/picsum/54/54" />
+            <Link :href="'/profile/' + user.username" class="flex items-center gap-4 px-4 py-2 hover:bg-[hsl(0,0%,15%)]"
+                v-for="(user, index) in users" v-if="users" :key="index">
+            <div class="w-11 h-11 rounded-full overflow-hidden">
+                <img src="https://picsum.photos/seed/picsum/54/54" />
+            </div>
+            <div>
+                <div class="font-semibold">{{ user.username }}</div>
+                <div class="flex text-[#858585] text-lg">
+                    <div>{{ user.name }}</div>
+                    <div class="mx-2">.</div>
+                    <div>{{ user.followersCount }} followers</div>
                 </div>
-                <div>
-                    <div class="font-semibold">{{ user.username }}</div>
-                    <div class="flex text-[#858585] text-lg">
-                        <div>{{ user.name }}</div>
-                        <div class="mx-2">.</div>
-                        <div>{{ user.followersCount }} followers</div>
-                    </div>
-                </div>
+            </div>
             </Link>
         </div>
     </div>

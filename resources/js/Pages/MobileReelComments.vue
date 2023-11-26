@@ -40,14 +40,14 @@ onMounted(() => {
         .listen(".likes", (e) => {
             if (e.add) {
                 if (!e.isResponse)
-                    posts.addLikeToComment(e.like, e.postId);
+                    posts.addLikeToComment(e.like);
                 else
-                    posts.addLikeToResponse(e.like, e.postId, e.commentId);
+                    posts.addLikeToResponse(e.like, e.commentId);
             } else {
                 if (!e.isResponse)
-                    posts.removeLikeFromComment(e.like, e.postId);
+                    posts.removeLikeFromComment(e.like);
                 else
-                    posts.removeLikeFromResponse(e.like, e.postId, e.commentId);
+                    posts.removeLikeFromResponse(e.like, e.commentId);
             }
 
         });
@@ -99,7 +99,8 @@ const addResponseComment = (data) => {
 
 <template>
     <div class="fixed left-0 bottom-0 z-[99]">
-        <div ref="mobileCommentReel" class="flex flex-col mt-[20vh] h-[80vh] w-screen left-0 border-[#262626] bg-[#262626] rounded-t-lg">
+        <div ref="mobileCommentReel"
+            class="flex flex-col mt-[20vh] h-[80vh] w-screen left-0 border-[#262626] bg-[#262626] rounded-t-lg">
             <div class="text-white text-center w-full relative flex justify-center py-5 border-[#262626]">
                 <div class="px-6 absolute self-start left-0 ">
                     <svg-icon class="hover:cursor-pointer " @click="close" type="mdi" :path="mdiClose"></svg-icon>
@@ -114,14 +115,13 @@ const addResponseComment = (data) => {
                 </div>
                 <div ref="reelCommentsMobile"></div>
             </div>
-            <div class="flex shrink-0 items items-center gap-4 h-[100px] px-6 py-5">
-                <svg-icon class="hover:cursor-pointer" type="mdi" size="32" @click="showEmojiPicker = !showEmojiPicker"
-                    :path="mdiEmoticonHappyOutline" />
-                <EmojiPicker class="absolute bottom-[10%] z-10" v-if="showEmojiPicker" :native="true"
-                    @select="onSelectEmoji" />
-                <textarea @keydown.enter="publishComment" rows="20" @input="resize($event)" ref="inputRef"
-                    class="bg-transparent float-left p-0 m-0 no-scrollbar resize-none min-h-8 h-8 max-h-16 w-[93%] border-none focus:ring-0"
-                    placeholder="Ajouter un commentaire..." type="text" v-model="currentComment"></textarea>
+            <div class="flex items shrink-0 text-white items-center gap-4 mb-5 pt-4 px-6">
+                <div class="border border-[#999999] rounded-full
+                     w-full">
+                    <input @keydown.enter="publishComment" ref="inputRef"
+                        class="bg-transparent float-left no-scrollbar resize-none  w-[93%] border-none focus:ring-0"
+                        placeholder="Ajouter un commentaire..." type="text" v-model="currentComment" />
+                </div>
                 <button :class="{
                     'text-[hsl(204,90%,49%)] text-xl hover:text-white':
                         currentComment.length > 0,

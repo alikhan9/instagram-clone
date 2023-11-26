@@ -12,7 +12,7 @@
     "src": "resources/images/login.webp"
   },
   "resources/js/app.css": {
-    "file": "assets/app-102047fd.css",
+    "file": "assets/app-6bda1798.css",
     "src": "resources/js/app.css"
   },
   "resources/js/app.js": {
@@ -22,9 +22,9 @@
       "assets/default-76dc7194.jpg"
     ],
     "css": [
-      "assets/app-102047fd.css"
+      "assets/app-6bda1798.css"
     ],
-    "file": "assets/app-e2efb859.js",
+    "file": "assets/app-6c45ee2a.js",
     "isEntry": true,
     "src": "resources/js/app.js"
   }

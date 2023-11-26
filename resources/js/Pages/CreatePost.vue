@@ -98,13 +98,13 @@ const togglePlayPause = () => {
 
 <template>
     <div
-        class="sm:fixed bg-opacity-40 sm:z-[99] overflow-auto xl:overflow-hidden sm:flex h-full w-screen sm:h-screen justify-center items-center text-white">
-        <div class="text-white sm:backdrop-brightness-[0.4] xl:overflow-hidden z-10 w-screen absolute hidden  h-screen sm:flex justify-center items-center"
+        class="lg:fixed bg-opacity-40 lg:z-[99] overflow-auto xl:overflow-hidden lg:flex h-full w-screen lg:h-screen justify-center items-center text-white">
+        <div class="text-white lg:backdrop-brightness-[0.4] xl:overflow-hidden z-10 w-screen absolute hidden  h-screen lg:flex justify-center items-center"
             @click="leave">
         </div>
         <div :class="{
-            'sm:w-[40vw] sm:h-[85vh] h-full  shrink-0 xl:overflow-hidden overflow-auto sm:z-20 sm:rounded-xl sm:bg-[#262626]': step == 0,
-            'sm:w-[58vw] sm:max-w-[1200px] sm:max-h-[85vh] sm:z-20 shrink-0 grow rounded-xl sm:bg-[#262626] overflow-auto xl:overflow-hidden ': step == 1 || step == 2,
+            'lg:w-[40vw] lg:h-[85vh] h-full  shrink-0 xl:overflow-hidden overflow-auto lg:z-20 lg:rounded-xl lg:bg-[#262626]': step == 0,
+            'lg:w-[58vw] lg:max-w-[1200px] lg:max-h-[85vh] lg:z-20 shrink-0 grow rounded-xl lg:bg-[#262626] overflow-auto xl:overflow-hidden ': step == 1 || step == 2,
         }">
             <div v-if="!url" class="border-b border-[hsl(0,0%,20%)] py-3 text-center text-lg font-semibold">
                 Créer une publication
@@ -163,7 +163,7 @@ const togglePlayPause = () => {
                 <div v-else>
                     <div v-if="step == 1">
                         <div class="col-span-2 flex justify-center">
-                            <ImageFilterApp v-if="file.type.includes('image/')" :url="url" class="sm:bg-[#262626]" />
+                            <ImageFilterApp v-if="file.type.includes('image/')" :url="url" class="lg:bg-[#262626]" />
                             <div class="video-container" v-else>
                                 <video ref="videoPlayer" @click="togglePlayPause">
                                     <source :src="url" type="video/mp4" />
@@ -176,7 +176,7 @@ const togglePlayPause = () => {
                     <Transition v-else enter-from-class="scale-x-0" enter-leave-class="scale-x-100"
                         enter-active-class="transition duration-1000 origin-left grid grid-cols-3">
                         <div v-if="step == 2"
-                            class="lg:border-l-[1px] border-[hsl(0,0%,20%)] flex flex-col gap-4 lg:flex-row sm:h-[81vh]">
+                            class="lg:border-l-[1px] border-[hsl(0,0%,20%)] flex flex-col gap-4 lg:flex-row lg:h-[81vh]">
                             <img class="lg:max-w-[70%]" v-if="file.type.includes('image/')" :src="url" />
                             <div class="video-container" v-else>
                                 <video ref="videoPlayer" class="object-cover" @click="togglePlayPause">
@@ -185,9 +185,9 @@ const togglePlayPause = () => {
                                 </video>
                                 <div class="play-button" v-if="!isPlaying" @click="togglePlayPause"></div>
                             </div>
-                            <div class="flex w-full lg:mt-4 flex-col px-4 lg:mx-0 mb-4 sm:mb-0 h-full gap-6">
+                            <div class="flex w-full lg:mt-4 flex-col px-4 lg:mx-0 mb-4 lg:mb-0 h-full gap-6">
                                 <div>
-                                    <div class="text-lg sm:text-base flex gap-3 mb-3 items-center">
+                                    <div class="text-lg lg:text-base flex gap-3 mb-3 items-center">
                                         <img class="rounded-full" src="https://picsum.photos/seed/picsum/32/32" />
                                         <p>Name</p>
                                     </div>
@@ -199,13 +199,13 @@ const togglePlayPause = () => {
                                 <div class="flex justify-between relative">
                                     <svg-icon class="hover:cursor-pointer" type="mdi" size="24"
                                         @click="showEmojiPicker = !showEmojiPicker" :path="mdiEmoticonHappyOutline" />
-                                    <EmojiPicker class="absolute left-10 sm:left-0 top-0 sm:top-10 z-10"
+                                    <EmojiPicker class="absolute left-10 lg:left-0 top-0 lg:top-10 z-10"
                                         v-if="showEmojiPicker" :native="true" @select="onSelectEmoji" />
                                     <p class="text-gray-500">{{ description?.length }}/2200</p>
                                 </div>
-                                <CityPicker @updateCity="updateCity" class="min-w-[85%] sm:z-20" />
+                                <CityPicker @updateCity="updateCity" class="min-w-[85%] lg:z-20" />
                                 <ExpendableMenu title="Accessibilité">
-                                    <p class="text-gray-400 text-sm">
+                                    <p class="text-gray-400 text-lg">
                                         Le texte alternatif décrit vos photos pour les personnes malvoyantes.
                                         Il est généré automatiquement pour vos photos, mais vous pouvez choisir de
                                         l'écrire
@@ -214,14 +214,14 @@ const togglePlayPause = () => {
                                     <div class="flex gap-4 mt-3 items-center">
                                         <img class="w-14 h-14" :src="url" />
                                         <input type="text"
-                                            class="bg-transparent border-none rounded-sm focus:outline w-full focus:outline-[hsl(0,0%,23%)] focus:border-2 focus:ring-0"
+                                            class="bg-transparent border-none rounded-lg focus:outline w-full focus:outline-[hsl(0,0%,23%)] focus:border-2 focus:ring-0"
                                             placeholder="Ecrivez un texte alternatif..." v-model="imageDescription">
                                     </div>
                                 </ExpendableMenu>
                                 <ExpendableMenu title="Paramètre avancés">
                                     <InerMenuCheckbox @updateValue="updateShowLikes"
                                         title="Masquer le nombre de J'aime et de vues sur cette publication">
-                                        <p class="text-sm text-gray-400 mb-5">
+                                        <p class="text-lg text-gray-400 mb-5">
                                             Vous êtes la seule personne à pouvoir voir le nombre total de J'aime et de vues
                                             sur cette publication. Vous pourrez modifier ceci plus tard via le menu ⋮
                                             présent en haut de la publication. Pour masquer le nombre de J'aime sur les
@@ -233,7 +233,7 @@ const togglePlayPause = () => {
                                     </InerMenuCheckbox>
 
                                     <InerMenuCheckbox @updateValue="updateShowComments" title="Désactivez les commentaires">
-                                        <p class="text-sm text-gray-400 sm:mb-4 xl:mb-0">
+                                        <p class="text-lg text-gray-400 lg:mb-4 xl:mb-0">
                                             Vous pourrez modifier ce paramètre plus tard dans ··· en haut de votre
                                             publication.
                                         </p>

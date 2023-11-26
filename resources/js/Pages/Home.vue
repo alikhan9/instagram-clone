@@ -28,7 +28,6 @@ const { width, height } = useWindowSize()
 const user = usePage().props.auth.user;
 
 watch(() => usePage().props.post, (newValue, oldValue) => {
-    console.log('Mnt');
     toggleComments();
 })
 

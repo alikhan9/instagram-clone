@@ -3,7 +3,7 @@ import { onClickOutside } from "@vueuse/core";
 import { ref } from "vue";
 import { router, usePage } from "@inertiajs/vue3";
 import SvgIcon from "@jamescoyle/vue-icon";
-import { mdiHeart, mdiBookmark, mdiEmoticonHappyOutline } from "@mdi/js";
+import { mdiHeart, mdiWindowClose, mdiBookmark, mdiEmoticonHappyOutline } from "@mdi/js";
 import EmojiPicker from "vue3-emoji-picker";
 import { onUnmounted, onMounted } from "vue";
 import CommentContent from "./CommentContent.vue";
@@ -64,14 +64,14 @@ onMounted(() => {
         .listen(".likes", (e) => {
             if (e.add) {
                 if (!e.isResponse)
-                    posts.addLikeToComment(e.like, e.postId);
+                    posts.addLikeToComment(e.like);
                 else
-                    posts.addLikeToResponse(e.like, e.postId, e.commentId);
+                    posts.addLikeToResponse(e.like, e.commentId);
             } else {
                 if (!e.isResponse)
-                    posts.removeLikeFromComment(e.like, e.postId);
+                    posts.removeLikeFromComment(e.like);
                 else
-                    posts.removeLikeFromResponse(e.like, e.postId, e.commentId);
+                    posts.removeLikeFromResponse(e.like, e.commentId);
             }
 
         });
@@ -88,12 +88,6 @@ const onSelectEmoji = (emoji) => {
 
 const close = () => {
     emit('close');
-    // router.get('/', {}, {
-    //     preserveState: true,
-    //     preserveScroll: true,
-    //     replace: true,
-    //     only: ['post', 'comments']
-    // });
 }
 
 
@@ -132,16 +126,17 @@ const addResponseComment = (data) => {
     inputRef.value.focus();
 };
 
-
-
 </script>
 
 <template>
-    <div class="fixed z-50 backdrop-brightness-[0.4] flex justify-center top-0 right-0 items-center w-screen h-screen">
-        <div ref="target">
-            <div class="h-[90vh] min-w-[50vw] flex bg-black">
+    <div class="fixed z-50 backdrop-brightness-[0.4] inset-0 top-0 left-0 w-screen h-screen">
+        <div class="absolute top-10 right-10 hover:cursor-pointer" @click="close">
+            <svg-icon size="28" class="text-white" type="mdi" :path="mdiWindowClose"></svg-icon>
+        </div>
+        <div class="h-full w-full flex items-center justify-center">
+            <div ref="target" class="h-[90vh] min-w-[50vw] flex bg-black justify-center">
                 <div class="max-w-[60%] flex items-center relative">
-                    <img v-if="post.image !== null" class="ml-2 w-full max-w-[99.4%]"
+                    <img v-if="post.image !== null" class="ml-2 w-full h-full max-w-[99.4%]"
                         :src="usePage().props.ziggy.url + post.image.replace('medium', 'big')" />
                     <div v-else>
                         <video class="w-full mx-auto object-fill h-full" width="100%" ref="videoPlayer"

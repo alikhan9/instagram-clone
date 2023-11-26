@@ -49,8 +49,6 @@ const bookmarkPost = () => {
 }
 
 const toggleComments = selected_post => {
-    console.log('what?');
-
     if (!showComments.value)
         router.get(usePage().url, { pid: selected_post.id }, {
             preserveScroll: true,

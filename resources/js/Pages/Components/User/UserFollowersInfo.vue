@@ -2,7 +2,7 @@
 import SvgIcon from '@jamescoyle/vue-icon';
 import { mdiAccountPlus, mdiDotsHorizontal } from '@mdi/js';
 import { ref } from 'vue';
-import { Link, router,usePage } from '@inertiajs/vue3';
+import { Link, router, usePage } from '@inertiajs/vue3';
 const props = defineProps({
     total_posts: Number,
     user: Object,
@@ -10,6 +10,8 @@ const props = defineProps({
     followersCount: Number,
     followingCount: Number
 })
+
+const emit = defineEmits(['toggleShowFollowing', 'toggleShowFollowers']);
 
 const following = ref(props.isFollowing);
 
@@ -24,13 +26,21 @@ const sendFollow = () => {
 const loadFollowers = () => {
     router.get("/profile/" + props.user.username + "/followers", {}, {
         preserveState: true,
-        only: ['followers', 'openFollowers']
+        only: ['followers'],
+        onFinish: () => {
+            window.history.replaceState({}, '', usePage().url.replace('/followers', ''));
+            emit('toggleShowFollowers');
+        }
     })
 }
 const loadFollowing = () => {
     router.get("/profile/" + props.user.username + "/following", {}, {
         preserveState: true,
-        only: ['following', 'openFollowing']
+        only: ['following'],
+        onFinish: () => {
+            window.history.replaceState({}, '', usePage().url.replace('/following', ''));
+            emit('toggleShowFollowing');
+        }
     })
 }
 
@@ -46,10 +56,10 @@ const loadFollowing = () => {
                 <div class="flex w-full md:flex-row md:justify-start justify-center flex-col md:items-center gap-4">
                     <div class="flex">
                         <div class="mr-10 text-xl font-semibold">{{ user.username }}</div>
-                        <div> <svg-icon class="md:hidden" type="mdi" size="32" color="white"
-                                :path="mdiDotsHorizontal"></svg-icon></div>
+                        <div v-if="user.id !== usePage().props.auth.user.id"> <svg-icon class="md:hidden" type="mdi"
+                                size="32" color="white" :path="mdiDotsHorizontal"></svg-icon></div>
                     </div>
-                    <div class="flex gap-4">
+                    <div v-if="user.id !== usePage().props.auth.user.id" class="flex gap-4">
                         <div v-if="!following" class="px-6 py-1  bg-[#1877F2] rounded-lg hover:cursor-pointer"
                             @click="sendFollow">Suivre</div>
                         <div v-else class="px-6 py-1  bg-red-500 rounded-lg hover:cursor-pointer" @click="sendFollow">Ne
@@ -61,7 +71,16 @@ const loadFollowing = () => {
                         <span class="bg-[#DBDBDB] rounded-lg px-2 h-9 flex items-center">
                             <svg-icon type="mdi" size="18" color="black" :path="mdiAccountPlus"></svg-icon>
                         </span>
-                        <svg-icon class="hidden md:block" type="mdi" size="32" color="white" :path="mdiDotsHorizontal"></svg-icon>
+                        <svg-icon class="hidden md:block" type="mdi" size="32" color="white"
+                            :path="mdiDotsHorizontal"></svg-icon>
+                    </div>
+                    <div v-else class="flex gap-4">
+                        <div class="px-6 py-1 text-black  bg-[#DBDBDB] rounded-lg">
+                            Modifier le profil
+                        </div>
+                        <div class="px-6 text-center text-black font-semibold py-1 bg-[#DBDBDB] rounded-lg">
+                            Voir les archives
+                        </div>
                     </div>
                 </div>
                 <div class="hidden md:flex gap-10 mt-10">
@@ -77,7 +96,7 @@ const loadFollowing = () => {
                         }} </span>suivi(e)s</button>
                     </div>
                 </div>
-                
+
                 <div class="mt-10 text-base font-semibold">{{ user.name }}</div>
             </div>
         </div>

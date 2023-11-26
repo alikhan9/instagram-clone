@@ -39,14 +39,14 @@ onMounted(() => {
         .listen(".likes", (e) => {
             if (e.add) {
                 if (!e.isResponse)
-                    posts.addLikeToComment(e.like, e.postId);
+                    posts.addLikeToComment(e.like);
                 else
                     posts.addLikeToResponse(e.like, e.postId, e.commentId);
             } else {
                 if (!e.isResponse)
-                    posts.removeLikeFromComment(e.like, e.postId);
+                    posts.removeLikeFromComment(e.like);
                 else
-                    posts.removeLikeFromResponse(e.like, e.postId, e.commentId);
+                    posts.removeLikeFromResponse(e.like, e.commentId);
             }
         });
 });
@@ -127,14 +127,10 @@ onUnmounted(() => {
                 </div>
                 <div ref="landmarkMobileComments"></div>
             </div>
-            <div class="flex items shrink-0 items-center gap-4 h-[100px] px-6">
-                <svg-icon class="hover:cursor-pointer" type="mdi" size="32" @click="showEmojiPicker = !showEmojiPicker"
-                    :path="mdiEmoticonHappyOutline" />
-                <EmojiPicker class="absolute bottom-[10%] z-10" v-if="showEmojiPicker" :native="true"
-                    @select="onSelectEmoji" />
-                <div class="border border-[#262626] rounded-full py-2
+            <div class="flex items shrink-0 items-center gap-4 mb-5 h-[50px] px-6">
+                <div class="border border-[#262626] rounded-full
                      w-full">
-                    <input @keydown.enter="publishComment" @input="resize($event)" ref="inputRef"
+                    <input @keydown.enter="publishComment" ref="inputRef"
                         class="bg-transparent float-left no-scrollbar resize-none  w-[93%] border-none focus:ring-0"
                         placeholder="Ajouter un commentaire..." type="text" v-model="currentComment" />
                 </div>
