@@ -10,11 +10,12 @@ return new class () extends Migration {
      */
     public function up(): void
     {
-        Schema::create('messages', function (Blueprint $table) {
+        Schema::create('contacts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('sender')->constrained('users');
+            $table->foreignId('initiator')->constrained('users');
             $table->foreignId('receiver')->constrained('users');
-            $table->text('message');
+            $table->boolean('valid')->default(false);
+            $table->unique(['initiator','receiver']);
             $table->timestamps();
         });
     }
@@ -24,6 +25,6 @@ return new class () extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('messages');
+        Schema::dropIfExists('contacts');
     }
 };

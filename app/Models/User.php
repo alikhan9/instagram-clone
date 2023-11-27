@@ -124,6 +124,19 @@ class User extends Authenticatable
         return $this->following()->where('followed', $user->id)->exists();
     }
 
+    public function contactsInitiator()
+    {
+        return $this->hasMany(Contact::class, 'initiator')->with('receiver')->get();
+    }
 
+    public function contactsReceiver()
+    {
+        return $this->hasMany(Contact::class, 'receiver')->with('initiator')->where('valid', true)->get();
+    }
+
+    public function contacts()
+    {
+        return $this->contactsInitiator()->merge($this->contactsReceiver());
+    }
 
 }

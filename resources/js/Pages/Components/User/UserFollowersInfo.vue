@@ -65,9 +65,10 @@ const loadFollowing = () => {
                         <div v-else class="px-6 py-1  bg-red-500 rounded-lg hover:cursor-pointer" @click="sendFollow">Ne
                             plus
                             suivre</div>
-                        <div class="w-[93px] text-center text-black font-semibold py-1 bg-[#DBDBDB] rounded-lg">
-                            Contacter
-                        </div>
+                        <Link method="GET" as="button" :href="'/direct/t/' + user.id"
+                            class="w-[93px] text-center text-black font-semibold py-1 bg-[#DBDBDB] rounded-lg">
+                        Contacter
+                        </Link>
                         <span class="bg-[#DBDBDB] rounded-lg px-2 h-9 flex items-center">
                             <svg-icon type="mdi" size="18" color="black" :path="mdiAccountPlus"></svg-icon>
                         </span>
