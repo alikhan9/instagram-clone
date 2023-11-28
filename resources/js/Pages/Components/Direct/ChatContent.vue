@@ -40,12 +40,12 @@ const resize = (e) => {
 </script>
 
 <template>
-    <div :class="{ 'w-full h-full flex-col': true, 'hidden lg:block': !showChat }">
+    <div :class="{ 'w-full h-full relative flex-col': true, 'hidden lg:block': !showChat }">
         <DesktopHeader :toggleShowDetails="toggleShowDetails" :receiver="receiver" />
         <RecipientInfo :receiver="receiver" />
         <!-- FIXME: Hauteure max dépasse  -->
-        <div class="flex flex-col flex-1 w-full h-full gap-1 px-2 mt-10 lg:px-4">
-            <!-- <span class="bg-[#3897f0] self-end rounded-lg px-2 py-[8px] max-w-[clamp(50%,564px,60%)]">
+        <div v-for="(item, index) in 10" :key="index" class="flex flex-col flex-1 w-full overflow-auto gap-1 px-2 mt-10 lg:px-4">
+            <span class="bg-[#3897f0] self-end rounded-lg px-2 py-[8px] max-w-[clamp(50%,564px,60%)]">
                 1 comment
             </span>
             <span class="bg-[#3897f0] self-end rounded-[18px] rounded-br-[4px] px-2 py-[8px] max-w-[clamp(50%,564px,60%)]">
@@ -57,9 +57,9 @@ const resize = (e) => {
             </span>
             <span class="bg-[#3897f0] self-end rounded-[18px] rounded-tr-[4px] px-2 py-[8px] max-w-[clamp(50%,564px,60%)]">
                 Dernier
-            </span> -->
+            </span>
         </div>
-        <div class="px-4 pb-3 shrink-0">
+        <div class="px-4 pb-3 fixed bg-black z-50 bottom-[0dvh] pt-2 left-0 w-full shrink-0">
             <div class="flex items-center min-h-[44px] gap-4 px-6 border-[#262626] mb-5 border rounded-full items">
                 <svg-icon class="hover:cursor-pointer" type="mdi" size="26" @click="showEmojiPicker = !showEmojiPicker"
                     :path="mdiEmoticonHappyOutline" />

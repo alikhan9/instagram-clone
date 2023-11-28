@@ -64,24 +64,24 @@ const toggleShowCreatePost = () => {
 
 </script>
 <template>
-    <div class="bg-black inset-0 overflow-hidden fixed">
+    <div class="fixed inset-0 overflow-hidden bg-black">
         <div class="h-full">
             <Transition enter-from-class="scale-x-0" enter-leave-class="scale-x-100 "
-                enter-active-class="transition ease-out duration-300 origin-left" leave-from-class="translate-x-[-20px]"
+                enter-active-class="transition duration-300 ease-out origin-left" leave-from-class="translate-x-[-20px]"
                 leave-to-class="translate-x-[-130%]" leave-active-class="transition duration-200 ease-in">
                 <Search class="z-50" v-if="showSearch" v-on-click-outside="closeSearchOrNotifications" />
             </Transition>
             <Transition enter-from-class="scale-x-0" enter-leave-class="scale-x-100 "
-                enter-active-class="transition ease-out duration-300 origin-left" leave-from-class="translate-x-[-20px]"
+                enter-active-class="transition duration-300 ease-out origin-left" leave-from-class="translate-x-[-20px]"
                 leave-to-class="translate-x-[-130%]" leave-active-class="transition duration-200 ease-in">
                 <Notifications class="z-50" v-if="showNotifications" v-on-click-outside="closeSearchOrNotifications" />
             </Transition>
-            <div class="flex h-full flex-col sm:flex-row">
+            <div class="flex flex-col h-full sm:flex-row">
                 <div
                     :class="{ 'lg:w-[200px] z-20 w-[70px] xl:w-[335px] shrink-0 hidden sm:block p-4 border-[#262626] border-r h-screen': true, 'border-r xl:w-[70px] lg:w-[70px]': showSearch || showNotifications || directPage }">
                     <div :class="{ 'text-[#E0F1FF] flex flex-col gap-3': true }">
                         <div class="h-[130px] hidden lg:block">
-                            <h1 v-if="!showSearch && !showNotifications && !directPage" class="text-4xl p-6 ">Instagram</h1>
+                            <h1 v-if="!showSearch && !showNotifications && !directPage" class="p-6 text-4xl ">Instagram</h1>
                             <div v-else>
                                 <MenuComponent v-motion-pop :mini="true" :path="mdiInstagram">
                                 </MenuComponent>
@@ -160,7 +160,7 @@ const toggleShowCreatePost = () => {
                     </div>
                 </div>
                 <MobileMenuTop v-if="width < 1023 && !usePage().url.includes('reels')" />
-                <Transition enter-from-class=" opacity-0" enter-leave-class="opacity-100"
+                <Transition enter-from-class="opacity-0 " enter-leave-class="opacity-100"
                     enter-active-class="transition-opacity ease-in duration-400" leave-to-class="opacity-0"
                     leave-active-class="transition duration-200 ease-in">
                     <create-post @toggleShowCreatePost="toggleShowCreatePost" v-model:showCreatePost="showCreatePost"
