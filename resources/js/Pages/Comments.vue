@@ -133,13 +133,13 @@ const addResponseComment = (data) => {
         <div class="absolute top-10 right-10 hover:cursor-pointer" @click="close">
             <svg-icon size="28" class="text-white" type="mdi" :path="mdiWindowClose"></svg-icon>
         </div>
-        <div class="h-full w-full flex items-center justify-center">
+        <div class="flex items-center justify-center w-full h-full">
             <div ref="target" class="h-[90vh] min-w-[50vw] flex bg-black justify-center">
                 <div class="max-w-[60%] flex items-center relative">
                     <img v-if="post.image !== null" class="ml-2 w-full h-full max-w-[99.4%]"
                         :src="usePage().props.ziggy.url + post.image.replace('medium', 'big')" />
                     <div v-else>
-                        <video class="w-full mx-auto object-fill h-full" width="100%" ref="videoPlayer"
+                        <video class="object-fill w-full h-full mx-auto" width="100%" ref="videoPlayer"
                             @click="togglePlayPause">
                             <source :src="post.video" />
                             Your browser does not support the video tag.
@@ -150,7 +150,7 @@ const addResponseComment = (data) => {
 
                 <div class="w-[500px] text-white border-l border-[#262626]">
                     <div class="flex justify-between border-b items-center py-5 border-[#262626]">
-                        <div class="flex gap-3 px-6 items-center w-full">
+                        <div class="flex items-center w-full gap-3 px-6">
                             <img class="rounded-full" src="https://picsum.photos/seed/picsum/32/32" />
                             <div>{{ post.user.name }}</div>
                         </div>
@@ -166,7 +166,7 @@ const addResponseComment = (data) => {
                         <div ref="landmarkComments"></div>
                     </div>
                     <div class="border-b border-[#262626] py-5">
-                        <div class="px-6 flex flex-row justify-between">
+                        <div class="flex flex-row justify-between px-6">
                             <div class="flex gap-3">
                                 <svg-icon v-if="like" class="w-7 h-7 hover:cursor-pointer animate-heart" type="mdi"
                                     color="red" @click="likeUnlikePost(post.id)" :path="mdiHeart" />

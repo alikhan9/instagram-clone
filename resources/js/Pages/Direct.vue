@@ -1,12 +1,15 @@
 <script setup>
-import { usePage, Link, router } from '@inertiajs/vue3'
-import SvgIcon from '@jamescoyle/vue-icon';
-import { mdiPencilBoxOutline, mdiArrowLeft } from '@mdi/js';
-
+import { usePage } from '@inertiajs/vue3'
+import { ref } from 'vue';
+import ChatDetails from './Components/Direct/ChatDetails.vue'
+import Menu from './Components/Direct/Menu.vue';
+import MobileMenu from './Components/Direct/MobileMenu.vue';
+import ChatContent from './Components/Direct/ChatContent.vue';
 
 const props = defineProps({
     contacts: Array,
     receiver: Object,
+    messages: Object,
     active: {
         type: Boolean,
         default: false
@@ -14,56 +17,24 @@ const props = defineProps({
 })
 
 const user = usePage().props.auth.user;
+const showChat = ref(!(props.receiver == null))
+const showDetails = ref(false);
 
-const openChat = contact => {
-    router.get('/direct/t/' + (typeof contact.receiver !== 'string' ? contact.receiver.id : contact.initiator.id));
+const toggleChat = () => {
+    showChat.value = !showChat.value;
+}
+
+const toggleShowDetails = () => {
+    showDetails.value = !showDetails.value;
 }
 
 </script>
 
-
 <template>
-    <div class="text-white bg-black fixed top-0 left-0 z-[999] lg:relative w-full flex h-full">
-        <div
-            :class="{ 'lg:w-[400px] w-full lg:border-r border-[#262626] [&>div]:px-[24px] overflow-y-auto': true, 'hidden': receiver }">
-            <div class="flex justify-between py-2 items-center lg:pt-[36px] lg:pb-[12px]">
-                <Link class="lg:hidden" href="/">
-                <svg-icon type="mdi" :path="mdiArrowLeft" size="28"></svg-icon>
-                </Link>
-                <div class="font-semibold text-2xl">
-                    {{ user.username }}
-                </div>
-                <div>
-                    <!-- TODO: Add create new chat page -->
-                    <svg-icon class="hover:cursor-pointer" type="mdi" size="30" :path="mdiPencilBoxOutline"></svg-icon>
-                </div>
-            </div>
-            <div class="flex justify-between py-4">
-                <div class="font-semibold text-lg">
-                    Messages
-                </div>
-                <div class="lg:text-[hsl(0,0%,70%)] font-semibold lg:font-normal text-[rgb(0,149,246)]">
-                    <!-- TODO:Link for blocked or not followed people -->
-                    Demandes
-                </div>
-            </div>
-            <div @click="() => openChat(contact)" v-for="(contact, index) in contacts" :key="index" :class="{
-                'flex w-full py-[8px] gap-[12px] hover:cursor-pointer': true,
-                'lg:bg-[hsl(0,0%,15%)]': receiver?.hasOwnProperty('id') && (receiver.id === contact.receiver || receiver.id === contact.initiator),
-                'lg:hover:bg-[hsl(0,0%,8%)]': receiver?.hasOwnProperty('id') && (receiver.id !== contact.receiver || receiver.id !== contact.initiator)
-            }">
-                <div class="w-[54px] h-[54px] rounded-full overflow-hidden">
-                    <img src="https://picsum.photos/seed/picsum/54/54" />
-                </div>
-                <div>
-                    <div class="font-semibold mb-2">{{ contact?.receiver.username }}{{ contact?.initiator.username }}
-                    </div>
-                    <!-- TODO:Last message -->
-                    <div class="font-semibold text-sm text-[hsl(0,0%,70%)]">Dernier message</div>
-                </div>
-            </div>
-        </div>
-        <div class="h-full w-full justify-center items-center hidden lg:flex">
+    <div
+        class="text-white bg-black fixed overflow-x-hidden top-0 left-0 z-[999] lg:relative w-full flex flex-col lg:flex-row h-full">
+        <Menu :receiver="receiver" :toggleChat="toggleChat" :contacts="contacts" :showChat="showChat" :user="user" />
+        <div v-if="!receiver" class="items-center justify-center hidden w-full h-full lg:flex">
             <div class="flex flex-col items-center gap-4">
                 <div>
                     <svg aria-label="" class="" fill="currentColor" height="96" role="img" viewBox="0 0 96 96" width="96">
@@ -84,5 +55,24 @@ const openChat = contact => {
                     message</button>
             </div>
         </div>
+        <MobileMenu v-if="showChat" :receiver="receiver" :toggleChat="toggleChat" :toggleShowDetails="toggleShowDetails" />
+        <ChatContent :messages="messages" v-if="receiver" :showChat="showChat" :receiver="receiver"
+            :toggleShowDetails="toggleShowDetails" />
+
+        <Transition name="slide-from-right">
+            <ChatDetails v-if="showDetails" v-model:showDetails="showDetails" :receiver="receiver" />
+        </Transition>
     </div>
 </template>
+
+<style>
+.slide-from-right-enter-active,
+.slide-from-right-leave-active {
+    transition: all 0.3s ease-out;
+}
+
+.slide-from-right-enter-from,
+.slide-from-right-leave-to {
+    transform: translateX(100vh);
+}
+</style>
