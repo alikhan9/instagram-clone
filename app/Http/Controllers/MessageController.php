@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Contact;
 use App\Models\Message;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class MessageController extends Controller
@@ -37,5 +38,15 @@ class MessageController extends Controller
             'messages' => $messages
         ]);
     }
+
+
+    public function store(Request $request)
+    {
+
+        $request->validate([
+            'receiver' => 'required|exists:users,id'
+        ]);
+    }
+
 
 }

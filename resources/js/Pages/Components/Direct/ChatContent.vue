@@ -40,7 +40,7 @@ const resize = (e) => {
 </script>
 
 <template>
-    <div :class="{ 'w-full h-full relative flex-col': true, 'hidden lg:block': !showChat }">
+    <div :class="{ 'w-full lg:max-h-screen overflow-auto h-full relative flex-col': true, 'hidden lg:block ': !showChat }">
         <DesktopHeader :toggleShowDetails="toggleShowDetails" :receiver="receiver" />
         <RecipientInfo :receiver="receiver" />
         <!-- FIXME: Hauteure max dépasse  -->
@@ -59,8 +59,8 @@ const resize = (e) => {
                 Dernier
             </span>
         </div>
-        <div class="px-4 pb-3 fixed bg-black z-50 bottom-[0dvh] pt-2 left-0 w-full shrink-0">
-            <div class="flex items-center min-h-[44px] gap-4 px-6 border-[#262626] mb-5 border rounded-full items">
+        <div class="px-4 lg:pb-3 pb-1 sticky bg-black pt-2 z-50 bottom-[0svh] lg:pt-2 left-0 w-full shrink-0">
+            <div class="flex items-center min-h-[44px] gap-4 px-6 border-[#262626] mb-1 border rounded-full items">
                 <svg-icon class="hover:cursor-pointer" type="mdi" size="26" @click="showEmojiPicker = !showEmojiPicker"
                     :path="mdiEmoticonHappyOutline" />
                 <EmojiPicker class="absolute bottom-[10%] z-10" v-if="showEmojiPicker" :native="true"
