@@ -21,6 +21,7 @@ const user = usePage().props.auth.user;
 const showChat = ref(!(props.receiver == null))
 const showDetails = ref(false);
 const messages = useMessageStore();
+const isMessageReady = ref(false);
 
 onMounted(() => {
     messages.setMessages(props.messages);
@@ -31,17 +32,23 @@ onMounted(() => {
                 messages.updateUnreadNotifications();
             })
         }
+        isMessageReady.value = true;
     }, 10);
 });
 
 watch(() => props.receiver, () => {
+    isMessageReady.value = false;
     messages.setMessages(props.messages);
-    if (props.receiver && messages.getUnreadNotificationsForUser(props.receiver.id) > 0) {
-        axios.post('/message/notifications/check', { sender: props.receiver.id }).then(() => {
-            messages.removeNotificationsForUser(props.receiver.id);
-            messages.updateUnreadNotifications();
-        })
-    }
+    setTimeout(() => {
+        if (props.receiver && messages.getUnreadNotificationsForUser(props.receiver.id) > 0) {
+            axios.post('/message/notifications/check', { sender: props.receiver.id }).then(() => {
+                messages.removeNotificationsForUser(props.receiver.id);
+                messages.updateUnreadNotifications();
+                isMessageReady.value = true;
+            })
+        }
+        isMessageReady.value = true;
+    }, 10);
 });
 
 
@@ -58,7 +65,8 @@ const toggleShowDetails = () => {
 <template>
     <div
         class="text-white bg-black lg:h-full inset-0 fixed overflow-x-hidden top-0 left-0 z-[999] lg:z-0 lg:relative w-full flex flex-col lg:flex-row">
-        <Menu :receiver="receiver" :toggleChat="toggleChat" :contacts="contacts" :showChat="showChat" :user="user" />
+        <Menu :isMessageReady="isMessageReady" :receiver="receiver" :toggleChat="toggleChat" :contacts="contacts"
+            :showChat="showChat" :user="user" />
         <div v-if="!receiver" class="items-center justify-center hidden w-full h-full lg:flex">
             <div class="flex flex-col items-center gap-4">
                 <div>

@@ -15,7 +15,7 @@ class MessageController extends Controller
     public function index(User $receiver)
     {
         if(count($receiver->getAttributes()) !== 0) {
-            if(!Contact::where('receiver', auth()->id())->where('initiator', $receiver->id)->orWhere('initiator', auth()->id())->where('receiver', $receiver->id)->exists()) {
+            if(!Contact::where('receiver', auth()->id())->where('initiator', $receiver->id)->orWhere('initiator', auth()->id())->where('receiver', $receiver->id)->exists() && $receiver->id !== auth()->id()) {
                 Contact::create([
                     'initiator' => auth()->id(),
                     'receiver' => $receiver->id,
@@ -82,8 +82,10 @@ class MessageController extends Controller
             'sender' => 'required|exists:users,id'
         ]);
 
-        auth()->user()->unreadNotifications()->where('data', '{"sender":' . $request->sender . ',"receiver":' . auth()->id() . '}')->get()->markAsRead();
+        auth()->user()->unreadNotifications()->where('data', '{"sender":' . $request->sender . ',"receiver":' . auth()->id() . '}')->delete();
     }
+
+
 
 
 }

@@ -2,12 +2,17 @@
 import { usePage, Link, router } from '@inertiajs/vue3'
 import SvgIcon from '@jamescoyle/vue-icon';
 import { mdiPencilBoxOutline, mdiArrowLeft, mdiInformationSlabCircleOutline } from '@mdi/js';
+import { useMessageStore } from '@/Pages/useStore/useMessageStore';
 const props = defineProps({
     showChat: Boolean,
     user: Object,
     contacts: Array,
     receiver: Object,
     toggleChat: Function,
+    isMessageReady: {
+        type: Boolean,
+        default: false
+    }
 })
 
 const openChat = contact => {
@@ -19,6 +24,8 @@ const openChat = contact => {
         }
     });
 }
+
+const messages = useMessageStore();
 
 </script>
 
@@ -47,18 +54,24 @@ const openChat = contact => {
             </div>
         </div>
         <div @click="() => openChat(contact)" v-for="(contact, index) in contacts" :key="index" :class="{
-            'flex w-full py-[8px] gap-[12px] hover:cursor-pointer': true,
+            'flex items-center justify-between w-full py-[8px] hover:cursor-pointer': true,
             'lg:bg-[hsl(0,0%,15%)]': receiver?.hasOwnProperty('id') && (receiver.id === contact.receiver || receiver.id === contact.initiator),
             'lg:hover:bg-[hsl(0,0%,8%)]': receiver?.hasOwnProperty('id') && (receiver.id !== contact.receiver || receiver.id !== contact.initiator)
         }">
-            <div class="w-[54px] h-[54px] rounded-full overflow-hidden">
-                <img src="https://picsum.photos/seed/picsum/54/54" />
-            </div>
-            <div>
-                <div class="mb-2 font-semibold">{{ contact?.receiver.username }}{{ contact?.initiator.username }}
+            <div class="flex gap-[12px]">
+                <div class="w-[54px] h-[54px] rounded-full overflow-hidden">
+                    <img src="https://picsum.photos/seed/picsum/54/54" />
                 </div>
-                <!-- TODO:Last message -->
-                <div class="font-semibold text-sm text-[hsl(0,0%,70%)]">Dernier message</div>
+                <div>
+                    <div class="mb-2 font-semibold">{{ contact?.receiver.username }}{{ contact?.initiator.username }}
+                    </div>
+                    <!-- TODO:Last message -->
+                    <div class="font-semibold text-sm text-[hsl(0,0%,70%)]">Dernier message</div>
+                </div>
+            </div>
+            {{ console.log(messages.getUnreadNotificationsForUser(contact.receiver.hasOwnProperty('id') ? contact.receiver.id : contact.initiator.id) !== 0,isMessageReady) }}
+            <div
+                :class="{ 'w-[8px] h-[8px] bg-blue-500 rounded-full': true, 'hidden': isMessageReady && messages.getUnreadNotificationsForUser(contact.receiver.hasOwnProperty('id') ? contact.receiver.id : contact.initiator.id) === 0 }">
             </div>
         </div>
     </div>
