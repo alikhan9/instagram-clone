@@ -20,6 +20,7 @@ const props = defineProps({
 const user = usePage().props.auth.user;
 const showChat = ref(!(props.receiver == null))
 const showDetails = ref(false);
+const currentContact = ref(null);
 const messages = useMessageStore();
 const isMessageReady = ref(false);
 
@@ -33,6 +34,11 @@ onMounted(() => {
             })
         }
         isMessageReady.value = true;
+
+        if (props.receiver) {
+            currentContact.value = props.contacts.filter(m => m.receiver.hasOwnProperty('id') ? m.receiver.id == props.receiver.id || m.receiver.id === user.id : m.initiator.id == props.receiver.id || m.initiator.id === user.id)[0];
+        }
+
     }, 10);
 });
 
@@ -65,8 +71,8 @@ const toggleShowDetails = () => {
 <template>
     <div
         class="text-white bg-black lg:h-full inset-0 fixed overflow-x-hidden top-0 left-0 z-[999] lg:z-0 lg:relative w-full flex flex-col lg:flex-row">
-        <Menu :isMessageReady="isMessageReady" :receiver="receiver" :toggleChat="toggleChat" :contacts="contacts"
-            :showChat="showChat" :user="user" />
+        <Menu :isMessageReady="isMessageReady" :receiver="receiver" v-model:currentContact="currentContact"
+            :toggleChat="toggleChat" :contacts="contacts" :showChat="showChat" :user="user" />
         <div v-if="!receiver" class="items-center justify-center hidden w-full h-full lg:flex">
             <div class="flex flex-col items-center gap-4">
                 <div>
@@ -89,8 +95,8 @@ const toggleShowDetails = () => {
             </div>
         </div>
         <MobileMenu v-if="showChat" :receiver="receiver" :toggleChat="toggleChat" :toggleShowDetails="toggleShowDetails" />
-        <ChatContent :messages="messages" v-if="receiver" :showChat="showChat" :receiver="receiver"
-            :toggleShowDetails="toggleShowDetails" />
+        <ChatContent v-model:currentContact="currentContact" :messages="messages" v-if="receiver" :showChat="showChat"
+            :receiver="receiver" :toggleShowDetails="toggleShowDetails" />
 
         <Transition name="slide-from-right">
             <ChatDetails v-if="showDetails" v-model:showDetails="showDetails" :receiver="receiver" />

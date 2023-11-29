@@ -8,6 +8,7 @@ import SvgIcon from "@jamescoyle/vue-icon";
 
 
 const props = defineProps({
+    currentContact: Object,
     receiver: Object,
     showChat: Boolean,
     toggleShowDetails: Function,
@@ -18,20 +19,26 @@ const showEmojiPicker = ref(false);
 const currentMessage = ref('');
 
 const before = index => {
-    if (index == 0 && message.lenght == 1)
+    if (index === 0 && message.lenght === 1)
         return 'solo';
-    if (index == 0 && message.lenght == 2)
+    if (index === 0 && message.lenght === 2)
         return 'first';
-    if (index == message.lenght)
+    if (index === message.lenght)
         return 'last';
     return 'in between';
 }
 
 const sendMessage = () => {
-    axios.post('/message', { message: currentMessage.value, receiver: props.receiver.id })
-        .then(() => {
-            currentMessage.value = '';
+    if (currentMessage.value.length === 0)
+        return;
+    const messageToSend = currentMessage.value;
+    currentMessage.value = '';
+    if (!props.currentContact.valid)
+        axios.post('/contact/activate/' + contact.id).then(() => {
+            axios.post('/message', { message: messageToSend, receiver: props.receiver.id });
         })
+    else
+        axios.post('/message', { message: messageToSend, receiver: props.receiver.id });
 }
 
 const onSelectEmoji = (emoji) => {

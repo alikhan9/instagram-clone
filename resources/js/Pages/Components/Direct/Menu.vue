@@ -15,11 +15,14 @@ const props = defineProps({
     }
 })
 
+const emit = defineEmits(['update:currentContact']);
+
 const openChat = contact => {
     router.get('/direct/t/' + (contact.receiver.hasOwnProperty('id') ? contact.receiver.id : contact.initiator.id), {}, {
         preserveState: true,
         only: ['receiver', 'messages'],
         onFinish: () => {
+            emit('update:currentContact', contact);
             props.toggleChat();
         }
     });
@@ -69,7 +72,6 @@ const messages = useMessageStore();
                     <div class="font-semibold text-sm text-[hsl(0,0%,70%)]">Dernier message</div>
                 </div>
             </div>
-            {{ console.log(messages.getUnreadNotificationsForUser(contact.receiver.hasOwnProperty('id') ? contact.receiver.id : contact.initiator.id) !== 0,isMessageReady) }}
             <div
                 :class="{ 'w-[8px] h-[8px] bg-blue-500 rounded-full': true, 'hidden': isMessageReady && messages.getUnreadNotificationsForUser(contact.receiver.hasOwnProperty('id') ? contact.receiver.id : contact.initiator.id) === 0 }">
             </div>

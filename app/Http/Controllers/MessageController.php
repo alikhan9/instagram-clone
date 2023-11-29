@@ -51,6 +51,7 @@ class MessageController extends Controller
     public function store(Request $request)
     {
 
+
         $result = $request->validate([
             'receiver' => 'required|exists:users,id',
             'message' => 'required|string|max:10000'

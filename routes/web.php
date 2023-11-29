@@ -3,6 +3,7 @@
 use App\Http\Controllers\BookmarkController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\CommentsController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PostController;
@@ -34,6 +35,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/message', [MessageController::class, 'store']);
     Route::post('/message/notifications/notify', [MessageController::class, 'notify']);
     Route::post('/message/notifications/check', [MessageController::class, 'check']);
+    Route::post('/contact/activate/{contact}', [ContactController::class, 'activate']);
 
     Route::get('/reels', [ReelsController::class,'index']);
     Route::get('/reels/{post}/', [ReelsController::class,'index']);

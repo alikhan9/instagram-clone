@@ -38,6 +38,7 @@ onMounted(() => {
     messages.updateUnreadNotifications();
     Echo.private('App.Models.User.' + usePage().props.auth.user.id)
         .notification((notification) => {
+            console.log(notification);
             if (notification.type == "App\\Notifications\\NewMessageNotification") {
                 messages.increaseUnreadNotifications();
                 messages.addNotification(notification);
@@ -46,6 +47,7 @@ onMounted(() => {
         });
     Echo.private('App.Models.User.' + usePage().props.auth.user.id)
         .listen('.message', e => {
+            console.log(e);
             if (!usePage().props.ziggy.location.includes('/direct/t/' + e.message.sender))
                 axios.post('/message/notifications/notify', { sender: e.message.sender })
             else
