@@ -32,6 +32,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/direct/t/{receiver}', [MessageController::class, 'index']);
     Route::post('/bookmark', [BookmarkController::class, 'store']);
     Route::post('/message', [MessageController::class, 'store']);
+    Route::post('/message/notifications/notify', [MessageController::class, 'notify']);
+    Route::post('/message/notifications/check', [MessageController::class, 'check']);
 
     Route::get('/reels', [ReelsController::class,'index']);
     Route::get('/reels/{post}/', [ReelsController::class,'index']);

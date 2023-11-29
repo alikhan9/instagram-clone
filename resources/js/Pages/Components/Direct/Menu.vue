@@ -11,7 +11,7 @@ const props = defineProps({
 })
 
 const openChat = contact => {
-    router.get('/direct/t/' + (typeof contact.receiver !== 'string' ? contact.receiver.id : contact.initiator.id), {}, {
+    router.get('/direct/t/' + (contact.receiver.hasOwnProperty('id') ? contact.receiver.id : contact.initiator.id), {}, {
         preserveState: true,
         only: ['receiver', 'messages'],
         onFinish: () => {

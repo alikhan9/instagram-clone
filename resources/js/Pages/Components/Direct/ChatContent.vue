@@ -7,11 +7,11 @@ import { ref } from 'vue'
 import SvgIcon from "@jamescoyle/vue-icon";
 
 
-defineProps({
+const props = defineProps({
     receiver: Object,
     showChat: Boolean,
     toggleShowDetails: Function,
-    messages: Array,
+    messages: Object,
 })
 
 const showEmojiPicker = ref(false);
@@ -25,6 +25,13 @@ const before = index => {
     if (index == message.lenght)
         return 'last';
     return 'in between';
+}
+
+const sendMessage = () => {
+    axios.post('/message', { message: currentMessage.value, receiver: props.receiver.id })
+        .then(() => {
+            currentMessage.value = '';
+        })
 }
 
 const onSelectEmoji = (emoji) => {
@@ -44,8 +51,9 @@ const resize = (e) => {
         <DesktopHeader :toggleShowDetails="toggleShowDetails" :receiver="receiver" />
         <RecipientInfo :receiver="receiver" />
         <!-- FIXME: Hauteure max dépasse  -->
-        <div v-for="(item, index) in 10" :key="index" class="flex flex-col flex-1 w-full overflow-auto gap-1 px-2 mt-10 lg:px-4">
-            <span class="bg-[#3897f0] self-end rounded-lg px-2 py-[8px] max-w-[clamp(50%,564px,60%)]">
+        <div v-for="(item, index) in 10" :key="index"
+            class="flex flex-col flex-1 w-full overflow-auto gap-1 px-2 mt-10 lg:px-4">
+            <!-- <span class="bg-[#3897f0] self-end rounded-lg px-2 py-[8px] max-w-[clamp(50%,564px,60%)]">
                 1 comment
             </span>
             <span class="bg-[#3897f0] self-end rounded-[18px] rounded-br-[4px] px-2 py-[8px] max-w-[clamp(50%,564px,60%)]">
@@ -57,7 +65,7 @@ const resize = (e) => {
             </span>
             <span class="bg-[#3897f0] self-end rounded-[18px] rounded-tr-[4px] px-2 py-[8px] max-w-[clamp(50%,564px,60%)]">
                 Dernier
-            </span>
+            </span> -->
         </div>
         <div class="px-4 lg:pb-3 pb-1 sticky bg-black pt-2 z-50 bottom-[0svh] lg:pt-2 left-0 w-full shrink-0">
             <div class="flex items-center min-h-[44px] gap-4 px-6 border-[#262626] mb-1 border rounded-full items">

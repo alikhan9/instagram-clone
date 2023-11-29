@@ -1,10 +1,11 @@
 <script setup>
-import { usePage } from '@inertiajs/vue3'
-import { ref } from 'vue';
+import { usePage } from '@inertiajs/vue3';
+import { ref, onMounted, watch } from 'vue';
 import ChatDetails from './Components/Direct/ChatDetails.vue'
 import Menu from './Components/Direct/Menu.vue';
 import MobileMenu from './Components/Direct/MobileMenu.vue';
 import ChatContent from './Components/Direct/ChatContent.vue';
+import { useMessageStore } from '@/Pages/useStore/useMessageStore';
 
 const props = defineProps({
     contacts: Array,
@@ -19,6 +20,30 @@ const props = defineProps({
 const user = usePage().props.auth.user;
 const showChat = ref(!(props.receiver == null))
 const showDetails = ref(false);
+const messages = useMessageStore();
+
+onMounted(() => {
+    messages.setMessages(props.messages);
+    setTimeout(() => {
+        if (props.receiver && messages.getUnreadNotificationsForUser(props.receiver.id) > 0) {
+            axios.post('/message/notifications/check', { sender: props.receiver.id }).then(() => {
+                messages.removeNotificationsForUser(props.receiver.id);
+                messages.updateUnreadNotifications();
+            })
+        }
+    }, 10);
+});
+
+watch(() => props.receiver, () => {
+    messages.setMessages(props.messages);
+    if (props.receiver && messages.getUnreadNotificationsForUser(props.receiver.id) > 0) {
+        axios.post('/message/notifications/check', { sender: props.receiver.id }).then(() => {
+            messages.removeNotificationsForUser(props.receiver.id);
+            messages.updateUnreadNotifications();
+        })
+    }
+});
+
 
 const toggleChat = () => {
     showChat.value = !showChat.value;

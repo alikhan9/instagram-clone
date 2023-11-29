@@ -14,6 +14,7 @@ import MobileMenuTop from '@/Pages/MobileMenuTop.vue';
 import Notifications from '@/Pages/Notifications.vue';
 import { useWindowSize } from '@vueuse/core'
 import '../../css/app.css'
+import { useMessageStore } from '@/Pages/useStore/useMessageStore';
 
 const showCreatePost = ref(false);
 const showPlusMenu = ref(false);
@@ -21,6 +22,7 @@ const showSearch = ref(false);
 const directPage = ref(usePage().props.ziggy.location.includes('direct'));
 const showNotifications = ref(false);
 const posts = usePostStore();
+const messages = useMessageStore();
 const { width } = useWindowSize()
 
 
@@ -28,12 +30,27 @@ watch(() => usePage().props.ziggy.location, newValue => {
     directPage.value = newValue.includes('direct');
 })
 
+
+
 onMounted(() => {
-    posts.setNotifications(usePage().props.auth.notifications.sort((a, b) => a.created_at - b.created_at));
+    posts.setNotifications(usePage().props.auth.notifications.sort((a, b) => a.created_at - b.created_at).filter(n => n.type !== "App\\Notifications\\NewMessageNotification"));
+    messages.setNotifications(usePage().props.auth.notifications.sort((a, b) => a.created_at - b.created_at).filter(n => n.type === "App\\Notifications\\NewMessageNotification"));
+    messages.updateUnreadNotifications();
     Echo.private('App.Models.User.' + usePage().props.auth.user.id)
         .notification((notification) => {
-            posts.addNotification(notification);
+            if (notification.type == "App\\Notifications\\NewMessageNotification") {
+                messages.increaseUnreadNotifications();
+                messages.addNotification(notification);
+            } else
+                posts.addNotification(notification);
         });
+    Echo.private('App.Models.User.' + usePage().props.auth.user.id)
+        .listen('.message', e => {
+            if (!usePage().props.ziggy.location.includes('/direct/t/' + e.message.sender))
+                axios.post('/message/notifications/notify', { sender: e.message.sender })
+            else
+                console.log('Add message to chat');
+        })
 });
 
 const closeSearchOrNotifications = () => {
@@ -104,9 +121,15 @@ const toggleShowCreatePost = () => {
                             :mini="showSearch || showNotifications || directPage">
                             <span>Reels</span>
                         </MenuComponent>
-                        <MenuComponent :path="mdiNearMe" url="/direct"
+                        <MenuComponent class="relative" :dontHideContent="true" :path="mdiNearMe" url="/direct"
                             :mini="showSearch || showNotifications || directPage">
-                            <span>Messages</span>
+                            <span
+                                class="absolute border border-[#262626] top-1 bg-red-500 text-white flex justify-center items-center left-7 rounded-full h-5 w-5 text-sm">{{
+                                    messages.unreadNotifications }}
+                            </span>
+                            <span :class="{ 'hidden lg:block': true, 'lg:hidden': directPage }">
+                                Messages
+                            </span>
                         </MenuComponent>
                         <MenuComponent :path="mdiHeartOutline" :mini="showSearch || showNotifications || directPage"
                             @click="changeNotificationsState" :isLink="false">
@@ -198,3 +221,4 @@ const toggleShowCreatePost = () => {
 
     </div>
 </template>
+@/Pages/useStore/useMessageStore
