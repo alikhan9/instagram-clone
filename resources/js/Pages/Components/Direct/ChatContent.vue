@@ -5,6 +5,10 @@ import EmojiPicker from "vue3-emoji-picker";
 import { mdiEmoticonHappyOutline } from "@mdi/js";
 import { ref } from "vue";
 import SvgIcon from "@jamescoyle/vue-icon";
+import { useMessageStore } from '@/Pages/useStore/useMessageStore';
+import { usePage } from '@inertiajs/vue3';
+import MobileMenu from './MobileMenu.vue';
+
 import { useMessageStore } from "@/Pages/useStore/useMessageStore";
 import { usePage } from "@inertiajs/vue3";
 import MobileMenu from "./MobileMenu.vue";
@@ -17,6 +21,7 @@ const props = defineProps({
     toggleChat: Function,
 });
 
+const user = usePage().props.auth.user;
 const user = usePage().props.auth.user;
 const showEmojiPicker = ref(false);
 const currentMessage = ref("");
@@ -199,3 +204,14 @@ const resize = (e) => {
         </div>
     </div>
 </template>
+
+            <!-- <span class="bg-[#3897f0] self-end rounded-[18px] rounded-br-[4px] px-2 py-[8px] max-w-[clamp(50%,564px,60%)]">
+                    1er comment
+                </span>
+                <span
+                    class="bg-[#3897f0] break-words self-end rounded-2xl rouded-bl-[18px] rounded-br-[4px] rouded-tl-[18px] rounded-tr-[4px] px-2 py-[8px] max-w-[clamp(50%,564px,60%)]">
+                    milieu
+                </span>
+                <span class="bg-[#3897f0] self-end rounded-[18px] rounded-tr-[4px] px-2 py-[8px] max-w-[clamp(50%,564px,60%)]">
+                    Dernier
+                </span> -->
