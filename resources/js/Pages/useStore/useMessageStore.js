@@ -10,8 +10,8 @@ export let useMessageStore = defineStore('notifications', {
     },
 
     actions: {
-        addNotification(message) {
-            this.notifications.push(message);
+        addNotification(notification) {
+            this.notifications.push(notification);
         },
         increaseUnreadNotifications() {
             this.unreadNotifications += 1;
@@ -23,7 +23,7 @@ export let useMessageStore = defineStore('notifications', {
             this.notifications = [...notifications];
         },
         removeNotificationsForUser(userId) {
-            this.notifications = this.notifications.filter(notification => notification.data?.sender !== userId);
+            this.notifications = this.notifications.filter(notification => notification.hasOwnProperty('data') ? notification.data.sender !== userId : notification.sender !== userId);
         },
         setMessages(messages) {
             this.messages = [...messages];
@@ -32,7 +32,7 @@ export let useMessageStore = defineStore('notifications', {
             this.messages.push(...message);
         },
         getUnreadNotificationsForUser(userId) {
-            return this.notifications.filter(notification => notification.data.sender === userId).length;
+            return this.notifications.filter(notification => notification.hasOwnProperty('data') ? notification.data.sender === userId : notification.sender === userId).length;
         },
         getNotifications() {
             return this.notifications;

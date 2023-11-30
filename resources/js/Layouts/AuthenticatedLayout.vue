@@ -34,11 +34,11 @@ watch(() => usePage().props.ziggy.location, newValue => {
 
 onMounted(() => {
     posts.setNotifications(usePage().props.auth.notifications.sort((a, b) => a.created_at - b.created_at).filter(n => n.type !== "App\\Notifications\\NewMessageNotification"));
+    console.log(usePage().props.auth.notifications);
     messages.setNotifications(usePage().props.auth.notifications.sort((a, b) => a.created_at - b.created_at).filter(n => n.type === "App\\Notifications\\NewMessageNotification"));
     messages.updateUnreadNotifications();
     Echo.private('App.Models.User.' + usePage().props.auth.user.id)
         .notification((notification) => {
-            console.log(notification);
             if (notification.type == "App\\Notifications\\NewMessageNotification") {
                 messages.increaseUnreadNotifications();
                 messages.addNotification(notification);
@@ -47,8 +47,7 @@ onMounted(() => {
         });
     Echo.private('App.Models.User.' + usePage().props.auth.user.id)
         .listen('.message', e => {
-            console.log(e);
-            if (!usePage().props.ziggy.location.includes('/direct/t/' + e.message.sender))
+            if (!window.location.href.includes('/direct/t/' + e.message.sender))
                 axios.post('/message/notifications/notify', { sender: e.message.sender })
             else
                 console.log('Add message to chat');
