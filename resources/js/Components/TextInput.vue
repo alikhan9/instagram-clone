@@ -18,12 +18,14 @@ onMounted(() => {
     }
 });
 
-defineExpose({ focus: () => input.value.focus() });
+defineExpose({
+    focus: () => input.value.focus(),
+});
 </script>
 
 <template>
     <input
-        class="mt-4 block w-full bg-[#FAFAFA] rounded-[3px] border-[#DBDBDB] py-[9px]"
+        class="mt-4 block w-full rounded-[3px] border-none border-[#DBDBDB] bg-transparent py-[9px] text-white outline-none focus:ring-0"
         :value="modelValue"
         @input="$emit('update:modelValue', $event.target.value)"
         ref="input"

@@ -76,9 +76,9 @@ const loadFollowing = () => {
                             :path="mdiDotsHorizontal"></svg-icon>
                     </div>
                     <div v-else class="flex gap-4">
-                        <div class="px-6 py-1 text-black  bg-[#DBDBDB] rounded-lg">
+                        <Link href="/profile" as="button" class="px-6 py-1 text-black  bg-[#DBDBDB] rounded-lg">
                             Modifier le profil
-                        </div>
+                        </Link>
                         <div class="px-6 text-center text-black font-semibold py-1 bg-[#DBDBDB] rounded-lg">
                             Voir les archives
                         </div>

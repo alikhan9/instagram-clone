@@ -136,7 +136,7 @@ const addResponseComment = (data) => {
         <div class="flex items-center justify-center w-full h-full">
             <div ref="target" class="h-[90vh] min-w-[50vw] flex bg-black justify-center">
                 <div class="max-w-[60%] flex items-center relative">
-                    <img v-if="post.image !== null" class="ml-2 w-full h-full max-w-[99.4%]"
+                    <img v-if="post.image !== null" class="w-full h-full object-contain"
                         :src="usePage().props.ziggy.url + post.image.replace('medium', 'big')" />
                     <div v-else>
                         <video class="object-fill w-full h-full mx-auto" width="100%" ref="videoPlayer"
