@@ -5,6 +5,9 @@ import EmojiPicker from "vue3-emoji-picker";
 import { mdiEmoticonHappyOutline } from "@mdi/js";
 import { ref } from 'vue'
 import SvgIcon from "@jamescoyle/vue-icon";
+import { useMessageStore } from '@/Pages/useStore/useMessageStore';
+import { usePage } from '@inertiajs/vue3';
+import MobileMenu from './MobileMenu.vue';
 
 
 const props = defineProps({
@@ -12,11 +15,13 @@ const props = defineProps({
     receiver: Object,
     showChat: Boolean,
     toggleShowDetails: Function,
-    messages: Object,
+    toggleChat:Function,
 })
 
+const user = usePage().props.auth.user;
 const showEmojiPicker = ref(false);
 const currentMessage = ref('');
+const messages = useMessageStore();
 
 const before = index => {
     if (index === 0 && message.lenght === 1)
@@ -54,27 +59,28 @@ const resize = (e) => {
 </script>
 
 <template>
-    <div :class="{ 'w-full lg:max-h-screen overflow-auto h-full relative flex-col': true, 'hidden lg:block ': !showChat }">
+    <div class="flex flex-col w-full h-full">
         <DesktopHeader :toggleShowDetails="toggleShowDetails" :receiver="receiver" />
-        <RecipientInfo :receiver="receiver" />
-        <!-- FIXME: Hauteure max dépasse  -->
-        <div v-for="(item, index) in 10" :key="index"
-            class="flex flex-col flex-1 w-full overflow-auto gap-1 px-2 mt-10 lg:px-4">
-            <!-- <span class="bg-[#3897f0] self-end rounded-lg px-2 py-[8px] max-w-[clamp(50%,564px,60%)]">
-                1 comment
-            </span>
-            <span class="bg-[#3897f0] self-end rounded-[18px] rounded-br-[4px] px-2 py-[8px] max-w-[clamp(50%,564px,60%)]">
-                1er comment
-            </span>
-            <span
-                class="bg-[#3897f0] break-words self-end rounded-2xl rouded-bl-[18px] rounded-br-[4px] rouded-tl-[18px] rounded-tr-[4px] px-2 py-[8px] max-w-[clamp(50%,564px,60%)]">
-                milieu
-            </span>
-            <span class="bg-[#3897f0] self-end rounded-[18px] rounded-tr-[4px] px-2 py-[8px] max-w-[clamp(50%,564px,60%)]">
-                Dernier
-            </span> -->
+        <MobileMenu v-if="showChat" :receiver="receiver" :toggleChat="toggleChat" :toggleShowDetails="toggleShowDetails" />
+
+        <div class="w-full h-full overflow-auto" :class="{ 'hidden lg:block': !showChat }">
+            <RecipientInfo :receiver="receiver" />
+            <!-- FIXME: Hauteure max dépasse  -->
+            <div class="mt-10 h-full">
+                <div v-for="(message, index) in messages.getMessages()" :key="index"
+                    class="flex flex-col w-full text-white overflow-auto gap-1 px-2 lg:px-4">
+                    <!-- {{ message }} -->
+                    <span v-if="message.sender === user.id"
+                        class="bg-[#3897f0] mb-2 self-end rounded-lg px-2 py-[8px] max-w-[clamp(50%,564px,60%)]">
+                        {{ message.message }}
+                    </span>
+                    <span v-else class="bg-[#262626] mb-1 self-start rounded-lg px-2 py-[8px] max-w-[clamp(50%,564px,60%)]">
+                        {{ message.message }}
+                    </span>
+                </div>
+            </div>
         </div>
-        <div class="px-4 lg:pb-3 pb-1 sticky bg-black pt-2 z-50 bottom-[0svh] lg:pt-2 left-0 w-full shrink-0">
+        <div class="px-4 lg:pb-3 pb-1 bg-black pt-2 z-50">
             <div class="flex items-center min-h-[44px] gap-4 px-6 border-[#262626] mb-1 border rounded-full items">
                 <svg-icon class="hover:cursor-pointer" type="mdi" size="26" @click="showEmojiPicker = !showEmojiPicker"
                     :path="mdiEmoticonHappyOutline" />
@@ -87,3 +93,14 @@ const resize = (e) => {
         </div>
     </div>
 </template>
+
+            <!-- <span class="bg-[#3897f0] self-end rounded-[18px] rounded-br-[4px] px-2 py-[8px] max-w-[clamp(50%,564px,60%)]">
+                    1er comment
+                </span>
+                <span
+                    class="bg-[#3897f0] break-words self-end rounded-2xl rouded-bl-[18px] rounded-br-[4px] rouded-tl-[18px] rounded-tr-[4px] px-2 py-[8px] max-w-[clamp(50%,564px,60%)]">
+                    milieu
+                </span>
+                <span class="bg-[#3897f0] self-end rounded-[18px] rounded-tr-[4px] px-2 py-[8px] max-w-[clamp(50%,564px,60%)]">
+                    Dernier
+                </span> -->

@@ -50,7 +50,7 @@ onMounted(() => {
             if (!window.location.href.includes('/direct/t/' + e.message.sender))
                 axios.post('/message/notifications/notify', { sender: e.message.sender })
             else
-                console.log('Add message to chat');
+                messages.addMessage(e.message);
         })
 });
 

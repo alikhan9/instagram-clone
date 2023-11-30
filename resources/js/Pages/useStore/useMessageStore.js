@@ -29,13 +29,16 @@ export let useMessageStore = defineStore('notifications', {
             this.messages = [...messages];
         },
         addMessage(message) {
-            this.messages.push(...message);
+            this.messages.push(message);
         },
         getUnreadNotificationsForUser(userId) {
             return this.notifications.filter(notification => notification.hasOwnProperty('data') ? notification.data.sender === userId : notification.sender === userId).length;
         },
         getNotifications() {
             return this.notifications;
+        },
+        getMessages() {
+            return this.messages;
         }
     }
 

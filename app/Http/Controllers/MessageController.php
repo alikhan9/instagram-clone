@@ -39,7 +39,6 @@ class MessageController extends Controller
             $messages = Message::where('receiver', auth()->id())->where('sender', $receiver->id)->orWhere('receiver', $receiver->id)->where('sender', auth()->id())->orderBy('created_at', 'ASC')->get();
         }
 
-
         return Inertia::render('Direct', [
             'receiver' => count($receiver->getAttributes()) !== 0 ? $receiver : null,
             'contacts' => auth()->user()->contacts(),

@@ -70,7 +70,7 @@ const toggleShowDetails = () => {
 
 <template>
     <div
-        class="text-white bg-black lg:h-full inset-0 fixed overflow-x-hidden top-0 left-0 z-[999] lg:z-0 lg:relative w-full flex flex-col lg:flex-row">
+        class="text-white bg-black lg:h-full inset-0 max-h-[100vh] fixed overflow-hidden top-0 left-0 z-[999] lg:z-0 lg:relative w-full flex flex-col lg:flex-row">
         <Menu :isMessageReady="isMessageReady" :receiver="receiver" v-model:currentContact="currentContact"
             :toggleChat="toggleChat" :contacts="contacts" :showChat="showChat" :user="user" />
         <div v-if="!receiver" class="items-center justify-center hidden w-full h-full lg:flex">
@@ -94,8 +94,7 @@ const toggleShowDetails = () => {
                     message</button>
             </div>
         </div>
-        <MobileMenu v-if="showChat" :receiver="receiver" :toggleChat="toggleChat" :toggleShowDetails="toggleShowDetails" />
-        <ChatContent v-model:currentContact="currentContact" :messages="messages" v-if="receiver" :showChat="showChat"
+        <ChatContent v-model:currentContact="currentContact" :toggleChat="toggleChat" :messages="messages" v-if="receiver" :showChat="showChat"
             :receiver="receiver" :toggleShowDetails="toggleShowDetails" />
 
         <Transition name="slide-from-right">
