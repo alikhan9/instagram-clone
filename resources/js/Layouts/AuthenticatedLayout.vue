@@ -1,9 +1,9 @@
 <script setup>
-import MenuComponent from "@/Components/MenuComponent.vue";
-import PlusMenuComponent from "@/Components/PlusMenuComponent.vue";
-import { ref, onMounted, watch } from "vue";
-import CreatePost from "@/Pages/CreatePost.vue";
-import { vOnClickOutside } from "@vueuse/components";
+import MenuComponent from '@/Components/MenuComponent.vue'
+import PlusMenuComponent from '@/Components/PlusMenuComponent.vue'
+import { ref, onMounted, watch } from 'vue'
+import CreatePost from '@/Pages/CreatePost.vue'
+import { vOnClickOutside } from '@vueuse/components'
 import {
     mdiHome,
     mdiMagnify,
@@ -20,99 +20,116 @@ import {
     mdiBookmarkOutline,
     mdiWeatherNight,
     mdiCommentAlertOutline,
-} from "@mdi/js";
-import Search from "@/Pages/Search.vue";
-import { usePage } from "@inertiajs/vue3";
-import { usePostStore } from "@/Pages/useStore/usePostStore";
-import MobileMenuTop from "@/Pages/MobileMenuTop.vue";
-import Notifications from "@/Pages/Notifications.vue";
-import { useWindowSize } from "@vueuse/core";
-import "../../css/app.css";
-import { useMessageStore } from "@/Pages/useStore/useMessageStore";
+} from '@mdi/js'
+import Search from '@/Pages/Search.vue'
+import { usePage } from '@inertiajs/vue3'
+import { usePostStore } from '@/Pages/useStore/usePostStore'
+import MobileMenuTop from '@/Pages/MobileMenuTop.vue'
+import Notifications from '@/Pages/Notifications.vue'
+import { useWindowSize } from '@vueuse/core'
+import '../../css/app.css'
+import { useMessageStore } from '@/Pages/useStore/useMessageStore'
 
-const showCreatePost = ref(false);
-const showPlusMenu = ref(false);
-const showSearch = ref(false);
-const directPage = ref(usePage().props.ziggy.location.includes("direct"));
-const showNotifications = ref(false);
-const posts = usePostStore();
-const messages = useMessageStore();
-const { width } = useWindowSize();
+const showCreatePost = ref(false)
+const showPlusMenu = ref(false)
+const showSearch = ref(false)
+const directPage = ref(usePage().props.ziggy.location.includes('direct'))
+const showNotifications = ref(false)
+const posts = usePostStore()
+const messages = useMessageStore()
+const { width } = useWindowSize()
 
 watch(
     () => usePage().props.ziggy.location,
-    (newValue) => {
-        directPage.value = newValue.includes("direct");
-    },
-);
+    newValue => {
+        directPage.value = newValue.includes('direct')
+    }
+)
 
 onMounted(() => {
     posts.setNotifications(
         usePage()
             .props.auth.notifications.sort(
-                (a, b) => a.created_at - b.created_at,
+                (a, b) => a.created_at - b.created_at
             )
-            .filter(
-                (n) => n.type !== "App\\Notifications\\NewMessageNotification",
-            ),
-    );
+            .filter(n => n.type === 'App\\Notifications\\PostLikeNotification')
+    )
     messages.setNotifications(
-        usePage()
-            .props.auth.notifications.sort(
-                (a, b) => a.created_at - b.created_at,
-            )
-            .filter(
-                (n) => n.type === "App\\Notifications\\NewMessageNotification",
-            ),
-    );
-    messages.updateUnreadNotifications();
+        usePage().props.auth.notifications.filter(
+            n => n.type === 'App\\Notifications\\NewMessageNotification'
+        )
+    )
+    messages.setGroupNotifications(
+        usePage().props.auth.notifications.filter(
+            n => n.type === 'App\\Notifications\\NewGroupMessageNotification'
+        )
+    )
+    messages.updateUnreadNotifications()
     Echo.private(
-        "App.Models.User." + usePage().props.auth.user.id,
-    ).notification((notification) => {
-        if (notification.type == "App\\Notifications\\NewMessageNotification") {
-            messages.increaseUnreadNotifications();
-            messages.addNotification(notification);
-        } else posts.addNotification(notification);
-    });
-    Echo.private("App.Models.User." + usePage().props.auth.user.id).listen(
-        ".message",
-        (e) => {
-            if (!window.location.href.includes("/direct/t/" + e.message.sender))
-                axios.post("/message/notifications/notify", {
+        'App.Models.User.' + usePage().props.auth.user.id
+    ).notification(notification => {
+        if (notification.type == 'App\\Notifications\\NewMessageNotification') {
+            messages.increaseUnreadNotifications()
+            messages.addNotification(notification)
+        } else {
+            if (
+                notification.type ==
+                'App\\Notifications\\NewGroupMessageNotification'
+            ) {
+                messages.increaseUnreadNotifications()
+                messages.addGroupMessage(notification)
+            } else posts.addNotification(notification)
+        }
+    })
+    Echo.private('App.Models.User.' + usePage().props.auth.user.id).listen(
+        '.message',
+        e => {
+            if (!window.location.href.includes('/direct/t/' + e.message.sender))
+                axios.post('/message/notifications/notify', {
                     sender: e.message.sender,
-                });
-            else messages.addMessage(e.message);
-        },
-    );
-});
+                })
+            else messages.addMessage(e.message)
+        }
+    )
+    Echo.private('App.Models.User.' + usePage().props.auth.user.id).listen(
+        '.group-message',
+        e => {
+            if (!window.location.href.includes('/direct/g/' + e.message.sender))
+                axios.post('/message/notifications/notify', {
+                    sender: e.message.sender,
+                })
+            else messages.addMessage(e.message)
+        }
+    )
+})
 
 const closeSearchOrNotifications = () => {
-    showSearch.value = false;
-    showNotifications.value = false;
-};
+    showSearch.value = false
+    showNotifications.value = false
+}
 
 const closePlusMenu = () => {
-    showPlusMenu.value = false;
-};
+    showPlusMenu.value = false
+}
 
 const togglePlusMenu = () => {
-    showPlusMenu.value = !showPlusMenu.value;
-};
+    showPlusMenu.value = !showPlusMenu.value
+}
 
 const changeSearchState = () => {
-    showSearch.value = !showSearch.value;
-};
+    showSearch.value = !showSearch.value
+}
 const changeNotificationsState = () => {
-    showNotifications.value = !showNotifications.value;
-    axios.post("/notifications");
-};
+    showNotifications.value = !showNotifications.value
+    axios.post('/notifications')
+}
 
 const toggleShowCreatePost = () => {
-    showCreatePost.value = !showCreatePost.value;
+    showCreatePost.value = !showCreatePost.value
     document.documentElement.style.overflow = showCreatePost.value
-        ? "hidden"
-        : "";
-};
+        ? 'hidden'
+        : ''
+}
 </script>
 <template>
     <div class="fixed inset-0 overflow-hidden bg-black">
@@ -228,7 +245,10 @@ const toggleShowCreatePost = () => {
                             "
                         >
                             <span
-                                class="absolute left-7 top-1 flex h-5 w-5 items-center justify-center rounded-full border border-[#262626] bg-red-500 text-sm text-white" :class="{'hidden':messages.unreadNotifications == 0}"
+                                class="absolute left-7 top-1 flex h-5 w-5 items-center justify-center rounded-full border border-[#262626] bg-red-500 text-sm text-white"
+                                :class="{
+                                    hidden: messages.unreadNotifications == 0,
+                                }"
                                 >{{ messages.unreadNotifications }}
                             </span>
                             <span
@@ -404,10 +424,17 @@ const toggleShowCreatePost = () => {
                             'grid w-full grid-cols-6 justify-evenly gap-3 text-[#E0F1FF]': true,
                         }"
                     >
-                        <MenuComponent :path="mdiHome" url="/" :mini="true">
+                        <MenuComponent
+                            :path="mdiHome"
+                            url="/"
+                            :mini="true"
+                        >
                             <span>Accueil</span>
                         </MenuComponent>
-                        <MenuComponent :path="mdiCompassOutline" :mini="true">
+                        <MenuComponent
+                            :path="mdiCompassOutline"
+                            :mini="true"
+                        >
                             <span>Découvrir</span>
                         </MenuComponent>
                         <MenuComponent

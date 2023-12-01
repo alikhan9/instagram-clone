@@ -6,7 +6,7 @@ use App\Models\GroupMessage;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 
-class NewGroupMessage extends Notification
+class NewGroupMessageNotification extends Notification
 {
     use Queueable;
     public $message;

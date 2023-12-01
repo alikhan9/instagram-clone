@@ -5,9 +5,6 @@ import EmojiPicker from "vue3-emoji-picker";
 import { mdiEmoticonHappyOutline } from "@mdi/js";
 import { ref } from "vue";
 import SvgIcon from "@jamescoyle/vue-icon";
-import { useMessageStore } from '@/Pages/useStore/useMessageStore';
-import { usePage } from '@inertiajs/vue3';
-import MobileMenu from './MobileMenu.vue';
 
 import { useMessageStore } from "@/Pages/useStore/useMessageStore";
 import { usePage } from "@inertiajs/vue3";
@@ -21,7 +18,6 @@ const props = defineProps({
     toggleChat: Function,
 });
 
-const user = usePage().props.auth.user;
 const user = usePage().props.auth.user;
 const showEmojiPicker = ref(false);
 const currentMessage = ref("");

@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Events\MessageSent;
 use App\Models\Contact;
+use App\Models\Group;
+use App\Models\GroupMember;
+use App\Models\GroupMessage;
 use App\Models\Message;
 use App\Models\User;
 use App\Notifications\NewMessageNotification;
@@ -12,7 +15,7 @@ use Inertia\Inertia;
 
 class MessageController extends Controller
 {
-    public function index(User $receiver)
+    public function user(User $receiver)
     {
         if(count($receiver->getAttributes()) !== 0) {
             if(!Contact::where('receiver', auth()->id())->where('initiator', $receiver->id)->orWhere('initiator', auth()->id())->where('receiver', $receiver->id)->exists() && $receiver->id !== auth()->id()) {
@@ -39,8 +42,12 @@ class MessageController extends Controller
             $messages = Message::where('receiver', auth()->id())->where('sender', $receiver->id)->orWhere('receiver', $receiver->id)->where('sender', auth()->id())->orderBy('created_at', 'ASC')->get();
         }
 
+        $groups = Group::whereIn('id', GroupMember::select('group_id')->where('user_id', auth()->id()));
+
+
         return Inertia::render('Direct', [
             'receiver' => count($receiver->getAttributes()) !== 0 ? $receiver : null,
+            'groups' => $groups,
             'contacts' => auth()->user()->contacts(),
             'messages' => $messages
         ]);
@@ -85,7 +92,22 @@ class MessageController extends Controller
         auth()->user()->unreadNotifications()->where('data', '{"sender":' . $request->sender . ',"receiver":' . auth()->id() . '}')->delete();
     }
 
+    public function group(Group $group)
+    {
+        $messages = [];
+        if(count($group->getAttributes()) !== 0) {
+            $messages = GroupMessage::where('group_id', $group->id);
+        }
 
+        $groups = Group::whereIn('id', GroupMember::select('group_id')->where('user_id', auth()->id()));
+
+        return Inertia::render('Direct', [
+            'group' => count($group->getAttributes()) !== 0 ? $group : null,
+            'groups' => $groups,
+            'contacts' => auth()->user()->contacts(),
+            'messages' => $messages
+        ]);
+    }
 
 
 }

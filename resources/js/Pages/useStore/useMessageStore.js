@@ -6,6 +6,8 @@ export let useMessageStore = defineStore('notifications', {
             messages: [],
             unreadNotifications: 0,
             notifications: [],
+            unreadGroupNotifications: 0,
+            groupNotifications: [],
         }
     },
 
@@ -13,17 +15,26 @@ export let useMessageStore = defineStore('notifications', {
         addNotification(notification) {
             this.notifications.push(notification);
         },
+        addGroupNotification(notification) {
+            this.groupNotifications.push(notification);
+        },
         increaseUnreadNotifications() {
             this.unreadNotifications += 1;
         },
         updateUnreadNotifications() {
-            this.unreadNotifications = this.notifications.length;
+            this.unreadNotifications = this.notifications.length + this.groupNotifications.length;
         },
         setNotifications(notifications) {
             this.notifications = [...notifications];
         },
+        setGroupNotifications(notifications) {
+            this.groupNotifications = [...notifications];
+        },
         removeNotificationsForUser(userId) {
             this.notifications = this.notifications.filter(notification => notification.hasOwnProperty('data') ? notification.data.sender !== userId : notification.sender !== userId);
+        },
+        removeGroupNotificationsForUser(groupId) {
+            this.groupNotifications = this.groupNotifications.filter(notification => notification.hasOwnProperty('data') ? notification.data.group_id !== groupId : notification.group_id !== groupId);
         },
         setMessages(messages) {
             this.messages = [...messages];

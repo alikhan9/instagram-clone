@@ -51,7 +51,8 @@ Route::middleware('auth')->group(function () {
 
     // Message Routes
     Route::get('/direct', [MessageController::class, 'index']);
-    Route::get('/direct/t/{receiver}', [MessageController::class, 'index']);
+    Route::get('/direct/t/{receiver}', [MessageController::class, 'user']);
+    Route::get('/direct/g/{group}', [MessageController::class, 'group']);
     Route::post('/message', [MessageController::class, 'store']);
 
     // Contact Routes
