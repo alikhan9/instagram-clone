@@ -48,6 +48,7 @@ Route::middleware('auth')->group(function () {
 
     // Search Route
     Route::get('/search/{username}', [UserController::class, 'search']);
+    Route::get('/search/small/{username}', [UserController::class, 'searchSmall']);
 
     // Message Routes
     Route::get('/direct', [MessageController::class, 'index']);

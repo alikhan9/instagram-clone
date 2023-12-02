@@ -99,7 +99,14 @@ class UserController extends Controller
 
     public function search($username)
     {
-        return User::select(['id', 'name', 'username'])->where(DB::raw('LOWER(username)'), 'like', '%' . strtolower($username) . '%')->get()->map(function ($user) {
+        return User::select(['id', 'name', 'username'])->where(DB::raw('LOWER(username)'), 'like', '%' . strtolower($username) . '%')->limit(50)->get()->map(function ($user) {
+            $user->followersCount = $user->followers()->count();
+            return $user;
+        });
+    }
+    public function searchSmall($username)
+    {
+        return User::select(['id', 'name', 'username'])->where(DB::raw('LOWER(username)'), 'like', '%' . strtolower($username) . '%')->limit(20)->get()->map(function ($user) {
             $user->followersCount = $user->followers()->count();
             return $user;
         });

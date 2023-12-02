@@ -3,7 +3,6 @@ import { usePage } from '@inertiajs/vue3'
 import { ref, onMounted, watch } from 'vue'
 import ChatDetails from './Components/Direct/ChatDetails.vue'
 import Menu from './Components/Direct/Menu.vue'
-import MobileMenu from './Components/Direct/MobileMenu.vue'
 import ChatContent from './Components/Direct/ChatContent.vue'
 import { useMessageStore } from '@/Pages/useStore/useMessageStore'
 
