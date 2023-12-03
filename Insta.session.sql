@@ -1,2 +1,2 @@
-DELETE from group_members;
-DELETE from groups;
+DELETE FROM GROUPS;
+DELETE FROM Group_members

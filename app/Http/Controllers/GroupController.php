@@ -23,6 +23,11 @@ class GroupController extends Controller
             ]);
         }
 
+        GroupMember::create([
+            'group_id' => $group->id,
+            'user_id' => auth()->id()
+        ]);
+
         return redirect('/direct/g/'.$group->id);
     }
 

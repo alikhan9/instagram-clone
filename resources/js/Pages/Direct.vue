@@ -4,6 +4,7 @@ import { ref, onMounted, watch } from 'vue'
 import ChatDetails from './Components/Direct/ChatDetails.vue'
 import Menu from './Components/Direct/Menu.vue'
 import ChatContent from './Components/Direct/ChatContent.vue'
+import GroupChatContent from './Components/Direct/GroupChatContent.vue'
 import { useMessageStore } from '@/Pages/useStore/useMessageStore'
 
 const props = defineProps({
@@ -43,6 +44,20 @@ onMounted(() => {
         }
         isMessageReady.value = true
 
+        if (
+            props.group &&
+            messages.getUnreadGroupNotifications(props.group.id) > 0
+        ) {
+            axios
+                .post('/group/notifications/check', {
+                    group_id: props.group.id,
+                })
+                .then(() => {
+                    messages.removeGroupNotifications(props.group.id)
+                    messages.updateUnreadNotifications()
+                })
+        }
+
         if (props.receiver) {
             currentContact.value = props.contacts.filter(m =>
                 m.receiver.hasOwnProperty('id')
@@ -79,6 +94,30 @@ watch(
         }, 10)
     }
 )
+watch(
+    () => props.group,
+    () => {
+        isMessageReady.value = false
+        messages.setMessages(props.messages)
+        setTimeout(() => {
+            if (
+                props.group &&
+                messages.getUnreadGroupNotifications(props.group.id) > 0
+            ) {
+                // TODO: Check notifications for this user
+                axios
+                    .post('/group/notifications/check', {
+                        group_id: props.group.id,
+                    })
+                    .then(() => {
+                        messages.removeGroupNotifications(props.group.id)
+                        messages.updateUnreadNotifications()
+                    })
+            }
+            isMessageReady.value = true
+        }, 10)
+    }
+)
 
 const toggleChat = () => {
     showChat.value = !showChat.value
@@ -105,7 +144,7 @@ const toggleShowDetails = () => {
             :group="group"
         />
         <div
-            v-if="!receiver"
+            v-if="!receiver && !group"
             class="hidden h-full w-full items-center justify-center lg:flex"
         >
             <div class="flex flex-col items-center gap-4">
@@ -147,12 +186,20 @@ const toggleShowDetails = () => {
             :receiver="receiver"
             :toggleShowDetails="toggleShowDetails"
         />
-
+        <GroupChatContent
+            :toggleChat="toggleChat"
+            :messages="messages"
+            v-if="group"
+            :showChat="showChat"
+            :group="group"
+            :toggleShowDetails="toggleShowDetails"
+        />
         <Transition name="slide-from-right">
             <ChatDetails
                 v-if="showDetails"
                 v-model:showDetails="showDetails"
                 :receiver="receiver"
+                :group="group"
             />
         </Transition>
     </div>

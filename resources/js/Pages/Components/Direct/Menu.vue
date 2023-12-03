@@ -20,7 +20,7 @@ const props = defineProps({
     },
 })
 
-const emit = defineEmits(['update:currentContact'])
+const emit = defineEmits(['update:currentContact', 'update:currentGroup'])
 
 const openChat = contact => {
     router.get(
@@ -31,9 +31,22 @@ const openChat = contact => {
         {},
         {
             preserveState: true,
-            only: ['receiver', 'messages'],
+            only: ['receiver', 'messages', 'group'],
             onFinish: () => {
                 emit('update:currentContact', contact)
+                props.toggleChat()
+            },
+        }
+    )
+}
+const openChatGroup = group => {
+    router.get(
+        '/direct/g/' + group.id,
+        {},
+        {
+            preserveState: true,
+            only: ['receiver', 'messages', 'group'],
+            onFinish: () => {
                 props.toggleChat()
             },
         }
@@ -135,7 +148,7 @@ const showCreateNewGroup = ref(false)
             ></div>
         </div>
         <div
-            @click="() => openChatGroup(group)"
+            @click="() => openChatGroup(gr)"
             v-for="(gr, index) in groups"
             :key="index"
             :class="{
@@ -145,11 +158,32 @@ const showCreateNewGroup = ref(false)
             }"
         >
             <div class="flex gap-[12px]">
-                <div class="h-[54px] w-[54px] overflow-hidden rounded-full">
+                <div
+                    class="h-[54px] w-[54px] shrink-0 overflow-hidden rounded-full"
+                >
                     <img src="https://picsum.photos/seed/picsum/54/54" />
                 </div>
                 <div>
-                    <div class="mb-2 font-semibold">{{ 'Nani' }}</div>
+                    <div
+                        v-if="gr.name !== null"
+                        class="mb-2 font-semibold"
+                    >
+                        {{ gr.name }}
+                    </div>
+                    <div
+                        class="max-w-full"
+                        v-else
+                    >
+                        <span
+                            v-for="(member, index) in gr.members.slice(0, 4)"
+                            :key="index"
+                            class="mb-2 mr-1 font-semibold"
+                        >
+                            <span v-if="index !== 0">, </span
+                            >{{ member.user.name }}
+                        </span>
+                        <span class="font-semibold" v-if="gr.members.length > 4"> ... </span>
+                    </div>
                     <!-- TODO:Last message -->
                     <div class="text-sm font-semibold text-[hsl(0,0%,70%)]">
                         Dernier message
@@ -161,11 +195,7 @@ const showCreateNewGroup = ref(false)
                     'h-[8px] w-[8px] rounded-full bg-blue-500': true,
                     hidden:
                         isMessageReady &&
-                        messages.getUnreadNotificationsForUser(
-                            contact.receiver.hasOwnProperty('id')
-                                ? contact.receiver.id
-                                : contact.initiator.id
-                        ) === 0,
+                        messages.getUnreadGroupNotifications(gr.id) === 0,
                 }"
             ></div>
         </div>

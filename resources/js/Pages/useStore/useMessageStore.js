@@ -33,7 +33,7 @@ export let useMessageStore = defineStore('notifications', {
         removeNotificationsForUser(userId) {
             this.notifications = this.notifications.filter(notification => notification.hasOwnProperty('data') ? notification.data.sender !== userId : notification.sender !== userId);
         },
-        removeGroupNotificationsForUser(groupId) {
+        removeGroupNotifications(groupId) {
             this.groupNotifications = this.groupNotifications.filter(notification => notification.hasOwnProperty('data') ? notification.data.group_id !== groupId : notification.group_id !== groupId);
         },
         setMessages(messages) {
@@ -45,8 +45,14 @@ export let useMessageStore = defineStore('notifications', {
         getUnreadNotificationsForUser(userId) {
             return this.notifications.filter(notification => notification.hasOwnProperty('data') ? notification.data.sender === userId : notification.sender === userId).length;
         },
+        getUnreadGroupNotifications(groupId) {
+            return this.groupNotifications.filter(notification => notification.hasOwnProperty('data') ? notification.data.group_id === groupId : notification.group_id === groupId).length;
+        },
         getNotifications() {
             return this.notifications;
+        },
+        getGroupNotifications() {
+            return this.groupNotifications;
         },
         getMessages() {
             return this.messages;

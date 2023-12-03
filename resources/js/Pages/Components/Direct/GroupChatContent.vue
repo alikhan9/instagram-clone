@@ -11,8 +11,7 @@ import { usePage } from '@inertiajs/vue3'
 import MobileMenu from './MobileMenu.vue'
 
 const props = defineProps({
-    currentContact: Object,
-    receiver: Object,
+    group: Object,
     showChat: Boolean,
     toggleShowDetails: Function,
     toggleChat: Function,
@@ -68,22 +67,13 @@ const sendMessage = () => {
     if (currentMessage.value.length === 0) return
     const messageToSend = currentMessage.value
     currentMessage.value = ''
-    if (!props.currentContact.valid)
-        axios.post('/contact/activate/' + contact.id).then(() => {
-            axios.post('/message', {
-                message: messageToSend,
-                receiver: props.receiver.id,
-            })
+    axios
+        .post('/group/' + props.group.id + 'message', {
+            message: messageToSend,
         })
-    else
-        axios
-            .post('/message', {
-                message: messageToSend,
-                receiver: props.receiver.id,
-            })
-            .then(res => {
-                messages.addMessage(res.data)
-            })
+        .then(res => {
+            messages.addMessage(res.data)
+        })
 }
 
 const onSelectEmoji = emoji => {
@@ -101,11 +91,11 @@ const resize = e => {
     <div class="flex h-full w-full flex-col">
         <DesktopHeader
             :toggleShowDetails="toggleShowDetails"
-            :receiver="receiver"
+            :group="group"
         />
         <MobileMenu
             v-if="showChat"
-            :receiver="receiver"
+            :group="group"
             :toggleChat="toggleChat"
             :toggleShowDetails="toggleShowDetails"
         />
@@ -113,7 +103,6 @@ const resize = e => {
             class="h-full w-full overflow-auto"
             :class="{ 'hidden lg:block': !showChat }"
         >
-            <RecipientInfo :receiver="receiver" />
             <div class="mt-10 h-full">
                 <div
                     v-for="(message, index) in messages.getMessages()"

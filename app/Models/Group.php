@@ -50,7 +50,7 @@ class Group extends Model
 
     public function members()
     {
-        return $this->hasMany(GroupMember::class, 'user_id');
+        return $this->hasMany(GroupMember::class, 'group_id');
     }
 
     public function owner()

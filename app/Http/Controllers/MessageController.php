@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Events\MessageSent;
 use App\Models\Contact;
 use App\Models\Group;
-use App\Models\GroupMember;
 use App\Models\Message;
 use App\Models\User;
 use App\Notifications\NewMessageNotification;
@@ -41,7 +40,7 @@ class MessageController extends Controller
             $messages = Message::where('receiver', auth()->id())->where('sender', $receiver->id)->orWhere('receiver', $receiver->id)->where('sender', auth()->id())->orderBy('created_at', 'ASC')->get();
         }
 
-        $groups = Group::whereIn('id', GroupMember::select('group_id')->where('user_id', auth()->id()));
+        $groups = auth()->user()->groups;
 
 
         return Inertia::render('Direct', [
@@ -99,7 +98,7 @@ class MessageController extends Controller
             $messages = $group->messages;
         }
 
-        $groups = Group::whereIn('id', GroupMember::select('group_id')->where('user_id', auth()->id()));
+        $groups = auth()->user()->groups;
 
         return Inertia::render('Direct', [
             'group' => count($group->getAttributes()) !== 0 ? $group : null,
