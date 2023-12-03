@@ -3,20 +3,27 @@
 namespace App\Http\Controllers;
 
 use App\Models\Group;
+use App\Models\GroupMember;
 use Illuminate\Http\Request;
 
 class GroupController extends Controller
 {
     public function store(Request $request)
     {
-
         $request->validate([
             'members' => 'required|array',
         ]);
 
         $group = Group::create(['owner_id' => auth()->user()->id]);
-        $group->members()->attach($request->members);
 
+        foreach ($request->members as $user) {
+            GroupMember::create([
+                'group_id' => $group->id,
+                'user_id' => $user['id']
+            ]);
+        }
+
+        return redirect('/direct/g/'.$group->id);
     }
 
     public function destroy(Group $group)

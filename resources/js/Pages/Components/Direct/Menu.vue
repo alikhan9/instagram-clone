@@ -12,6 +12,8 @@ const props = defineProps({
     contacts: Array,
     receiver: Object,
     toggleChat: Function,
+    groups: Object,
+    group: Object,
     isMessageReady: {
         type: Boolean,
         default: false,
@@ -113,6 +115,41 @@ const showCreateNewGroup = ref(false)
                         {{ contact?.receiver.username
                         }}{{ contact?.initiator.username }}
                     </div>
+                    <!-- TODO:Last message -->
+                    <div class="text-sm font-semibold text-[hsl(0,0%,70%)]">
+                        Dernier message
+                    </div>
+                </div>
+            </div>
+            <div
+                :class="{
+                    'h-[8px] w-[8px] rounded-full bg-blue-500': true,
+                    hidden:
+                        isMessageReady &&
+                        messages.getUnreadNotificationsForUser(
+                            contact.receiver.hasOwnProperty('id')
+                                ? contact.receiver.id
+                                : contact.initiator.id
+                        ) === 0,
+                }"
+            ></div>
+        </div>
+        <div
+            @click="() => openChatGroup(group)"
+            v-for="(gr, index) in groups"
+            :key="index"
+            :class="{
+                'flex w-full items-center justify-between py-[8px] hover:cursor-pointer': true,
+                'lg:bg-[hsl(0,0%,15%)]': gr.id === group?.id,
+                'lg:hover:bg-[hsl(0,0%,8%)]': gr.id !== group?.id,
+            }"
+        >
+            <div class="flex gap-[12px]">
+                <div class="h-[54px] w-[54px] overflow-hidden rounded-full">
+                    <img src="https://picsum.photos/seed/picsum/54/54" />
+                </div>
+                <div>
+                    <div class="mb-2 font-semibold">{{ 'Nani' }}</div>
                     <!-- TODO:Last message -->
                     <div class="text-sm font-semibold text-[hsl(0,0%,70%)]">
                         Dernier message

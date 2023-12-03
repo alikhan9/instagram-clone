@@ -106,10 +106,7 @@ class UserController extends Controller
     }
     public function searchSmall($username)
     {
-        return User::select(['id', 'name', 'username'])->where(DB::raw('LOWER(username)'), 'like', '%' . strtolower($username) . '%')->limit(20)->get()->map(function ($user) {
-            $user->followersCount = $user->followers()->count();
-            return $user;
-        });
+        return User::select(['id', 'name', 'username'])->where(DB::raw('LOWER(username)'), 'like', '%' . strtolower($username) . '%')->limit(20)->get();
     }
 
     public function checkNotifications()

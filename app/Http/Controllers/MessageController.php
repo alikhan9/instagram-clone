@@ -6,7 +6,6 @@ use App\Events\MessageSent;
 use App\Models\Contact;
 use App\Models\Group;
 use App\Models\GroupMember;
-use App\Models\GroupMessage;
 use App\Models\Message;
 use App\Models\User;
 use App\Notifications\NewMessageNotification;
@@ -48,6 +47,7 @@ class MessageController extends Controller
         return Inertia::render('Direct', [
             'receiver' => count($receiver->getAttributes()) !== 0 ? $receiver : null,
             'groups' => $groups,
+            'group' => null,
             'contacts' => auth()->user()->contacts(),
             'messages' => $messages
         ]);
@@ -96,7 +96,7 @@ class MessageController extends Controller
     {
         $messages = [];
         if(count($group->getAttributes()) !== 0) {
-            $messages = GroupMessage::where('group_id', $group->id);
+            $messages = $group->messages;
         }
 
         $groups = Group::whereIn('id', GroupMember::select('group_id')->where('user_id', auth()->id()));
@@ -105,7 +105,8 @@ class MessageController extends Controller
             'group' => count($group->getAttributes()) !== 0 ? $group : null,
             'groups' => $groups,
             'contacts' => auth()->user()->contacts(),
-            'messages' => $messages
+            'messages' => $messages,
+            'receiver' => null,
         ]);
     }
 

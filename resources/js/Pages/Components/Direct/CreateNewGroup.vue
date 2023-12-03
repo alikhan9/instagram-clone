@@ -10,6 +10,7 @@ const emit = defineEmits(['update:showCreateNewGroup'])
 const createNewGroupRef = ref(null)
 const users = ref([])
 const searchUsers = ref([])
+const searchRef = ref(null)
 
 onClickOutside(createNewGroupRef, () => close())
 
@@ -20,7 +21,17 @@ const removeUser = user => {
 }
 
 const addUser = user => {
+    if (users.value.find(u => u.id == user.id)) {
+        removeUser(user)
+        return
+    }
     users.value.push(user)
+    searchRef.value.value = ''
+    searchUsers.value = []
+}
+
+const userSelected = user => {
+    return users.value.filter(u => u.id == user.id).length > 0
 }
 
 const getUsers = useDebounceFn(value => {
@@ -34,11 +45,11 @@ const getUsers = useDebounceFn(value => {
 const sendCreateNewGroup = () => {
     router.post(
         '/group',
-        { users: users.value },
+        { members: users.value },
         {
-            preserveState: true,
-            preserveScroll: true,
-            only: ['groups', 'group'],
+            onFinish: () => {
+                close()
+            },
         }
     )
 }
@@ -61,6 +72,7 @@ const sendCreateNewGroup = () => {
                 <div>
                     <svg-icon
                         @click="close"
+                        class="hover:cursor-pointer"
                         type="mdi"
                         :path="mdiClose"
                         size="26"
@@ -68,20 +80,27 @@ const sendCreateNewGroup = () => {
                 </div>
             </div>
             <div
-                class="flex w-full items-center border-b border-[#262626] px-5 py-2"
+                class="flex w-full flex-wrap items-center overflow-auto border-b border-[#262626] px-5 py-2"
             >
                 <div class="mr-2">À :</div>
                 <div
-                    class="mr-2 flex flex-wrap items-center gap-2 rounded-[12px] bg-white px-[12px] py-1 text-[rgb(0,149,246)]"
+                    v-for="(user, index) in users"
+                    :key="index"
+                    class="flex flex-wrap gap-2 overflow-hidden"
                 >
-                    <div>Nom Prenom</div>
-                    <div>
-                        <svg-icon
-                            @click="removeUser"
-                            type="mdi"
-                            :path="mdiClose"
-                            size="18"
-                        ></svg-icon>
+                    <div
+                        class="mr-2 flex items-center gap-2 rounded-[12px] bg-white px-[12px] py-1 text-[rgb(0,149,246)]"
+                    >
+                        <div>{{ user.name }}</div>
+                        <div>
+                            <svg-icon
+                                @click="removeUser(user)"
+                                type="mdi"
+                                class="hover:cursor-pointer"
+                                :path="mdiClose"
+                                size="18"
+                            ></svg-icon>
+                        </div>
                     </div>
                 </div>
                 <input
@@ -89,12 +108,13 @@ const sendCreateNewGroup = () => {
                     type="text"
                     class="border-none bg-transparent ring-0 focus:border-none focus:ring-0"
                     placeholder="Recherchez..."
+                    ref="searchRef"
                 />
             </div>
-            <div class="h-full flex-1 overflow-auto">
+            <div class="h-full w-full flex-1 overflow-auto">
                 <div
                     v-if="searchUsers.length == 0"
-                    class="text-[hsl(0,0%,70%)] px-4"
+                    class="px-4 text-[hsl(0,0%,70%)]"
                 >
                     Aucun compte trouvé.
                 </div>
@@ -103,7 +123,8 @@ const sendCreateNewGroup = () => {
                     v-else
                     v-for="(user, index) in searchUsers"
                     :key="index"
-                    class="flex px-4 pb-4 items-center justify-between hover:bg-[hsl(0,0%,35%)]"
+                    class="flex items-center justify-between px-4 py-4 hover:cursor-pointer hover:bg-[hsl(0,0%,35%)]"
+                    @click="() => addUser(user)"
                 >
                     <div class="flex gap-3">
                         <div
@@ -124,7 +145,7 @@ const sendCreateNewGroup = () => {
                         class="flex h-[24px] w-[24px] items-center justify-center overflow-hidden rounded-full border"
                     >
                         <svg-icon
-                            v-if="users.includes(user)"
+                            v-if="userSelected(user)"
                             type="mdi"
                             size="24"
                             class="bg-[hsl(0,0%,96%)] text-black"
@@ -135,6 +156,7 @@ const sendCreateNewGroup = () => {
             </div>
             <div class="shrink-0 px-4 text-lg">
                 <button
+                    @click="sendCreateNewGroup"
                     class="w-full rounded-[8px] bg-[rgb(0,149,246)] px-[20px] py-[10px] text-white"
                 >
                     Discuter

@@ -10,7 +10,7 @@ const props = defineProps({
     contacts: Array,
     receiver: Object,
     messages: Object,
-    groups: Array,
+    groups: Object,
     group: Object,
     active: {
         type: Boolean,
@@ -101,6 +101,8 @@ const toggleShowDetails = () => {
             :contacts="contacts"
             :showChat="showChat"
             :user="user"
+            :groups="groups"
+            :group="group"
         />
         <div
             v-if="!receiver"

@@ -51,7 +51,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/search/small/{username}', [UserController::class, 'searchSmall']);
 
     // Message Routes
-    Route::get('/direct', [MessageController::class, 'index']);
+    Route::get('/direct', [MessageController::class, 'user']);
     Route::get('/direct/t/{receiver}', [MessageController::class, 'user']);
     Route::get('/direct/g/{group}', [MessageController::class, 'group']);
     Route::post('/message', [MessageController::class, 'store']);
