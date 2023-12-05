@@ -100,6 +100,7 @@ class MessageController extends Controller
 
         $groups = auth()->user()->groups;
 
+
         return Inertia::render('Direct', [
             'group' => count($group->getAttributes()) !== 0 ? $group : null,
             'groups' => $groups,

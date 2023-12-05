@@ -182,7 +182,12 @@ const showCreateNewGroup = ref(false)
                             <span v-if="index !== 0">, </span
                             >{{ member.user.name }}
                         </span>
-                        <span class="font-semibold" v-if="gr.members.length > 4"> ... </span>
+                        <span
+                            class="font-semibold"
+                            v-if="gr.members.length > 4"
+                        >
+                            ...
+                        </span>
                     </div>
                     <!-- TODO:Last message -->
                     <div class="text-sm font-semibold text-[hsl(0,0%,70%)]">
