@@ -73,6 +73,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/group/{group}/add', [GroupController::class,'add']);
     Route::post('/group/{group}/remove', [GroupController::class,'remove']);
     Route::put('/group/{group}', [GroupController::class,'update']);
+    Route::post('/group/notifications/check', [GroupController::class,'check']);
 
     // Group Message Routes
     Route::post('/group/{group}/message', [GroupMessageController::class,'store']);

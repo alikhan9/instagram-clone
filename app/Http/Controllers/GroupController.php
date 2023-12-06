@@ -80,4 +80,13 @@ class GroupController extends Controller
     }
 
 
+    public function check(Request $request)
+    {
+        $request->validate([
+            'group_id' => 'required|exists:groups,id'
+        ]);
+
+        auth()->user()->unreadNotifications()->where('data', 'like', '%'.'"group_id":' . $request->group_id . '%')->delete();
+    }
+
 }

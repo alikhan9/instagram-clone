@@ -104,7 +104,7 @@ watch(
                 props.group &&
                 messages.getUnreadGroupNotifications(props.group.id) > 0
             ) {
-                // TODO: Check notifications for this user
+                // TODO: Done but not sure if it works
                 axios
                     .post('/group/notifications/check', {
                         group_id: props.group.id,

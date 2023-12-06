@@ -2,32 +2,27 @@
 
 namespace App\Events;
 
-use App\Models\Message;
+use App\Models\GroupMessage;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class MessageSent implements ShouldBroadcast
+class GroupMessageSent implements ShouldBroadcast
 {
     use Dispatchable;
     use InteractsWithSockets;
     use SerializesModels;
-
     public $message;
+
     /**
      * Create a new event instance.
      */
-    public function __construct(Message $message)
+    public function __construct(GroupMessage $message)
     {
         $this->message = $message;
     }
-
-    // public function broadcastWith(): array
-    // {
-    //     return [$this->recipient,];
-    // }
 
     /**
      * Get the channels the event should broadcast on.
@@ -37,13 +32,13 @@ class MessageSent implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('App.Models.User.'.$this->message->receiver),
+            new PrivateChannel('Goupe.'.$this->message->group_id),
         ];
     }
 
 
     public function broadcastAs()
     {
-        return 'message';
+        return 'group-message';
     }
 }

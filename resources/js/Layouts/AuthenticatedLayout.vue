@@ -94,11 +94,14 @@ onMounted(() => {
     Echo.private('App.Models.User.' + usePage().props.auth.user.id).listen(
         '.group-message',
         e => {
-            if (!window.location.href.includes('/direct/g/' + e.message.group_id))
+            if (
+                !window.location.href.includes(
+                    '/direct/g/' + e.message.group_id
+                )
+            )
                 axios.post('/message/notifications/notify', {
                     sender: e.message.sender,
                 })
-            else messages.addMessage(e.message)
         }
     )
 })
