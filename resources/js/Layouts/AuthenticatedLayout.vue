@@ -91,6 +91,7 @@ onMounted(() => {
             else messages.addMessage(e.message)
         }
     )
+    // TODO: This has to be done in the notifications not here
     Echo.private('App.Models.User.' + usePage().props.auth.user.id).listen(
         '.group-message',
         e => {

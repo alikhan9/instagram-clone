@@ -22,6 +22,7 @@ class GroupMessageController extends Controller
 
         event(new GroupMessageSent($message));
 
+        // TODO: Check if the users of this group are listening,and if not send notification that a new message has been sent
 
     }
 }

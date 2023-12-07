@@ -23,3 +23,8 @@ Broadcast::channel('App.Models.User.{userId}', function (User $user, $userId) {
     // Add your authorization logic here
     return Auth::check();
 });
+
+Broadcast::channel('App.Models.Group.{groupId}', function (User $user, $groupId) {
+    // TODO: Check if user part of the group
+    return Auth::check();
+});

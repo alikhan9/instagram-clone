@@ -32,7 +32,7 @@ class GroupMessageSent implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('Goupe.'.$this->message->group_id),
+            new PrivateChannel('App.Models.Group.'.$this->message->group_id),
         ];
     }
 
