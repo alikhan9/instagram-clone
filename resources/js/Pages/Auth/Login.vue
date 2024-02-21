@@ -35,6 +35,7 @@ const submit = () => {
         <form @submit.prevent="submit">
             <div>
                 <TextInput
+                    dark
                     id="login"
                     type="text"
                     placeholder="Num. téléphone, nom d'utilisateur ou e-mail"
@@ -47,6 +48,7 @@ const submit = () => {
                 <InputError class="mt-2" :message="form.errors.login" />
             </div>
             <TextInput
+                dark
                 id="password"
                 type="password"
                 placeholder="Mot de passe"
