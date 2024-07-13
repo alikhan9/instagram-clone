@@ -171,7 +171,7 @@ const toggleShowCreatePost = () => {
                     :class="{
                         'z-20 hidden h-screen w-[70px] shrink-0 border-r border-[#262626] p-4 sm:block lg:w-[200px] xl:w-[335px]': true,
                         'border-r lg:w-[70px] xl:w-[70px]':
-                            showSearch || showNotifications || directPage,
+                             directPage,
                     }"
                 >
                     <div
@@ -258,7 +258,7 @@ const toggleShowCreatePost = () => {
                             <span
                                 :class="{
                                     'hidden lg:block': true,
-                                    'lg:hidden': directPage,
+                                    'lg:hidden': directPage || showSearch || showNotifications,
                                 }"
                             >
                                 Messages
