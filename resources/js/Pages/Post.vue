@@ -123,7 +123,7 @@ const bookmarkPost = () => {
                         <img class="rounded-full" src="https://picsum.photos/seed/picsum/32/32" />
                     </div>
                     <div>
-                        <Link class="font-semibold" :href="'/profile/' + post.user.name">{{ post.user.name }}</Link>
+                        <Link class="font-semibold" :href="'/profile/' + post.user.username">{{ post.user.name }}</Link>
                         <p>{{ post.location }}</p>
                     </div>
                 </div>
@@ -169,7 +169,7 @@ const bookmarkPost = () => {
                     {{ post.numberOfLikes }} J'aime
                 </div>
                 <div v-if="post.description">
-                    <Link class="font-semibold" :href="'/profile/' + post.user.name">{{ post.user.name }}</Link> {{
+                    <Link class="font-semibold" :href="'/profile/' + post.user.username">{{ post.user.name }}</Link> {{
                         post.description }}
                 </div>
                 <div v-if="post.enable_comments">

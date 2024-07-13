@@ -46,14 +46,21 @@ class Post extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id',
-    'description','location','video',
-    'image','enable_comments','enable_likes','image_description'];
+    protected $fillable = [
+        'user_id',
+        'description',
+        'location',
+        'video',
+        'image',
+        'enable_comments',
+        'enable_likes',
+        'image_description'
+    ];
 
     protected $with = ['user'];
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id')->select('id', 'name', 'email');
+        return $this->belongsTo(User::class, 'user_id')->select('id', 'name', 'email', 'username');
     }
 
     public function likes()
