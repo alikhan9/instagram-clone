@@ -29,7 +29,7 @@ defineExpose({
 
 <template>
     <input v-if="dark"
-        class="mt-4 block w-full rounded-[3px] border-none border-black bg-transparent py-[9px] text-black outline-none focus:ring-0"
+        class="mt-4 block w-full rounded-[3px] border-[#DBDBDB] bg-transparent py-[9px] text-black outline-none focus:ring-0"
         :value="modelValue"
         @input="$emit('update:modelValue', $event.target.value)"
         ref="input"

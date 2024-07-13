@@ -31,14 +31,14 @@ const submit = () => {
     <Head title="Register" />
     <form @submit.prevent="submit">
 
-        <TextInput dark ref="usernameRef" id="username" type="text" v-model="form.username" placeholder="Username" required autofocus
+        <TextInput dark ref="usernameRef" id="username" type="text" v-model="form.username" placeholder="Pseudo" required autofocus
             autocomplete="username" />
         <InputError class="mt-2" :message="form.errors.username" />
         <TextInput dark id="name" type="text" v-model="form.name" placeholder="Nom" required autofocus autocomplete="name" />
         <InputError class="mt-2" :message="form.errors.name" />
-        <TextInput dark id="email" type="email" v-model="form.email" placeholder="email" required autocomplete="username" />
+        <TextInput dark id="email" type="email" v-model="form.email" placeholder="Email" required autocomplete="username" />
         <InputError class="mt-2" :message="form.errors.email" />
-        <TextInput dark id="phone" type="text" v-model="form.phone" placeholder="phone" required autocomplete="phone" />
+        <TextInput dark id="phone" type="text" v-model="form.phone" placeholder="Mobile" required autocomplete="phone" />
         <InputError class="mt-2" :message="form.errors.phone" />
         <TextInput dark id="password" type="password" placeholder="Mot de passe" v-model="form.password" required
             autocomplete="new-password" />

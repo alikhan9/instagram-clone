@@ -199,7 +199,7 @@ const togglePlayPause = () => {
                                 <div class="flex justify-between relative">
                                     <svg-icon class="hover:cursor-pointer" type="mdi" size="24"
                                         @click="showEmojiPicker = !showEmojiPicker" :path="mdiEmoticonHappyOutline" />
-                                    <EmojiPicker class="absolute left-10 lg:left-0 top-0 lg:top-10 z-10"
+                                    <EmojiPicker class="absolute left-10 lg:left-0 top-0 lg:top-10 z-50"
                                         v-if="showEmojiPicker" :native="true" @select="onSelectEmoji" />
                                     <p class="text-gray-500">{{ description?.length }}/2200</p>
                                 </div>
