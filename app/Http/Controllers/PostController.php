@@ -22,7 +22,7 @@ class PostController extends Controller
         })->withQueryString();
 
 
-        $mostFollowedUsers = User::select(['id', 'name', 'username'])
+        $mostFollowedUsers = User::select(['id', 'name', 'username', 'avatar'])
             ->withCount('following')
             ->whereNotIn('users.id', auth()->user()->following()->select('users.id'))
             ->orderBy('following_count', 'desc')

@@ -26,7 +26,8 @@ class PostFactory extends Factory
             'description' => fake()->text(),
             'location' => fake()->city(),
             'image' => function () {
-                $image = "https://picsum.photos/1920/1080";
+                $imageId = rand(100, 999);
+                $image = "https://picsum.photos/id/" . $imageId . "/1920/1080";
                 $filename = uniqid() . '.webp';
 
                 $optimizedImageBig = Image::make($image)->fit(1400, 1080)->encode('webp', 60);

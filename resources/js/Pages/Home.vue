@@ -63,10 +63,10 @@ const toggleComments = () => {
           class="text-white flex justify-center w-full sm:pt-4 gap-16 xl:pt-24 sm:min-h-screen"
         >
           <div
-            class="col-start-3 shrink  w-full xl:max-w-[500px] 2xl:max-w-[600px] flex items-center flex-col col-span-4"
+            class="col-start-3 shrink w-full xl:max-w-[500px] 2xl:max-w-[600px] flex items-center flex-col col-span-4"
           >
             <div
-              class="sm:flex gap-4  hidden border-b border-[#262626] w-full font-bold text-lg pb-3"
+              class="sm:flex gap-4 hidden border-b border-[#262626] w-full font-bold text-lg pb-3"
             >
               <Link
                 href="/reels"
@@ -98,11 +98,8 @@ const toggleComments = () => {
           <div class="w-[319px] hidden xl:block">
             <div class="flex justify-between items-center gap-3 mb-2">
               <div class="flex gap-3 mb-4">
-                <div>
-                  <img
-                    class="rounded-full"
-                    src="https://picsum.photos/seed/picsum/32/32"
-                  />
+                <div class="h-9 w-9 overflow-hidden rounded-full">
+                  <img class="w-full h-full" :src="user.avatar" />
                 </div>
                 <div>
                   <Link class="font-semibold" :href="'/profile/' + user.username"
@@ -127,10 +124,7 @@ const toggleComments = () => {
                   class="w-11 h-11 rounded-full overflow-hidden"
                   :href="'/profile/' + u.username"
                 >
-                  <img
-                    class="rounded-full"
-                    src="https://picsum.photos/seed/picsum/44/44"
-                  />
+                  <img class="w-full h-full" :src="u.avatar" />
                 </Link>
                 <div>
                   <Link class="font-semibold" :href="'/profile/' + u.username">{{

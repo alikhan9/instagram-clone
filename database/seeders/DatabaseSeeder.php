@@ -19,9 +19,9 @@ class DatabaseSeeder extends Seeder
         ini_set('memory_limit', '-1');  // Increase memory limit
 
         // Create 10 users
-        User::factory(1)->create()->each(function ($user) {
+        User::factory(2)->create()->each(function ($user) {
             // Each user will have up to 7 posts
-            $posts = Post::factory(2)->make();
+            $posts = Post::factory(rand(1,4))->make();
             $user->posts()->saveMany($posts);
 
             // Each post will have between 1 to 10 comments
