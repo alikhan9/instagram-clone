@@ -44,7 +44,7 @@ class PostComment extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id')->select('id', 'name');
+        return $this->belongsTo(User::class, 'user_id')->select('id', 'name','avatar');
     }
 
     public function likes()

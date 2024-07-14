@@ -16,9 +16,9 @@ class PostCommentFactory extends Factory
     public function definition(): array
     {
         return [
-            'post_id' => function () {
-                return Post::factory()->create()->id;
-            },
+            // 'post_id' => function () {
+            //     return Post::factory()->create()->id;
+            // },
             'user_id' => function () {
                 return User::all()->random()->id;
             },

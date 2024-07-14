@@ -26,20 +26,6 @@ class PostFactory extends Factory
             'description' => fake()->text(),
             'location' => fake()->city(),
             'image' => function () {
-
-                // $url = 'https://picsum.photos/1920/1080'; // Replace this with the actual URL of the file/image
-    
-
-
-                // $contents = file_get_contents($url);
-    
-                // $filename = basename($url);
-    
-
-
-                // Storage::put('public/' . $filename, $contents);
-    
-                $image = fake()->imageUrl(1920, 1080);
                 $image = "https://picsum.photos/1920/1080";
                 $filename = uniqid() . '.webp';
 
@@ -55,7 +41,7 @@ class PostFactory extends Factory
                 return '/storage/images/medium_' . $filename;
             },
             'video' => null,
-            'enable_comments' => fake()->randomElement([true, false]),
+            'enable_comments' => fake()->randomElement([true]),
             'enable_likes' => fake()->randomElement([true, false]),
             'image_description' => null,
             // 'url' => $faker->url,  // For videos you might need a different approach

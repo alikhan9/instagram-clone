@@ -151,7 +151,9 @@ const addResponseComment = (data) => {
                 <div class="w-[500px] text-white border-l border-[#262626]">
                     <div class="flex justify-between border-b items-center py-5 border-[#262626]">
                         <div class="flex items-center w-full gap-3 px-6">
-                            <img class="rounded-full" src="https://picsum.photos/seed/picsum/32/32" />
+                            <div class="w-9 h-9 rounded-full overflow-hidden">
+                            <img class="w-full h-full" :src="post.user.avatar" />
+                            </div>
                             <div>{{ post.user.name }}</div>
                         </div>
                         <div class="px-6">

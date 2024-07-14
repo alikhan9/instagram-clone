@@ -3,7 +3,9 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Image;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
@@ -25,6 +27,17 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'remember_token' => Str::random(10),
+            'avatar' => function () {
+                $image = 'https://i.pravatar.cc/150';
+                $filename = uniqid() . '.webp';
+
+                $optimizedImageMedium = Image::make($image)->encode('webp', 80);
+
+                // Save the optimized images
+                Storage::disk('public')->put('images/avatar_' . $filename, $optimizedImageMedium);
+
+                return '/storage/images/avatar_' . $filename;
+            }
         ];
     }
 

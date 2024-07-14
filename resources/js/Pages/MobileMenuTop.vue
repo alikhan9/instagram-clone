@@ -65,7 +65,7 @@ const toggleShowUsers = () => {
             <Link :href="'/profile/' + user.username" class="flex items-center gap-4 px-4 py-2 hover:bg-[hsl(0,0%,15%)]"
                 v-for="(user, index) in users" v-if="users" :key="index" :onFinish="() => showUsers = false">
             <div class="w-11 h-11 rounded-full overflow-hidden">
-                <img src="https://picsum.photos/seed/picsum/54/54" />
+                <img class="w-full h-full" :src="user.avatar" />
             </div>
             <div>
                 <div class="font-semibold">{{ user.username }}</div>

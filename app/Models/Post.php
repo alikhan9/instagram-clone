@@ -60,7 +60,7 @@ class Post extends Model
     protected $with = ['user'];
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id')->select('id', 'name', 'email', 'username');
+        return $this->belongsTo(User::class, 'user_id')->select('id', 'name', 'email', 'username','avatar');
     }
 
     public function likes()

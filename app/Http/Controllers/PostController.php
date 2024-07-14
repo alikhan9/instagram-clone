@@ -23,14 +23,14 @@ class PostController extends Controller
 
 
         $mostFollowedUsers = User::select(['id', 'name', 'username'])
-        ->withCount('following')
-        ->whereNotIn('users.id', auth()->user()->following()->select('users.id'))
-        ->orderBy('following_count', 'desc')
-        ->take(5)
-        ->get();
+            ->withCount('following')
+            ->whereNotIn('users.id', auth()->user()->following()->select('users.id'))
+            ->orderBy('following_count', 'desc')
+            ->take(5)
+            ->get();
 
         $post = null;
-        if($request->has('pid')) {
+        if ($request->has('pid')) {
             $post = Post::find($request->pid);
             $post['userLiked'] = $post->userLiked();
             $post['numberOfComments'] = $post->comments()->count();

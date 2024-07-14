@@ -50,7 +50,7 @@ const loadFollowing = () => {
     <div class="col-start-3 w-full md:w-[935px]  md:pb-10 border-b border-[#262626] md:pl-16">
         <div class="flex w-full gap-4 md:justify-between justify-center">
             <div class=" rounded-full shrink-0 overflow-hidden w-[91px] h-[91px] md:w-[168px] md:h-[168px]">
-                <img class="w-full h-full" src="https://picsum.photos/seed/picsum/150/150" />
+                <img class="w-full h-full" :src="user.avatar" />
             </div>
             <div class="md:w-[70%] text-lg shrink min-w-0">
                 <div class="flex w-full md:flex-row md:justify-start justify-center flex-col md:items-center gap-4">
