@@ -14,7 +14,6 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  sComments: Boolean,
   comments: Object,
 });
 
@@ -41,7 +40,7 @@ useInfiniteScroll("posts", landmark, "0px 0px 150px 0px", ["posts"]);
 
 const sendFollow = (id) => {
   axios.post("/follow/" + id).then((res) => {
-    props.mostFollowedUsers.filter((u) => u.id == id)[0].followed = res.data;
+    props.mostFollowedUsers.filter((u) => u.id === id)[0].followed = res.data;
   });
 };
 
@@ -63,7 +62,7 @@ const toggleComments = () => {
           class="text-white flex justify-center w-full sm:pt-4 gap-16 xl:pt-24 sm:min-h-screen"
         >
           <div
-            class="col-start-3 shrink w-full xl:max-w-[500px] 2xl:max-w-[600px] flex items-center flex-col col-span-4"
+            class="col-start-3 shrink w-full sm:max-w-[500px] 2xl:max-w-[600px] flex items-center flex-col col-span-4"
           >
             <div
               class="sm:flex gap-4 hidden border-b border-[#262626] w-full font-bold text-lg pb-3"
@@ -98,7 +97,7 @@ const toggleComments = () => {
           <div class="w-[319px] hidden xl:block">
             <div class="flex justify-between items-center gap-3 mb-2">
               <div class="flex gap-3 mb-4">
-                <div class="h-9 w-9 overflow-hidden rounded-full">
+                <div class="h-11 w-11 overflow-hidden rounded-full">
                   <img class="w-full h-full" :src="user.avatar" />
                 </div>
                 <div>

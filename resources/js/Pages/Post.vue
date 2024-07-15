@@ -4,7 +4,6 @@ import SvgIcon from "@jamescoyle/vue-icon";
 import { mdiHeart, mdiBookmark, mdiEmoticonHappyOutline } from "@mdi/js";
 import { useImage } from "@vueuse/core";
 import { ref, watch } from "vue";
-import Comments from "./Comments.vue";
 import axios from "axios";
 import { Link } from "@inertiajs/vue3";
 import EmojiPicker from "vue3-emoji-picker";

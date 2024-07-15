@@ -52,16 +52,15 @@ class UserController extends Controller
 
         $followers  = [];
         if(Str::contains($request->path(), 'followers')) {
-            $followers = $user->followers()->select('users.name', 'users.id', 'users.username')->get()->map(function ($follower) use ($user) {
+            $followers = $user->followers()->select('users.name', 'users.id', 'users.username','users.avatar')->get()->map(function ($follower) use ($user) {
                 // Add a virtual attribute followedByUser to each follower
                 $follower->followedByUser = $user->isFollowing($follower);
-
                 return $follower;
             });
         }
         $following  = [];
         if(Str::contains($request->path(), 'following')) {
-            $following = $user->following()->select('users.name', 'users.id', 'users.username')->get()->map(function ($followingUser) use ($user) {
+            $following = $user->following()->select('users.name', 'users.id', 'users.username','users.avatar')->get()->map(function ($followingUser) use ($user) {
                 // Add a virtual attribute followingUser to each user
                 $followingUser->followedByUser = true;
                 return $followingUser;
@@ -99,7 +98,7 @@ class UserController extends Controller
 
     public function search($username)
     {
-        return User::select(['id', 'name', 'username','avatar'])->where(DB::raw('LOWER(username)'), 'like', '%' . strtolower($username) . '%')->limit(50)->get()->map(function ($user) {
+        return User::select(['id', 'name', 'username','avatar'])->where('id',"!=",auth()->id())->where(DB::raw('LOWER(username)'), 'like', '%' . strtolower($username) . '%')->limit(50)->get()->map(function ($user) {
             $user->followersCount = $user->followers()->count();
             return $user;
         });

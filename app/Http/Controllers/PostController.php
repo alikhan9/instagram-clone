@@ -25,9 +25,11 @@ class PostController extends Controller
         $mostFollowedUsers = User::select(['id', 'name', 'username', 'avatar'])
             ->withCount('following')
             ->whereNotIn('users.id', auth()->user()->following()->select('users.id'))
+            ->where('users.id', '!=', auth()->user()->id)
             ->orderBy('following_count', 'desc')
             ->take(5)
             ->get();
+
 
         $post = null;
         if ($request->has('pid')) {
