@@ -100,14 +100,9 @@ class User extends Authenticatable
         return $this->hasMany(Post::class);
     }
 
-    /**
-     * Gets the bookmarked posts for the user by filtering the posts with bookmark IDs.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany|\LaravelIdea\Helper\App\Models\_IH_Post_QB
-     */
-    public function bookmarks(): \Illuminate\Database\Eloquent\Relations\HasMany|\LaravelIdea\Helper\App\Models\_IH_Post_QB
+    public function bookmarkedPosts(): array|\Illuminate\Contracts\Pagination\LengthAwarePaginator|\LaravelIdea\Helper\App\Models\_IH_Post_C|\Illuminate\Pagination\LengthAwarePaginator
     {
-        return $this->posts()->whereIn('id', $this->bookmark());
+        return Post::whereIn("id",$this->bookmark())->latest()->paginate(9);
     }
 
     /**
@@ -118,7 +113,7 @@ class User extends Authenticatable
      */
     public function bookmark(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(Bookmark::class)->select('post_id');
+        return $this->hasMany(Bookmark::class,'user_id','id')->select('post_id');
     }
 
     /**
@@ -127,9 +122,9 @@ class User extends Authenticatable
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function mentions(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function mentions(int $userId): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(UserMention::class)->select('post_id')->where('user_id', auth()->id());
+        return $this->hasMany(UserMention::class)->select('post_id')->where('user_id', $userId);
     }
 
     /**

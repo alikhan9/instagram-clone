@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\PostCommentSent;
 use App\Models\CommentResponse;
 use App\Models\PostComment;
+use App\Models\User;
 use App\Models\UserMention;
 use Illuminate\Http\Request;
 
@@ -12,6 +13,7 @@ class CommentsController extends Controller
 {
     public function storeComment(Request $request)
     {
+
         $request->validate([
             'post_id' => 'required',
             'content' => 'required'
@@ -25,10 +27,11 @@ class CommentsController extends Controller
         // $matches[1] will contain the captured usernames
         $usernames = $matches[1];
 
+
         foreach($usernames as $username) {
             UserMention::create([
                 'post_id' => $request->post_id,
-                'user_id' => auth()->id()
+                'user_id' => User::where('username', $username)->first()->id,
             ]);
         }
 

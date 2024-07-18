@@ -11,6 +11,7 @@ import { usePostStore } from "./useStore/usePostStore";
 import axios from "axios";
 import { useDebounceFn } from "@vueuse/core";
 import useInfiniteScroll from "./Composables/useInfiniteScroll";
+import { word } from "magic-regexp";
 
 const emit = defineEmits(["close"]);
 
@@ -122,6 +123,33 @@ const resize = (e) => {
   }
   e.target.style.height = "auto";
   e.target.style.height = `${e.target.scrollHeight - 32}px`;
+};
+
+const addUserInfoToComment = (user) => {
+  // Get the current value of the input
+  let currentValue = inputRef.value.value;
+
+  // Split the current value into words
+  const words = currentValue.split(" ");
+
+  // Check if the last word starts with '@'
+  if (words[words.length - 1].startsWith("@")) {
+    // Replace the last word with the new user mention
+    words[words.length - 1] = "@" + user.username + " ";
+
+    // Join the words back into a string
+    currentValue = words.join(" ");
+  }
+
+  // Clear the referencedUsersSearch
+  referencedUsersSearch.value = null;
+
+  // Update the input value
+  setTimeout(() => {
+      console.log(currentValue);
+      inputRef.value.value = currentValue;
+      inputRef.value.focus();
+  },50)
 };
 
 const addResponseComment = (data) => {
@@ -247,6 +275,7 @@ const addResponseComment = (data) => {
             >
               <div
                 v-for="user in referencedUsersSearch"
+                v-on:click="addUserInfoToComment(user)"
                 class="h-[50px] flex gap-5 px-4 items-center hover:cursor-pointer border-b border-[#262626]"
               >
                 <div class="h-8 w-8 rounded-full overflow-hidden">

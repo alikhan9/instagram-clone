@@ -33,11 +33,11 @@ class UserController extends Controller
             $active = 1;
         }
         if ($request->value == 'bookmarks') {
-            $posts = $user->bookmarks()->orderByDesc('created_at')->paginate(9);
+            $posts = $user->bookmarkedPosts();
             $active = 2;
         }
         if ($request->value == 'mentions') {
-            $posts = Post::whereIn('id', $user->mentions()->select('post_id'))->orderByDesc('created_at')->paginate(9);
+            $posts = Post::whereIn('id', $user->mentions($user->id)->select('post_id'))->orderByDesc('created_at')->paginate(9);
             $active = 3;
         }
 

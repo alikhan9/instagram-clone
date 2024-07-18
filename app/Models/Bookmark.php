@@ -31,10 +31,10 @@ class Bookmark extends Model
 
     protected $fillable = ['user_id','post_id'];
 
-    protected $with = ['posts'];
+    protected $with = ['post'];
 
-    public function posts()
+    public function post(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->hasMany(Post::class, 'id', 'post_id');
+        return $this->belongsTo(Post::class, 'post_id', 'id');
     }
 }
