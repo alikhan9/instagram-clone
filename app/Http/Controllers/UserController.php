@@ -17,29 +17,30 @@ class UserController extends Controller
 
         $isFollowing = auth()->user()->isFollowing($user);
 
-        if(!$user) {
+        if (!$user) {
             return back();
         }
 
         $posts = null;
         $active = null;
-        if($request->value == 'posts' || !$request->value) {
+        if ($request->value == 'posts' || !$request->value) {
             $posts = $user->posts()->orderByDesc('created_at')->paginate(9);
             $active = 0;
         }
 
-        if($request->value == 'reels') {
+        if ($request->value == 'reels') {
             $posts = $user->posts()->where('video', '!=', 'null')->orderByDesc('created_at')->paginate(9);
             $active = 1;
         }
-        if($request->value == 'bookmarks') {
+        if ($request->value == 'bookmarks') {
             $posts = $user->bookmarks()->orderByDesc('created_at')->paginate(9);
             $active = 2;
         }
-        if($request->value == 'mentions') {
+        if ($request->value == 'mentions') {
             $posts = Post::whereIn('id', $user->mentions()->select('post_id'))->orderByDesc('created_at')->paginate(9);
             $active = 3;
         }
+
 
         $posts->getCollection()->transform(function ($post) {
             $post->userLiked = $post->userLiked();
@@ -50,17 +51,17 @@ class UserController extends Controller
             return $post;
         });
 
-        $followers  = [];
-        if(Str::contains($request->path(), 'followers')) {
-            $followers = $user->followers()->select('users.name', 'users.id', 'users.username','users.avatar')->get()->map(function ($follower) use ($user) {
+        $followers = [];
+        if (Str::contains($request->path(), 'followers')) {
+            $followers = $user->followers()->select('users.name', 'users.id', 'users.username', 'users.avatar')->get()->map(function ($follower) use ($user) {
                 // Add a virtual attribute followedByUser to each follower
                 $follower->followedByUser = $user->isFollowing($follower);
                 return $follower;
             });
         }
-        $following  = [];
-        if(Str::contains($request->path(), 'following')) {
-            $following = $user->following()->select('users.name', 'users.id', 'users.username','users.avatar')->get()->map(function ($followingUser) use ($user) {
+        $following = [];
+        if (Str::contains($request->path(), 'following')) {
+            $following = $user->following()->select('users.name', 'users.id', 'users.username', 'users.avatar')->get()->map(function ($followingUser) use ($user) {
                 // Add a virtual attribute followingUser to each user
                 $followingUser->followedByUser = true;
                 return $followingUser;
@@ -70,7 +71,7 @@ class UserController extends Controller
         $user->followers()->count();
 
         $post = null;
-        if($request->has('pid')) {
+        if ($request->has('pid')) {
             $post = Post::find($request->pid);
             $post['userLiked'] = $post->userLiked();
             $post['numberOfComments'] = $post->comments()->count();
@@ -81,7 +82,7 @@ class UserController extends Controller
 
         return Inertia::render('User', [
             'user' => $user,
-            'post' =>  $post,
+            'post' => $post,
             'comments' => $request->has('pid') ? Post::find($request->pid)->comments()->paginate(15, ['*'], 'c')->withQueryString() : null,
             'posts' => $posts,
             'total_posts' => $user->posts()->count(),
@@ -98,14 +99,15 @@ class UserController extends Controller
 
     public function search($username)
     {
-        return User::select(['id', 'name', 'username','avatar'])->where('id',"!=",auth()->id())->where(DB::raw('LOWER(username)'), 'like', '%' . strtolower($username) . '%')->limit(50)->get()->map(function ($user) {
+        return User::select(['id', 'name', 'username', 'avatar'])->where('id', "!=", auth()->id())->where(DB::raw('LOWER(username)'), 'like', '%' . strtolower($username) . '%')->limit(50)->get()->map(function ($user) {
             $user->followersCount = $user->followers()->count();
             return $user;
         });
     }
+
     public function searchSmall($username)
     {
-        return User::select(['id', 'name', 'username','avatar'])->where(DB::raw('LOWER(username)'), 'like', '%' . strtolower($username) . '%')->limit(20)->get();
+        return User::select(['id', 'name', 'username', 'avatar'])->where(DB::raw('LOWER(username)'), 'like', '%' . strtolower($username) . '%')->limit(20)->get();
     }
 
     public function checkNotifications()

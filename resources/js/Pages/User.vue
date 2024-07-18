@@ -2,9 +2,9 @@
 import Sections from './Components/User/Sections.vue'
 import UserPosts from './Components/User/UserPosts.vue'
 import UserFollowersInfo from './Components/User/UserFollowersInfo.vue'
-import { Head, usePage, router } from '@inertiajs/vue3';
+import { Head, usePage } from '@inertiajs/vue3';
 import Following from './Following.vue';
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 
 const props = defineProps({
     user: Object,

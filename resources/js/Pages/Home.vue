@@ -68,13 +68,13 @@ const toggleComments = () => {
               class="sm:flex gap-4 hidden border-b border-[#262626] w-full font-bold text-lg pb-3"
             >
               <Link
-                href="/reels"
+                href="/"
                 :class="{ 'text-white ': !followed, 'text-[#868686]': followed }"
               >
                 Pour vous
               </Link>
               <Link
-                href="/reels"
+                href="/"
                 :data="{ followed: true }"
                 :class="{ 'text-white': followed, 'text-[#868686]': !followed }"
               >

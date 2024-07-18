@@ -23,7 +23,7 @@ const emojiRef = ref(null);
 const currentComment = ref("");
 const showEmojiPicker = ref(false);
 const like = ref(props.post.userLiked);
-const bookmark = ref(false);
+const bookmark = ref(props.post.userBookmarked);
 const { isLoading } = useImage({ src: usePage().props.ziggy.url + props.post.image });
 const showComments = ref(false);
 
@@ -65,6 +65,7 @@ watch(
   () => props.post,
   (newValue) => {
     like.value = newValue.userLiked;
+    bookmark.value = newValue.userBookmarked
   }
 );
 
@@ -118,7 +119,6 @@ const bookmarkPost = () => {
     </div>
     <div class="min-w-full animate-pulse-bg bg-[hsl(0,0%,30%)] rounded min-h-full"></div>
   </div>
-
   <div v-else class="xl:w-[470px] max-w-screen sm:pr-0 w-full grow">
     <div>
       <div class="flex justify-between items-center gap-3 mb-3 px-3 sm:px-0">

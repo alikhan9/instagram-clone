@@ -58,27 +58,27 @@ class Post extends Model
     ];
 
     protected $with = ['user'];
-    public function user()
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id')->select('id', 'name', 'email', 'username','avatar');
+        return $this->belongsTo(User::class, 'user_id')->select('id', 'name', 'email', 'username', 'avatar');
     }
 
-    public function likes()
+    public function likes(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(User::class, 'post_likes');
     }
 
-    public function userLiked()
+    public function userLiked(): bool
     {
         return $this->belongsToMany(User::class, 'post_likes')->where('user_id', auth()->id())->count() > 0;
     }
 
-    public function userBookmarked()
+    public function userBookmarked(): bool
     {
         return $this->hasMany(Bookmark::class, 'post_id', 'id')->where('user_id', auth()->id())->count() > 0;
     }
 
-    public function comments()
+    public function comments(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(PostComment::class)->latest();
     }

@@ -13,13 +13,30 @@ class PostController extends Controller
 {
     public function index(Request $request)
     {
-        $posts = Post::latest()->paginate(3, ['*'], 'p')->through(function ($post) {
-            $post->userLiked = $post->userLiked();
-            $post->numberOfComments = $post->comments()->count();
-            $post->numberOfLikes = $post->likes()->count();
-            $post->comments = [];
-            return $post;
-        })->withQueryString();
+        if (!$request->followed)
+            $posts = Post::latest()->paginate(3, ['*'], 'p')->through(function ($post) {
+                $post->userLiked = $post->userLiked();
+                $post->numberOfComments = $post->comments()->count();
+                $post->numberOfLikes = $post->likes()->count();
+                $post->userBookmarked = $post->userBookmarked();
+                $post->comments = [];
+                return $post;
+            })->withQueryString();
+        else {
+            $followedUserIds = auth()->user()->following()->pluck('users.id');
+            $posts = Post::whereIn('user_id', $followedUserIds)
+                ->latest()
+                ->paginate(3, ['*'], 'p')
+                ->through(function ($post) {
+                    $post->userLiked = $post->userLiked();
+                    $post->numberOfComments = $post->comments()->count();
+                    $post->numberOfLikes = $post->likes()->count();
+                    $post->userBookmarked = $post->userBookmarked();
+                    $post->comments = [];
+                    return $post;
+                })
+                ->withQueryString();
+        }
 
 
         $mostFollowedUsers = User::select(['id', 'name', 'username', 'avatar'])
@@ -43,6 +60,7 @@ class PostController extends Controller
 
         return Inertia::render('Home', [
             'posts' => $posts,
+            'followed' => $request->boolean('followed'),
             'mostFollowedUsers' => $mostFollowedUsers,
             'post' => $post,
             'comments' => $request->has('pid') ? Post::find($request->pid)->comments()->paginate(15, ['*'], 'c')->withQueryString() : null,
