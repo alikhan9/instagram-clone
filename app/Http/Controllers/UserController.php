@@ -15,11 +15,12 @@ class UserController extends Controller
     {
         $user = User::where('username', $username)->first();
 
+        if (!$user) {
+            return abort(404);
+        }
         $isFollowing = auth()->user()->isFollowing($user);
 
-        if (!$user) {
-            return back();
-        }
+
 
         $posts = null;
         $active = null;

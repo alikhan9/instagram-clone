@@ -53,9 +53,9 @@ const sendName = () => {
     </div>
     <div class="w-full">
       <div class="flex flex-col gap-1 mb-2 w-full text-white">
-        <div class="shrink-0 font-bold flex-wrap">
-          {{ comment.user.name }}
-        </div>
+        <Link :href="'/profile/' + comment.user.username" class="shrink-0 font-bold flex-wrap">
+          {{ comment.user.username }}
+        </Link>
         <div class="flex flex-fill break-words h-full flex-wrap gap-1 w-full">
           <div v-for="(text, index) in comment.content.split(' ')" :key="index">
             <Link v-if="text[0] == '@'" :href="'/profile/' + text.substring(1)">{{

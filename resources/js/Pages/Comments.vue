@@ -121,16 +121,15 @@ const resize = (e) => {
   } else {
     if (referencedUsersSearch.value) referencedUsersSearch.value = null;
   }
-  e.target.style.height = "auto";
-  e.target.style.height = `${e.target.scrollHeight - 32}px`;
+  // e.target.style.height = "auto";
+  // e.target.style.height = `${e.target.scrollHeight - 32}px`;
 };
 
 const addUserInfoToComment = (user) => {
   // Get the current value of the input
-  let currentValue = inputRef.value.value;
 
   // Split the current value into words
-  const words = currentValue.split(" ");
+  const words = currentComment.value.split(" ");
 
   // Check if the last word starts with '@'
   if (words[words.length - 1].startsWith("@")) {
@@ -138,18 +137,10 @@ const addUserInfoToComment = (user) => {
     words[words.length - 1] = "@" + user.username + " ";
 
     // Join the words back into a string
-    currentValue = words.join(" ");
+    currentComment.value = words.join(" ");
   }
-
-  // Clear the referencedUsersSearch
   referencedUsersSearch.value = null;
-
-  // Update the input value
-  setTimeout(() => {
-      console.log(currentValue);
-      inputRef.value.value = currentValue;
-      inputRef.value.focus();
-  },50)
+  inputRef.value.focus();
 };
 
 const addResponseComment = (data) => {
@@ -268,7 +259,7 @@ const addResponseComment = (data) => {
               <p class="text-sm text-[hsl(0,0%,60%)]">{{ post.created_at }}</p>
             </div>
           </div>
-          <div class="flex relative items items-center gap-4 h-[7%] px-6 py-5">
+          <div class="flex relative items items-center h-[55px] gap-4 px-6">
             <div
               v-if="referencedUsersSearch"
               class="absolute top-0 translate-y-[-200px] left-0 h-[200px] w-[309px] bg-black overflow-auto"
@@ -300,15 +291,17 @@ const addResponseComment = (data) => {
               :native="true"
               @select="onSelectEmoji"
             />
-            <textarea
-              @keydown.enter="publishComment"
-              @input="resize($event)"
-              ref="inputRef"
-              class="bg-transparent float-left no-scrollbar resize-none h-8 max-h-16 w-[93%] border-none focus:ring-0"
-              placeholder="Ajouter un commentaire..."
-              type="text"
-              v-model="currentComment"
-            ></textarea>
+            <div class="flex items-center w-[93%]">
+              <textarea
+                @keydown.enter="publishComment"
+                @input="resize($event)"
+                ref="inputRef"
+                class="bg-transparent float-left no-scrollbar h-10 resize-none w-full border-none focus:ring-0"
+                placeholder="Ajouter un commentaire..."
+                type="text"
+                v-model="currentComment"
+              ></textarea>
+            </div>
             <button
               :class="{
                 'text-[hsl(204,90%,49%)] text-xl hover:text-white':
