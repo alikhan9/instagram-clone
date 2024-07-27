@@ -35,14 +35,15 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'username' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:' . User::class,
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'phone' => ['required', 'regex:/^[0-9]{10}$/'],
+            'username' => 'required|string|max:255|unique:users',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => ['required', 'confirmed','max:255',Rules\Password::defaults()],
+            'phone' => ['required', 'unique:users' ,'regex:/^[0-9]{10}$/'],
             'avatar' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ], [
             'name.required' => 'Le champ nom est requis.',
             'username.required' => "Le champ nom d'utilisateur est requis.",
+            'username.unique' => "Ce pseudo n'est pas disponible.",
             'email.required' => "Le champ e-mail est requis.",
             'email.email' => "L'adresse e-mail doit être une adresse e-mail valide.",
             'email.unique' => "L'adresse e-mail est déjà utilisée.",
@@ -51,6 +52,7 @@ class RegisteredUserController extends Controller
             'password.min' => 'Le mot de passe doit comporter au moins 8 caractères.',
             'phone.required' => 'Le champ téléphone est requis.',
             'phone.regex' => 'Le numéro de téléphone doit être de 10 chiffres.',
+            'phone.unique' => "Ce numéro de téléphone n'est pas disponible.",
             'avatar.required' => "Le champ d'avatar est requis.",
             'avatar.image' => "L'avatar doit être une image.",
             'avatar.mimes' => "L'avatar doit être un fichier de type : jpeg, png, jpg, gif, svg.",
@@ -80,6 +82,6 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(RouteServiceProvider::HOME);
+        return to_route('home');
     }
 }

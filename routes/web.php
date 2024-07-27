@@ -27,7 +27,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/comments', [CommentsController::class, 'index']);
 
     // Post Routes
-    Route::get('/', [PostController::class, 'index']);
+    Route::get('/', [PostController::class, 'index'])->name('home');
     Route::post('/post', [PostController::class, 'store']);
 
     // Bookmark Routes
