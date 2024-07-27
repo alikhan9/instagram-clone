@@ -13,11 +13,11 @@ class PostController extends Controller
 {
     public function index(Request $request)
     {
-        $values = $request->validate([
-            'followed' => 'nullable|boolean',
+        $request->validate([
+            'followed' => 'nullable|string|in:true,false',
             'pid' => 'nullable|numeric|exists:posts,id',
         ]);
-        if (!$values->followed)
+        if (!$request->followed)
             $posts = Post::latest()->paginate(3, ['*'], 'p')->through(function ($post) {
                 $post->userLiked = $post->userLiked();
                 $post->numberOfComments = $post->comments()->count();
@@ -53,21 +53,23 @@ class PostController extends Controller
 
 
         $post = null;
-        if ($values->has('pid')) {
+        if ($request->has('pid')) {
             $post = Post::find($request->pid);
-            $post['userLiked'] = $post->userLiked();
-            $post['numberOfComments'] = $post->comments()->count();
-            $post['numberOfLikes'] = $post->likes()->count();
-            $post['likes'] = $post->likes()->count();
-            $post['userBookmarked'] = $post->userBookmarked();
+            if ($post) {
+                $post['userLiked'] = $post->userLiked();
+                $post['numberOfComments'] = $post->comments()->count();
+                $post['numberOfLikes'] = $post->likes()->count();
+                $post['likes'] = $post->likes()->count();
+                $post['userBookmarked'] = $post->userBookmarked();
+            }
         }
 
         return Inertia::render('Home', [
             'posts' => $posts,
-            'followed' => $values->boolean('followed'),
+            'followed' => $request->boolean('followed'),
             'mostFollowedUsers' => $mostFollowedUsers,
             'post' => $post,
-            'comments' => $values->has('pid') ? Post::find($values->pid)->comments()->paginate(15, ['*'], 'c')->withQueryString() : null,
+            'comments' => $request->has('pid') ? Post::find($request->pid)->comments()->paginate(15, ['*'], 'c')->withQueryString() : null,
         ]);
     }
 
@@ -82,6 +84,9 @@ class PostController extends Controller
             'enable_likes' => 'required|boolean',
             'image_description' => 'nullable|string|max:255'
         ]);
+
+        $values['description'] = htmlspecialchars($values['description'], ENT_QUOTES, 'UTF-8');
+
 
         if ($request->hasFile('video')) {
             $video = $request->file('video');

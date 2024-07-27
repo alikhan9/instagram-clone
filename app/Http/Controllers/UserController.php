@@ -13,6 +13,12 @@ class UserController extends Controller
 {
     public function get(Request $request, $username)
     {
+        $request->validate([
+            'value' => "nullable|string|max:255|in:reels,bookmarks,mentions,posts",
+            'pid' => "nullable|numeric|exists:posts,id",
+        ]);
+
+
         $user = User::where('username', $username)->first();
 
         if (!$user) {
@@ -22,26 +28,20 @@ class UserController extends Controller
 
         $posts = null;
         $active = null;
-
-        $values = $request->validate([
-           'value' => 'required|string|max:255',
-            'pid' => 'nullable|integer|exists:posts,id'
-        ]);
-
-        if ($values->value == 'posts' || !$values->value) {
+        if ($request->value == 'posts' || !$request->value) {
             $posts = $user->posts()->orderByDesc('created_at')->paginate(9);
             $active = 0;
         }
 
-        if ($values->value == 'reels') {
+        if ($request->value == 'reels') {
             $posts = $user->posts()->where('video', '!=', 'null')->orderByDesc('created_at')->paginate(9);
             $active = 1;
         }
-        if ($values->value == 'bookmarks') {
+        if ($request->value == 'bookmarks') {
             $posts = $user->bookmarkedPosts();
             $active = 2;
         }
-        if ($values->value == 'mentions') {
+        if ($request->value == 'mentions') {
             $posts = Post::whereIn('id', $user->mentions($user->id)->select('post_id'))->orderByDesc('created_at')->paginate(9);
             $active = 3;
         }
@@ -76,8 +76,8 @@ class UserController extends Controller
         $user->followers()->count();
 
         $post = null;
-        if ($values->has('pid')) {
-            $post = Post::find($values->pid);
+        if ($request->has('pid')) {
+            $post = Post::find($request->pid);
             $post['userLiked'] = $post->userLiked();
             $post['numberOfComments'] = $post->comments()->count();
             $post['numberOfLikes'] = $post->likes()->count();
@@ -88,7 +88,7 @@ class UserController extends Controller
         return Inertia::render('User', [
             'user' => $user,
             'post' => $post,
-            'comments' => $values->has('pid') ? Post::find($values->pid)->comments()->paginate(15, ['*'], 'c')->withQueryString() : null,
+            'comments' => $request->has('pid') ? Post::find($request->pid)->comments()->paginate(15, ['*'], 'c')->withQueryString() : null,
             'posts' => $posts,
             'total_posts' => $user->posts()->count(),
             'active' => $active,
@@ -104,7 +104,9 @@ class UserController extends Controller
 
     public function search($username)
     {
-        return User::select(['id', 'name', 'username', 'avatar'])->where('id', "!=", auth()->id())->where(DB::raw('LOWER(username)'), 'like', '%' . strtolower($username) . '%')->limit(50)->get()->map(function ($user) {
+        $sanitizedUsername = $this->sanitizeInput($username);
+
+        return User::select(['id', 'name', 'username', 'avatar'])->where('id', "!=", auth()->id())->where(DB::raw('LOWER(username)'), 'like', '%' . strtolower($sanitizedUsername) . '%')->limit(50)->get()->map(function ($user) {
             $user->followersCount = $user->followers()->count();
             return $user;
         });
@@ -112,11 +114,31 @@ class UserController extends Controller
 
     public function searchSmall($username)
     {
-        return User::select(['id', 'name', 'username', 'avatar'])->where(DB::raw('LOWER(username)'), 'like', '%' . strtolower($username) . '%')->limit(20)->get();
+        $sanitizedUsername = $this->sanitizeInput($username);
+
+        return User::select(['id', 'name', 'username', 'avatar'])->where(DB::raw('LOWER(username)'), 'like', '%' . strtolower($sanitizedUsername) . '%')->limit(20)->get();
     }
 
     public function checkNotifications()
     {
         auth()->user()->unreadNotifications->markAsRead();
     }
+
+    private function sanitizeInput($input)
+    {
+        // Remove HTML tags
+        $cleanInput = strip_tags($input);
+
+        // Trim whitespace from both ends
+        $cleanInput = trim($cleanInput);
+
+        // Convert to lowercase
+        $cleanInput = strtolower($cleanInput);
+
+        // Additional sanitization or validation logic can go here
+        // For example, checking if the input matches a certain pattern or length
+
+        return $cleanInput;
+    }
+
 }

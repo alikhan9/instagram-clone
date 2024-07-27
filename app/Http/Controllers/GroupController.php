@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Group;
 use App\Models\GroupMember;
 use App\Models\User;
+use App\Rules\UserIds;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -15,19 +16,13 @@ class GroupController extends Controller
      */
     public function store(Request $request)
     {
-        $values = $request->validate([
-            'members' => 'required|array',
+        $request->validate([
+            'members' => ['required', 'array', new UserIds]
         ]);
-
-        $results = User::whereIn('id',$values->members )->count();
-
-        if($results !== count($values->members)){
-            throw new Exception("All members don't exist");
-        }
 
         $group = Group::create(['owner_id' => auth()->user()->id]);
 
-        foreach ($values->members as $user) {
+        foreach ($request->members as $user) {
             GroupMember::create([
                 'group_id' => $group->id,
                 'user_id' => $user->id
@@ -39,12 +34,12 @@ class GroupController extends Controller
             'user_id' => auth()->id()
         ]);
 
-        return redirect('/direct/g/'.$group->id);
+        return redirect('/direct/g/' . $group->id);
     }
 
     public function destroy(Group $group)
     {
-        if($group->owner_id != auth()->user()->id) {
+        if ($group->owner_id !== auth()->user()->id) {
             abort(403);
         }
         $group->delete();
@@ -52,7 +47,7 @@ class GroupController extends Controller
 
     public function add(Request $request, Group $group)
     {
-        if($group->owner_id != auth()->user()->id) {
+        if ($group->owner_id !== auth()->user()->id) {
             abort(403);
         }
 
@@ -66,7 +61,7 @@ class GroupController extends Controller
     public function remove(Request $request, Group $group)
     {
 
-        if($group->owner_id != auth()->user()->id) {
+        if ($group->owner_id !== auth()->user()->id) {
             abort(403);
         }
 
@@ -80,14 +75,14 @@ class GroupController extends Controller
     public function update(Request $request, Group $group)
     {
 
-        if($group->owner_id != auth()->user()->id) {
+        if ($group->owner_id !== auth()->user()->id) {
             abort(403);
         }
-        $values = $request->validate([
+        $request->validate([
             'user_id' => 'required|numeric|exists:users,id'
         ]);
 
-        $group->update(['owner_id' => $values->user_id]);
+        $group->update(['owner_id' => $request->user_id]);
     }
 
 
@@ -97,7 +92,7 @@ class GroupController extends Controller
             'group_id' => 'required|numeric|exists:groups,id'
         ]);
 
-        auth()->user()->unreadNotifications()->where('data', 'like', '%'.'"group_id":' . $values->group_id . '%')->delete();
+        auth()->user()->unreadNotifications()->where('data', 'like', '%' . '"group_id":' . $values->group_id . '%')->delete();
     }
 
 }

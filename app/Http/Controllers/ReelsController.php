@@ -11,26 +11,27 @@ class ReelsController extends Controller
     public function index(Post $post, Request $request)
     {
         $posts = null;
-        $values = $request->validate([
-           'followed' => 'nullable|boolean',
-            'notFirst' => 'nullable|boolean',
-            'sC' => 'nullable|boolean',
+        $request->validate([
+            'followed' => 'nullable|string|in:true,false',
+            'notFirst' => 'nullable|string|in:true,false',
+            'sC' => 'nullable|string|in:true,false',
+            'pid' => 'nullable|numeric|exists:posts,id',
         ]);
-        if($values->followed) {
-            if($post->id) {
+        if ($request->followed) {
+            if ($post->id) {
                 $posts = Post::where('id', '!=', $post->id)->where('image', null)->whereIn('user_id', auth()->user()->following()->pluck('followed')->toArray())->orderByDesc('created_at')->paginate(3, ['*'], 'p');
             } else {
                 $posts = Post::where('image', null)->whereIn('user_id', auth()->user()->following()->pluck('followed')->toArray())->orderByDesc('created_at')->paginate(3, ['*'], 'p');
             }
         } else {
-            if($post->id) {
+            if ($post->id) {
                 $posts = Post::where('image', null)->whereNotIn('user_id', auth()->user()->following()->pluck('followed')->toArray())->where('id', '!=', $post->id)->orderByDesc('created_at')->paginate(3, ['*'], 'p');
             } else {
                 $posts = Post::where('image', null)->whereNotIn('user_id', auth()->user()->following()->pluck('followed')->toArray())->orderByDesc('created_at')->paginate(3, ['*'], 'p');
             }
         }
 
-        $followed = filter_var($values->followed, FILTER_VALIDATE_BOOLEAN);
+        $followed = filter_var($request->followed, FILTER_VALIDATE_BOOLEAN);
 
         $posts->getCollection()->transform(function ($post) {
             $post->userLiked = $post->userLiked();
@@ -41,14 +42,14 @@ class ReelsController extends Controller
             return $post;
         });
 
-        if($post->id && !$values->notFirst) {
+        if ($post->id && !$request->notFirst) {
             $post['userLiked'] = $post->userLiked();
             $post['numberOfComments'] = $post->comments()->count();
             $post['numberOfLikes'] = $post->likes()->count();
             $post['likes'] = $post->likes()->count();
             $post['userBookmarked'] = $post->userBookmarked();
-            if($values->followed) {
-                if(in_array($post->user_id, auth()->user()->following()->pluck('followed')->toArray())) {
+            if ($request->followed) {
+                if (in_array($post->user_id, auth()->user()->following()->pluck('followed')->toArray())) {
                     $posts->prepend($post);
                 }
             } else {
@@ -60,9 +61,9 @@ class ReelsController extends Controller
         return Inertia::render('Reels', [
             'posts' => $posts,
             'post' => $post,
-            'comments' => $values->has('sC') && $values->has('pid') ? Post::find($values->pid)->comments()->paginate(15, ['*'], 'coms')->withQueryString() : null,
+            'comments' => $request->has('sC') && $request->has('pid') ? Post::find($request->pid)->comments()->paginate(15, ['*'], 'coms')->withQueryString() : null,
             'followed' => $followed,
-            'showComments' => (bool)$values->has('sC'),
+            'showComments' => (bool)$request->has('sC'),
         ]);
     }
 }

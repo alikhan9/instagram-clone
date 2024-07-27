@@ -6,7 +6,7 @@ import CityPicker from "./Profile/CityPicker.vue";
 import SvgIcon from "@jamescoyle/vue-icon";
 import ExpendableMenu from "./ExpendableMenu.vue";
 import InerMenuCheckbox from "./InerMenuCheckbox.vue";
-import { router } from "@inertiajs/vue3";
+import {router, usePage} from "@inertiajs/vue3";
 import ImageFilterApp from "./ImageFilterApp.vue";
 
 const emit = defineEmits(["toggleShowCreatePost"]);
@@ -32,7 +32,7 @@ const leave = () => {
 };
 
 const back = () => {
-  if (step.value == 0) leave();
+  if (step.value === 0) leave();
   else step.value--;
 };
 
@@ -90,9 +90,9 @@ const togglePlayPause = () => {
     <div
       :class="{
         'lg:w-[40vw] lg:h-[85vh] h-full  shrink-0 xl:overflow-hidden overflow-auto lg:z-20 lg:rounded-xl lg:bg-[#262626]':
-          step == 0,
+          step === 0,
         'lg:w-[58vw] lg:max-w-[1200px] lg:max-h-[85vh] lg:z-20 shrink-0 grow rounded-xl lg:bg-[#262626] overflow-auto xl:overflow-hidden ':
-          step == 1 || step == 2,
+          step === 1 || step === 2,
       }"
     >
       <div
@@ -103,7 +103,7 @@ const togglePlayPause = () => {
       </div>
       <div v-else>
         <div
-          v-if="step == 0"
+          v-if="step === 0"
           class="border-b min-w-full flex justify-between border-[hsl(0,0%,20%)] py-3 text-center text-lg font-semibold px-5"
         >
           <div>
@@ -124,7 +124,7 @@ const togglePlayPause = () => {
           </button>
         </div>
         <div
-          v-if="step == 1"
+          v-if="step === 1"
           class="border-b min-w-full flex justify-between border-[hsl(0,0%,20%)] py-3 text-center text-lg font-semibold px-5"
         >
           <div>
@@ -145,7 +145,7 @@ const togglePlayPause = () => {
           </button>
         </div>
         <div
-          v-else-if="step == 2"
+          v-else-if="step === 2"
           class="border-b min-w-full flex justify-between border-[hsl(0,0%,20%)] py-3 text-center text-lg font-semibold px-5"
         >
           <svg-icon
@@ -182,8 +182,8 @@ const togglePlayPause = () => {
         </label>
       </div>
       <div v-else>
-        <div class="flex justify-center" v-if="step == 0">
-          <img v-if="file.type.includes('image/')" class="max-h-[80.5vh]" :src="url" />
+        <div class="flex justify-center" v-if="step === 0">
+          <img alt="image" v-if="file.type.includes('image/')" class="max-h-[80.5vh]" :src="url" />
           <div v-else class="">
             <video ref="videoPlayer" class="object-cover" @click="togglePlayPause">
               <source :src="url" type="video/mp4" />
@@ -193,7 +193,7 @@ const togglePlayPause = () => {
           </div>
         </div>
         <div v-else>
-          <div v-if="step == 1">
+          <div v-if="step === 1">
             <div class="col-span-2 flex justify-center">
               <ImageFilterApp
                 v-if="file.type.includes('image/')"
@@ -216,13 +216,14 @@ const togglePlayPause = () => {
             enter-active-class="transition duration-1000 origin-left grid grid-cols-3"
           >
             <div
-              v-if="step == 2"
+              v-if="step === 2"
               class="lg:border-l-[1px] border-[hsl(0,0%,20%)] flex flex-col gap-4 lg:flex-row lg:h-[81vh]"
             >
               <img
                 class="lg:max-w-[70%]"
                 v-if="file.type.includes('image/')"
                 :src="url"
+                alt="image"
               />
               <div class="video-container" v-else>
                 <video ref="videoPlayer" class="object-cover" @click="togglePlayPause">
@@ -236,11 +237,14 @@ const togglePlayPause = () => {
               >
                 <div>
                   <div class="text-lg lg:text-base flex gap-3 mb-3 items-center">
-                    <img
-                      class="rounded-full"
-                      src="https://picsum.photos/seed/picsum/32/32"
-                    />
-                    <p>Name</p>
+                    <div class="h-12 w-12 rounded-full overflow-hidden">
+                        <img
+                            alt="image"
+                            class="rounded-full"
+                            :src="usePage().props.auth.user.avatar"
+                        />
+                    </div>
+                    <p>{{ usePage().props.auth.user.username }}</p>
                   </div>
                   <textarea
                     class="bg-[#262626] w-full resize-none overflow-auto border-transparent focus:border-transparent focus:ring-0"
@@ -276,7 +280,7 @@ const togglePlayPause = () => {
                     choisir de l'écrire vous-même.
                   </p>
                   <div class="flex gap-4 mt-3 items-center">
-                    <img class="w-14 h-14" :src="url" />
+                    <img alt="image" class="w-14 h-14" :src="url" />
                     <input
                       type="text"
                       class="bg-transparent border-none rounded-lg focus:outline w-full focus:outline-[hsl(0,0%,23%)] focus:border-2 focus:ring-0"

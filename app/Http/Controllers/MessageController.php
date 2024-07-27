@@ -15,8 +15,8 @@ class MessageController extends Controller
 {
     public function user(User $receiver)
     {
-        if(count($receiver->getAttributes()) !== 0) {
-            if(!Contact::where('receiver', auth()->id())->where('initiator', $receiver->id)->orWhere('initiator', auth()->id())->where('receiver', $receiver->id)->exists() && $receiver->id !== auth()->id()) {
+        if (count($receiver->getAttributes()) !== 0) {
+            if (!Contact::where('receiver', auth()->id())->where('initiator', $receiver->id)->orWhere('initiator', auth()->id())->where('receiver', $receiver->id)->exists() && $receiver->id !== auth()->id()) {
                 Contact::create([
                     'initiator' => auth()->id(),
                     'receiver' => $receiver->id,
@@ -36,7 +36,7 @@ class MessageController extends Controller
 
         $messages = [];
 
-        if(count($receiver->getAttributes()) !== 0) {
+        if (count($receiver->getAttributes()) !== 0) {
             $messages = Message::where('receiver', auth()->id())->where('sender', $receiver->id)->orWhere('receiver', $receiver->id)->where('sender', auth()->id())->orderBy('created_at', 'ASC')->get();
         }
 
@@ -57,14 +57,15 @@ class MessageController extends Controller
     {
 
 
-        $values = $request->validate([
+        $request->validate([
             'receiver' => 'required|numeric|exists:users,id',
             'message' => 'required|string|max:1000'
         ]);
 
-        $values['sender'] = auth()->id();
+        $userMessageEscaped = htmlspecialchars($request->message, ENT_QUOTES, 'UTF-8');
 
-        $message =  Message::create($values);
+
+        $message = Message::create(['receiver' => $request->receiver, 'message' => $userMessageEscaped, 'sender' => auth()->id()]);
 
         event(new MessageSent($message));
 
@@ -73,25 +74,26 @@ class MessageController extends Controller
 
     public function notify(Request $request)
     {
-        $values = $request->validate([
+         $request->validate([
             'sender' => 'required|numeric|exists:users,id'
         ]);
 
-        auth()->user()->notify(new NewMessageNotification($values->sender));
+        auth()->user()->notify(new NewMessageNotification($request->sender));
     }
+
     public function check(Request $request)
     {
-        $values = $request->validate([
+        $request->validate([
             'sender' => 'required|numeric|exists:users,id'
         ]);
 
-        auth()->user()->unreadNotifications()->where('data', '{"sender":' . $values->sender . ',"receiver":' . auth()->id() . '}')->delete();
+        auth()->user()->unreadNotifications()->where('data', '{"sender":' . $request->sender . ',"receiver":' . auth()->id() . '}')->delete();
     }
 
     public function group(Group $group)
     {
         $messages = [];
-        if(count($group->getAttributes()) !== 0) {
+        if (count($group->getAttributes()) !== 0) {
             $messages = $group->messages;
         }
 

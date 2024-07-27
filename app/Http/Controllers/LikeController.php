@@ -51,13 +51,13 @@ class LikeController extends Controller
     public function likeResponse(Request $request, CommentResponse $response)
     {
 
-        $values = $request->validate([
+        $request->validate([
             'post_id' => 'required|numeric|exists:posts,id',
             'comment_id' => 'required|numeric|exists:comments,id',
         ]);
         $like = ResponseLike::where('user_id', auth()->id())->where('comment_response_id', $response->id);
         if($like->get()->count()>0) {
-            event(new CommentLikeSent($like->get()->first(), $values->postId,false,true,$values->commentId));
+            event(new CommentLikeSent($like->get()->first(), $request->postId,false,true,$request->commentId));
             $like->delete();
             return;
         }
@@ -67,6 +67,6 @@ class LikeController extends Controller
             'user_id' => auth()->id(),
         ]);
 
-        event(new CommentLikeSent($commentLike, $values->postId,true,true,$values->commentId));
+        event(new CommentLikeSent($commentLike, $request->postId,true,true,$request->commentId));
     }
 }
