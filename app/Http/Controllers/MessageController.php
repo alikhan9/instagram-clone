@@ -57,38 +57,35 @@ class MessageController extends Controller
     {
 
 
-        $result = $request->validate([
-            'receiver' => 'required|exists:users,id',
-            'message' => 'required|string|max:10000'
+        $values = $request->validate([
+            'receiver' => 'required|numeric|exists:users,id',
+            'message' => 'required|string|max:1000'
         ]);
 
-        $result['sender'] = auth()->id();
+        $values['sender'] = auth()->id();
 
-
-
-        $message =  Message::create($result);
+        $message =  Message::create($values);
 
         event(new MessageSent($message));
-
 
         return $message;
     }
 
     public function notify(Request $request)
     {
-        $request->validate([
-            'sender' => 'required|exists:users,id'
+        $values = $request->validate([
+            'sender' => 'required|numeric|exists:users,id'
         ]);
 
-        auth()->user()->notify(new NewMessageNotification($request->sender));
+        auth()->user()->notify(new NewMessageNotification($values->sender));
     }
     public function check(Request $request)
     {
-        $request->validate([
-            'sender' => 'required|exists:users,id'
+        $values = $request->validate([
+            'sender' => 'required|numeric|exists:users,id'
         ]);
 
-        auth()->user()->unreadNotifications()->where('data', '{"sender":' . $request->sender . ',"receiver":' . auth()->id() . '}')->delete();
+        auth()->user()->unreadNotifications()->where('data', '{"sender":' . $values->sender . ',"receiver":' . auth()->id() . '}')->delete();
     }
 
     public function group(Group $group)

@@ -11,7 +11,12 @@ class ReelsController extends Controller
     public function index(Post $post, Request $request)
     {
         $posts = null;
-        if($request->followed) {
+        $values = $request->validate([
+           'followed' => 'nullable|boolean',
+            'notFirst' => 'nullable|boolean',
+            'sC' => 'nullable|boolean',
+        ]);
+        if($values->followed) {
             if($post->id) {
                 $posts = Post::where('id', '!=', $post->id)->where('image', null)->whereIn('user_id', auth()->user()->following()->pluck('followed')->toArray())->orderByDesc('created_at')->paginate(3, ['*'], 'p');
             } else {
@@ -25,7 +30,7 @@ class ReelsController extends Controller
             }
         }
 
-        $followed = filter_var($request->followed, FILTER_VALIDATE_BOOLEAN);
+        $followed = filter_var($values->followed, FILTER_VALIDATE_BOOLEAN);
 
         $posts->getCollection()->transform(function ($post) {
             $post->userLiked = $post->userLiked();
@@ -36,13 +41,13 @@ class ReelsController extends Controller
             return $post;
         });
 
-        if($post->id && !$request->notFirst) {
+        if($post->id && !$values->notFirst) {
             $post['userLiked'] = $post->userLiked();
             $post['numberOfComments'] = $post->comments()->count();
             $post['numberOfLikes'] = $post->likes()->count();
             $post['likes'] = $post->likes()->count();
             $post['userBookmarked'] = $post->userBookmarked();
-            if($request->followed) {
+            if($values->followed) {
                 if(in_array($post->user_id, auth()->user()->following()->pluck('followed')->toArray())) {
                     $posts->prepend($post);
                 }
@@ -55,9 +60,9 @@ class ReelsController extends Controller
         return Inertia::render('Reels', [
             'posts' => $posts,
             'post' => $post,
-            'comments' => $request->has('sC') && $request->has('pid') ? Post::find($request->pid)->comments()->paginate(15, ['*'], 'coms')->withQueryString() : null,
+            'comments' => $values->has('sC') && $values->has('pid') ? Post::find($values->pid)->comments()->paginate(15, ['*'], 'coms')->withQueryString() : null,
             'followed' => $followed,
-            'showComments' => $request->has('sC') ? true : false,
+            'showComments' => (bool)$values->has('sC'),
         ]);
     }
 }

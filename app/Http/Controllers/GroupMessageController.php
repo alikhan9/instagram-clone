@@ -11,13 +11,13 @@ class GroupMessageController extends Controller
     public function store(Request $request, Group $group)
     {
 
-        $this->validate($request, [
-            'message' => 'required',
+        $values = $request->validate([
+            'message' => 'required|string|max:255',
         ]);
 
         $message = $group->messages()->create([
             'user_id' => auth()->user()->id,
-            'message' => $request->message
+            'message' => $values->message
         ]);
 
         event(new GroupMessageSent($message));

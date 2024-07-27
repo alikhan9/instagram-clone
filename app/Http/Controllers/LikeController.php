@@ -15,8 +15,11 @@ class LikeController extends Controller
 {
     public function likePost(Post $post, Request $request)
     {
+        $values = $request->validate([
+            'value' => 'required|numeric|exists:posts,id'
+        ]);
         $exists = $post->likes()->wherePivot('user_id', auth()->id())->exists();
-        if($exists == $request->value) {
+        if($exists == $values->value) {
             return;
         }
 
@@ -28,9 +31,12 @@ class LikeController extends Controller
     public function likeComment(Request $request, PostComment $comment)
     {
 
+        $values = $request->validate([
+            'post_id' => 'required|numeric|exists:posts,id',
+        ]);
         $like = CommentLike::where('user_id', auth()->id())->where('post_comment_id', $comment->id);
         if($like->get()->count()>0) {
-            event(new CommentLikeSent($like->get()->first(), $request->postId,false));
+            event(new CommentLikeSent($like->get()->first(), $values->postId,false));
             $like->delete();
             return;
         }
@@ -40,14 +46,18 @@ class LikeController extends Controller
             'user_id' => auth()->id(),
         ]);
 
-        event(new CommentLikeSent($commentLike, $request->postId,true));
+        event(new CommentLikeSent($commentLike, $values->postId,true));
     }
     public function likeResponse(Request $request, CommentResponse $response)
     {
 
+        $values = $request->validate([
+            'post_id' => 'required|numeric|exists:posts,id',
+            'comment_id' => 'required|numeric|exists:comments,id',
+        ]);
         $like = ResponseLike::where('user_id', auth()->id())->where('comment_response_id', $response->id);
         if($like->get()->count()>0) {
-            event(new CommentLikeSent($like->get()->first(), $request->postId,false,true,$request->commentId));
+            event(new CommentLikeSent($like->get()->first(), $values->postId,false,true,$values->commentId));
             $like->delete();
             return;
         }
@@ -57,6 +67,6 @@ class LikeController extends Controller
             'user_id' => auth()->id(),
         ]);
 
-        event(new CommentLikeSent($commentLike, $request->postId,true,true,$request->commentId));
+        event(new CommentLikeSent($commentLike, $values->postId,true,true,$values->commentId));
     }
 }

@@ -8,8 +8,8 @@ class FollowController extends Controller
 {
     public function store(User $user)
     {
-        if($user->id === auth()->id())
-            return abort(400,"The user cannot follow himself");
+        if ($user->id === auth()->id())
+            abort(400, "The user cannot follow himself");
         if (auth()->user()->isFollowing($user)) {
             auth()->user()->following()->detach($user);
             return false;

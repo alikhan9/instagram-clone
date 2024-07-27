@@ -13,7 +13,11 @@ class PostController extends Controller
 {
     public function index(Request $request)
     {
-        if (!$request->followed)
+        $values = $request->validate([
+            'followed' => 'nullable|boolean',
+            'pid' => 'nullable|numeric|exists:posts,id',
+        ]);
+        if (!$values->followed)
             $posts = Post::latest()->paginate(3, ['*'], 'p')->through(function ($post) {
                 $post->userLiked = $post->userLiked();
                 $post->numberOfComments = $post->comments()->count();
@@ -49,7 +53,7 @@ class PostController extends Controller
 
 
         $post = null;
-        if ($request->has('pid')) {
+        if ($values->has('pid')) {
             $post = Post::find($request->pid);
             $post['userLiked'] = $post->userLiked();
             $post['numberOfComments'] = $post->comments()->count();
@@ -60,16 +64,16 @@ class PostController extends Controller
 
         return Inertia::render('Home', [
             'posts' => $posts,
-            'followed' => $request->boolean('followed'),
+            'followed' => $values->boolean('followed'),
             'mostFollowedUsers' => $mostFollowedUsers,
             'post' => $post,
-            'comments' => $request->has('pid') ? Post::find($request->pid)->comments()->paginate(15, ['*'], 'c')->withQueryString() : null,
+            'comments' => $values->has('pid') ? Post::find($values->pid)->comments()->paginate(15, ['*'], 'c')->withQueryString() : null,
         ]);
     }
 
     public function store(Request $request)
     {
-        $post = $request->validate([
+        $values = $request->validate([
             'description' => 'nullable|string|max:255',
             'location' => 'nullable|string|max:100',
             'image' => 'nullable|image|mimes:jpeg,png',
@@ -83,8 +87,8 @@ class PostController extends Controller
             $video = $request->file('video');
             $videoName = uniqid('video_') . '.' . $video->getClientOriginalExtension();
             $path = Storage::disk('public')->put('videos/' . $videoName, $video);
-            $post['video'] = '/storage/' . $path;
-            $post['image'] = null;
+            $values['video'] = '/storage/' . $path;
+            $values['image'] = null;
         }
 
         if ($request->hasFile('image')) {
@@ -100,11 +104,11 @@ class PostController extends Controller
             Storage::disk('public')->put('images/medium_' . $filename, $optimizedImageMedium);
             Storage::disk('public')->put('images/small_' . $filename, $optimizedImageMini);
 
-            $post['image'] = '/storage/images/medium_' . $filename;
+            $values['image'] = '/storage/images/medium_' . $filename;
         }
 
-        $post['user_id'] = auth()->id();
-        Post::create($post);
+        $values['user_id'] = auth()->id();
+        Post::create($values);
         return redirect('/');
     }
 }

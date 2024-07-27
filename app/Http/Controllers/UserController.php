@@ -22,20 +22,26 @@ class UserController extends Controller
 
         $posts = null;
         $active = null;
-        if ($request->value == 'posts' || !$request->value) {
+
+        $values = $request->validate([
+           'value' => 'required|string|max:255',
+            'pid' => 'nullable|integer|exists:posts,id'
+        ]);
+
+        if ($values->value == 'posts' || !$values->value) {
             $posts = $user->posts()->orderByDesc('created_at')->paginate(9);
             $active = 0;
         }
 
-        if ($request->value == 'reels') {
+        if ($values->value == 'reels') {
             $posts = $user->posts()->where('video', '!=', 'null')->orderByDesc('created_at')->paginate(9);
             $active = 1;
         }
-        if ($request->value == 'bookmarks') {
+        if ($values->value == 'bookmarks') {
             $posts = $user->bookmarkedPosts();
             $active = 2;
         }
-        if ($request->value == 'mentions') {
+        if ($values->value == 'mentions') {
             $posts = Post::whereIn('id', $user->mentions($user->id)->select('post_id'))->orderByDesc('created_at')->paginate(9);
             $active = 3;
         }
@@ -70,8 +76,8 @@ class UserController extends Controller
         $user->followers()->count();
 
         $post = null;
-        if ($request->has('pid')) {
-            $post = Post::find($request->pid);
+        if ($values->has('pid')) {
+            $post = Post::find($values->pid);
             $post['userLiked'] = $post->userLiked();
             $post['numberOfComments'] = $post->comments()->count();
             $post['numberOfLikes'] = $post->likes()->count();
@@ -82,7 +88,7 @@ class UserController extends Controller
         return Inertia::render('User', [
             'user' => $user,
             'post' => $post,
-            'comments' => $request->has('pid') ? Post::find($request->pid)->comments()->paginate(15, ['*'], 'c')->withQueryString() : null,
+            'comments' => $values->has('pid') ? Post::find($values->pid)->comments()->paginate(15, ['*'], 'c')->withQueryString() : null,
             'posts' => $posts,
             'total_posts' => $user->posts()->count(),
             'active' => $active,

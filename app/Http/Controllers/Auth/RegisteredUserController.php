@@ -33,7 +33,7 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        $request->validate([
+        $values = $request->validate([
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users',
             'email' => 'required|string|email|max:255|unique:users',
@@ -42,7 +42,7 @@ class RegisteredUserController extends Controller
             'avatar' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ], [
             'name.required' => 'Le champ nom est requis.',
-            'username.required' => "Le champ nom d'utilisateur est requis.",
+            'username.required' => "Le champ pseudo est requis.",
             'username.unique' => "Ce pseudo est déjà utilisé.",
             'email.required' => "Le champ e-mail est requis.",
             'email.email' => "L'adresse e-mail doit être une adresse e-mail valide.",
@@ -69,14 +69,7 @@ class RegisteredUserController extends Controller
 
         $avatar = '/storage/images/avatar_' . $filename;
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'username' => $request->username,
-            'phone' => $request->phone,
-            'avatar' => $avatar
-        ]);
+        $user = User::create(array_merge($values,['password' => Hash::make($request->password),'avatar' => $avatar]));
 
         event(new Registered($user));
 

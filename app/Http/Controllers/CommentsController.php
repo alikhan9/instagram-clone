@@ -15,12 +15,12 @@ class CommentsController extends Controller
     public function storeComment(Request $request)
     {
 
-        $request->validate([
-            'post_id' => 'required',
-            'content' => 'required'
+        $values = $request->validate([
+            'post_id' => 'required|numeric|exists:posts,id',
+            'content' => 'required|string|max:255',
         ]);
 
-        $string = $request->content;
+        $string = $values->content;
         $pattern = '/@(\w+)/'; // Regular expression to match '@' followed by word characters
 
         preg_match_all($pattern, $string, $matches);
@@ -31,15 +31,15 @@ class CommentsController extends Controller
         foreach ($usernames as $username) {
             if (User::where('username', $username)->exists())
                 UserMention::create([
-                    'post_id' => $request->post_id,
+                    'post_id' => $values->post_id,
                     'user_id' => User::where('username', $username)->first()->id,
                 ]);
         }
 
         $comment = PostComment::create([
-            'post_id' => $request->post_id,
+            'post_id' => $values->post_id,
             'user_id' => auth()->id(),
-            'content' => $request->content
+            'content' => $values->content
         ]);
 
         event(new PostCommentSent($comment));
@@ -50,10 +50,10 @@ class CommentsController extends Controller
 
     public function storeResponse(Request $request)
     {
-        $response = $request->validate([
-            'post_comment_id' => 'required',
-            'content' => 'required',
-            'user_id' => 'required',
+        $values = $request->validate([
+            'post_comment_id' => 'required|numeric|exists:post_comments,id',
+            'content' => 'required|string|max:255',
+            'user_id' => 'required|numeric|exists:users,id',
         ]);
 
 //        $string = $request->content;
@@ -72,7 +72,7 @@ class CommentsController extends Controller
 //                ]);
 //        }
 
-        $result = CommentResponse::create($response);
+        $result = CommentResponse::create($values);
         $commentResponse = CommentResponse::with('postComment')->where('id', $result->id);
 
         event(new PostCommentSent($commentResponse->get()->first(), true));
