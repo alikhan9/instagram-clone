@@ -43,7 +43,7 @@ class RegisteredUserController extends Controller
         ], [
             'name.required' => 'Le champ nom est requis.',
             'username.required' => "Le champ nom d'utilisateur est requis.",
-            'username.unique' => "Ce pseudo n'est pas disponible.",
+            'username.unique' => "Ce pseudo est déjà utilisé.",
             'email.required' => "Le champ e-mail est requis.",
             'email.email' => "L'adresse e-mail doit être une adresse e-mail valide.",
             'email.unique' => "L'adresse e-mail est déjà utilisée.",
@@ -52,7 +52,7 @@ class RegisteredUserController extends Controller
             'password.min' => 'Le mot de passe doit comporter au moins 8 caractères.',
             'phone.required' => 'Le champ téléphone est requis.',
             'phone.regex' => 'Le numéro de téléphone doit être de 10 chiffres.',
-            'phone.unique' => "Ce numéro de téléphone n'est pas disponible.",
+            'phone.unique' => "Ce numéro de téléphone est déjà utilisé.",
             'avatar.required' => "Le champ d'avatar est requis.",
             'avatar.image' => "L'avatar doit être une image.",
             'avatar.mimes' => "L'avatar doit être un fichier de type : jpeg, png, jpg, gif, svg.",
