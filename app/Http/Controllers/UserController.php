@@ -16,11 +16,9 @@ class UserController extends Controller
         $user = User::where('username', $username)->first();
 
         if (!$user) {
-            return abort(404);
+            abort(404);
         }
         $isFollowing = auth()->user()->isFollowing($user);
-
-
 
         $posts = null;
         $active = null;
